@@ -20,14 +20,21 @@ OUT_PATH = ROOT / "pricing_data.mbt"
 HEADER = """///|
 /// 由 scripts/generate_data.py 从 data/pricing.json 生成，不要手改。
 /// 改数据只改 JSON，改完跑：python3 scripts/generate_data.py
-/// 数据来源：Lexmount 云平台真实任务挑战第二份作品提交材料 pricing.csv，
-/// 2026-11-08 Lexmount Cloud Browser 实际打开各官网逐页核验。
-/// 注意：9 条“未核验到”是诚实的空白——没有价格就不写价格，绝不编造；
-/// 3 条“部分核验”（Gemini 只在 Google One 页看到价、Copilot 只核验到
-/// 商业版、海螺只见到起步价）不要写成已核验，也不要丢掉已核验到的价。
+/// 数据来源：两批实测——
+/// ① 2026-11-08 Lexmount 云平台真实任务挑战第二份作品提交材料 pricing.csv，
+///    Lexmount Cloud Browser 实际打开各官网逐页核验（原始 20 条，会话 20261108-LXM）；
+/// ② 2026-11-15 扩量批次（会话 20261115-A～F），逐个打开官方定价页核验。
+/// 注意：“未核验到”是诚实的空白——没有价格就不写价格，绝不编造；
+/// “部分核验”不要写成已核验，也不要丢掉已核验到的价。
+/// 每条记录有唯一记录键 key（APV-0001 起按 JSON 顺序分配，追加不重排）
+/// 与核验会话 session；history 只记真实发生过的复核事件。
+/// 2026-11-15 第一次复核（会话 20261115-R1）：复核原始 20 条中带价的
+/// 11 条，6 条直接确认无变动，1 条涨价（智谱 GLM-5.1），4 条未看到价。
 """
 
 TOOL_FIELDS = [
+    "key",
+    "session",
     "name",
     "pricing_url",
     "free_tier",
@@ -39,6 +46,15 @@ TOOL_FIELDS = [
     "verified_at",
     "note",
     "status",
+]
+
+HISTORY_FIELDS = [
+    "date",
+    "session",
+    "change",
+    "old_price",
+    "new_price",
+    "note",
 ]
 
 STATUS_MAP = {
@@ -67,9 +83,24 @@ def mbt_str(s: str) -> str:
     return '"' + "".join(out) + '"'
 
 
+def emit_history(history: list) -> str:
+    """history 数组：空为 []，否则每条一行 HistoryEntry 字面量。"""
+    if not history:
+        return "      history: [],"
+    lines = ["      history: ["]
+    for h in history:
+        parts = ", ".join(f"{f}: {mbt_str(h[f])}" for f in HISTORY_FIELDS)
+        lines.append(f"        {{ {parts} }},")
+    lines.append("      ],")
+    return "\n".join(lines)
+
+
 def emit_tool(t: dict) -> str:
     if t["status"] not in STATUS_MAP:
         raise ValueError(f"未知的核验状态：{t['status']!r}")
+    for field in TOOL_FIELDS:
+        if field != "status" and field not in t:
+            raise ValueError(f"缺少字段：{field!r}（工具 {t.get('name', '?')!r}）")
     lines = ["    {"]
     for field in TOOL_FIELDS:
         value = t[field]
@@ -77,6 +108,7 @@ def emit_tool(t: dict) -> str:
             lines.append(f"      status: {STATUS_MAP[value]},")
         else:
             lines.append(f"      {field}: {mbt_str(value)},")
+    lines.append(emit_history(t.get("history", [])))
     lines.append("    },")
     return "\n".join(lines)
 

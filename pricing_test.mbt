@@ -13,8 +13,20 @@ fn arr_contains(items : Array[String], s : String) -> Bool {
 }
 
 ///|
-test "registry has twenty tools" {
-  assert_eq(@ai-pricing-verifier.all_tools().length(), 20)
+fn lines_contain(lines : Array[String], s : String) -> Bool {
+  for i in 0..<lines.length() {
+    if lines[i].contains(s) {
+      return true
+    }
+  }
+  false
+}
+
+///|
+test "registry is non-empty and names match count" {
+  let tools = @ai-pricing-verifier.all_tools()
+  assert_true(tools.length() > 0)
+  assert_eq(tools.length(), @ai-pricing-verifier.tool_names().length())
 }
 
 ///|
@@ -27,11 +39,19 @@ test "all tools have name and https url" {
 }
 
 ///|
-test "status counts are 8 verified 3 partial 9 unverified" {
+test "status counts sum to total" {
   let tools = @ai-pricing-verifier.all_tools()
-  assert_eq(@ai-pricing-verifier.verified_count(tools), 8)
-  assert_eq(@ai-pricing-verifier.partial_count(tools), 3)
-  assert_eq(@ai-pricing-verifier.unverified_count(tools), 9)
+  let total = tools.length()
+  assert_eq(
+    @ai-pricing-verifier.verified_count(tools) +
+    @ai-pricing-verifier.partial_count(tools) +
+    @ai-pricing-verifier.unverified_count(tools),
+    total,
+  )
+  // 三档都有记录：已核验、部分核验、未核验到都不是空档
+  assert_true(@ai-pricing-verifier.verified_count(tools) > 0)
+  assert_true(@ai-pricing-verifier.partial_count(tools) > 0)
+  assert_true(@ai-pricing-verifier.unverified_count(tools) > 0)
 }
 
 ///|
@@ -46,7 +66,6 @@ test "names by status" {
   assert_true(arr_contains(unverified, "讯飞星火"))
   assert_true(!arr_contains(unverified, "Cursor"))
   let partial = @ai-pricing-verifier.names_partial(tools)
-  assert_eq(partial.length(), 3)
   assert_true(arr_contains(partial, "Gemini / Google"))
 }
 
@@ -59,34 +78,36 @@ test "real data passes all validation rules" {
 }
 
 ///|
-test "report counts with denominators" {
+test "report counts are internally consistent" {
   // today = 2026-11-15（自 1970-01-01 起第 20772 天）
-  let r = @ai-pricing-verifier.build_report(
-    @ai-pricing-verifier.all_tools(),
-    20772,
+  let tools = @ai-pricing-verifier.all_tools()
+  let r = @ai-pricing-verifier.build_report(tools, 20772)
+  let total = tools.length()
+  assert_eq(r.total, total)
+  assert_eq(r.verified + r.partial + r.unverified, total)
+  assert_eq(r.has_price + r.no_price, total)
+  assert_eq(r.reachable_ok + r.reachable_blocked + r.reachable_limited, total)
+  assert_eq(
+    r.currency_usd + r.currency_jpy + r.currency_cny + r.currency_empty,
+    total,
   )
-  assert_eq(r.total, 20)
-  assert_eq(r.verified, 8)
-  assert_eq(r.partial, 3)
-  assert_eq(r.unverified, 9)
-  assert_eq(r.has_price, 11)
-  assert_eq(r.no_price, 9)
-  assert_eq(r.reachable_ok, 16)
-  assert_eq(r.reachable_blocked, 3)
-  assert_eq(r.reachable_limited, 1)
-  assert_eq(r.currency_usd, 7)
-  assert_eq(r.currency_jpy, 2)
-  assert_eq(r.currency_cny, 2)
-  assert_eq(r.currency_empty, 9)
-  assert_eq(r.billing_pay_as_you_go, 3)
-  assert_eq(r.billing_monthly, 5)
-  assert_eq(r.billing_monthly_yearly, 2)
-  assert_eq(r.billing_yearly, 1)
-  assert_eq(r.billing_empty, 9)
-  assert_eq(r.student_seen, 4)
-  assert_eq(r.student_unseen, 16)
+  assert_eq(
+    r.billing_pay_as_you_go +
+    r.billing_monthly +
+    r.billing_monthly_yearly +
+    r.billing_yearly +
+    r.billing_empty,
+    total,
+  )
+  assert_eq(r.student_seen + r.student_unseen, total)
+  // 2026-11-15 当天：11-08 与 11-15 两批都在 30 天内，无过期
   assert_eq(r.stale_count, 0)
   assert_eq(r.today, "2026-11-15")
+  // 变动轨迹：2026-11-15 第一次复核只复核了原始 20 条带价的 11 条
+  assert_eq(r.history_entries, 11)
+  assert_eq(r.rechecked_tools, 11)
+  assert_eq(r.price_up, 1)
+  assert_eq(r.unobserved, 4)
 }
 
 ///|
@@ -96,21 +117,31 @@ test "report lines carry denominators" {
     20772,
   )
   let lines = @ai-pricing-verifier.report_lines(r)
-  assert_eq(lines[0], "工具总数：20")
-  assert_eq(lines[1], "已核验（官网价已完整记录）：8/20")
-  assert_eq(lines[2], "部分核验：3/20")
-  assert_eq(lines[3], "未核验到付费价：9/20")
+  assert_eq(lines[0], "工具总数：\{r.total}")
+  assert_eq(
+    lines[1],
+    "已核验（官网价已完整记录）：\{r.verified}/\{r.total}",
+  )
+  assert_eq(lines[2], "部分核验：\{r.partial}/\{r.total}")
+  assert_eq(lines[3], "未核验到付费价：\{r.unverified}/\{r.total}")
+  assert_true(lines[lines.length() - 1].contains("变动轨迹"))
 }
 
 ///|
-test "evidence chain for verified tool" {
+test "evidence chain for verified tool has five steps" {
   match @ai-pricing-verifier.tool_by_name("Cursor") {
     Some(t) => {
       let lines = @ai-pricing-verifier.evidence_lines(t)
-      assert_true(lines[1].contains("https://cursor.com/pricing"))
-      assert_true(lines[3].contains("Plus $8/月"))
-      assert_true(lines[8].contains("2026-11-08"))
-      assert_true(lines[9].contains("已核验"))
+      assert_true(lines_contain(lines, "第 1 步"))
+      assert_true(lines_contain(lines, "https://cursor.com/pricing"))
+      assert_true(lines_contain(lines, "第 2 步"))
+      assert_true(lines_contain(lines, "APV-"))
+      assert_true(lines_contain(lines, "第 3 步"))
+      assert_true(lines_contain(lines, "Plus $8/月"))
+      assert_true(lines_contain(lines, "第 4 步"))
+      assert_true(lines_contain(lines, "2026-11-08"))
+      assert_true(lines_contain(lines, "已核验"))
+      assert_true(lines_contain(lines, "第 5 步"))
     }
     None => assert_true(false)
   }
@@ -121,10 +152,10 @@ test "evidence chain for unverified tool shows no price" {
   match @ai-pricing-verifier.tool_by_name("豆包") {
     Some(t) => {
       let lines = @ai-pricing-verifier.evidence_lines(t)
-      assert_true(lines[3].contains("未核验到"))
-      assert_true(lines[4].contains("无，付费价未核验到"))
-      assert_true(lines[7].contains("受限"))
-      assert_true(lines[9].contains("未核验到"))
+      assert_true(lines_contain(lines, "未核验到"))
+      assert_true(lines_contain(lines, "无，付费价未核验到"))
+      assert_true(lines_contain(lines, "受限"))
+      assert_true(lines_contain(lines, "第 2 步"))
     }
     None => assert_true(false)
   }
@@ -232,9 +263,8 @@ test "stale boundary is 30 days" {
 ///|
 test "tool names list" {
   let names = @ai-pricing-verifier.tool_names()
-  assert_eq(names.length(), 20)
+  assert_eq(names.length(), @ai-pricing-verifier.all_tools().length())
   assert_eq(names[0], "Qwen / 通义千问")
-  assert_eq(names[19], "Cursor")
 }
 
 ///|
@@ -244,12 +274,18 @@ test "billing category unknown" {
 
 ///|
 test "report stale count when all expired" {
-  // today = 2026-12-09，距 2026-11-08 已 31 天，20 条全过期
-  let r = @ai-pricing-verifier.build_report(
-    @ai-pricing-verifier.all_tools(),
-    20796,
-  )
-  assert_eq(r.stale_count, 20)
+  // today = 2026-12-09：2026-11-08 核验的已超 31 天，2026-11-15
+  // 核验的才 24 天——过期数 = 11-08 那批的条数，当场算出来
+  let tools = @ai-pricing-verifier.all_tools()
+  let mut expected = 0
+  for i in 0..<tools.length() {
+    if @ai-pricing-verifier.is_stale(tools[i].verified_at, 20796) {
+      expected = expected + 1
+    }
+  }
+  let r = @ai-pricing-verifier.build_report(tools, 20796)
+  assert_eq(r.stale_count, expected)
+  assert_true(expected > 0)
 }
 
 ///|

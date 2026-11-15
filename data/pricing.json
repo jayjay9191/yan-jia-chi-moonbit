@@ -13,7 +13,10 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "无独立消费版定价页（付费版原文：未显示消费版付费价；API页只写“联系销售”，无价格）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0001",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "DeepSeek",
@@ -24,9 +27,21 @@
       "billing": "按量，无月/年订阅",
       "student_discount": "未见",
       "reachable": "能打开",
-      "verified_at": "2026-11-08",
+      "verified_at": "2026-11-15",
       "note": "只有API定价，无订阅制",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0002",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "无变化",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：价格与 2026-11-08 记录一致（flash $0.003/$0.006、$0.15/$0.30，输出 $0.6/$1.2；v4-pro $0.022/$0.044、$0.66/$1.32、$1.98/$3.96；Search/Fetch $0.75/1000 次）。"
+        }
+      ]
     },
     {
       "name": "豆包",
@@ -39,7 +54,10 @@
       "reachable": "受限",
       "verified_at": "2026-11-08",
       "note": "地区限制，价格未核验到（付费版原文：未显示）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0003",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "Kimi / Moonshot AI",
@@ -52,7 +70,19 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "消费版无定价页，只有API定价",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0004",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "未看到价",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：首页仍无定价，platform.kimi.ai/docs/pricing 文本抓取无价目表；第三方指南引用的 Moonshot 官方价（kimi-k3.1-pro $2/$10 等）与 2026-11-08 记录一致，但非直接观测。"
+        }
+      ]
     },
     {
       "name": "ChatGPT / OpenAI",
@@ -65,7 +95,19 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "价格为本次页面实际显示的日元价，未换算",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0005",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "未看到价",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：定价页文本抓取不含价格数字（JS 渲染）；多家第三方日文文章引用官方页与 2026-11-08 记录一致（Go JP¥1,400、Plus JP¥3,000、Pro JP¥16,800 起），但非直接观测。"
+        }
+      ]
     },
     {
       "name": "Claude / Anthropic",
@@ -76,9 +118,21 @@
       "billing": "月/年均有",
       "student_discount": "定价页只见Campus项目链接，未明示折扣金额",
       "reachable": "能打开",
-      "verified_at": "2026-11-08",
+      "verified_at": "2026-11-15",
       "note": "—",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0006",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "无变化",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：Pro $17/月（按年）/$20/月（按月）、Max $100/月、Ultra $200/月，与 2026-11-08 记录一致。"
+        }
+      ]
     },
     {
       "name": "Gemini / Google",
@@ -91,7 +145,19 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "价格为本次页面实际显示的日元价",
-      "status": "partial"
+      "status": "partial",
+      "key": "APV-0007",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "未看到价",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：Google One 套餐页今日文本无任何价格（仅免费 15GB 显示 0 USD）。"
+        }
+      ]
     },
     {
       "name": "Grok / xAI",
@@ -102,9 +168,21 @@
       "billing": "按月",
       "student_discount": "未见",
       "reachable": "能打开",
-      "verified_at": "2026-11-08",
+      "verified_at": "2026-11-15",
       "note": "—",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0008",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "无变化",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：Plus $8/月、Premium $30/月、Super $100/月、Ultra $200/月、Team $30+/用户/月，与 2026-11-08 记录一致。"
+        }
+      ]
     },
     {
       "name": "文心一言 / 百度",
@@ -117,7 +195,10 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "价格只可能在登录/App后，未核验到（付费版原文：未显示价格，无定价页入口）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0009",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "讯飞星火",
@@ -130,20 +211,35 @@
       "reachable": "打不开",
       "verified_at": "2026-11-08",
       "note": "未核验到价格（付费版原文：未见）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0010",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "智谱清言 / GLM",
       "pricing_url": "https://docs.bigmodel.cn/cn/guide/start/pricing",
       "free_tier": "chatglm.cn未显示内容；API页未给免费额度",
-      "paid_price": "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥3.5、输出 ¥12.5；GLM-5.1-Flash 输入 ¥0.8、输出 ¥2.8",
+      "paid_price": "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8",
       "currency": "CNY",
       "billing": "按量",
       "student_discount": "未见",
       "reachable": "能打开",
-      "verified_at": "2026-11-08",
+      "verified_at": "2026-11-15",
       "note": "只有API定价，无消费订阅价",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0011",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "涨价",
+          "old_price": "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥3.5、输出 ¥12.5；GLM-5.1-Flash 输入 ¥0.8、输出 ¥2.8",
+          "new_price": "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8",
+          "note": "复核：GLM-5.1 输入 ¥3.5→¥6（<32K）/¥8（≥32K）、输出 ¥12.5→¥24/¥28；GLM-5.3 不变（输入 ¥8、缓存命中 ¥2、输出 ¥28）；GLM-5.1-Flash 在今日价目表已无此名，同价 ¥0.8/¥2.8 现为 GLM-5.3-Flash。"
+        }
+      ]
     },
     {
       "name": "腾讯元宝 / 混元",
@@ -156,7 +252,10 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "未核验到价格（付费版原文：未显示价格，无定价页入口）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0012",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "Copilot / Microsoft",
@@ -169,7 +268,19 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "本次只核验到商业版定价，未核验个人版",
-      "status": "partial"
+      "status": "partial",
+      "key": "APV-0013",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "无变化",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：含 Copilot 的 Business Premium $32/用户/月、Business Standard $23.50/用户/月与 2026-11-08 记录一致；附加价 $18/用户/月今日页未见。"
+        }
+      ]
     },
     {
       "name": "Perplexity",
@@ -182,7 +293,10 @@
       "reachable": "打不开",
       "verified_at": "2026-11-08",
       "note": "未核验到价格，不用旧价格代替（付费版原文：未见）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0014",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "Midjourney",
@@ -193,9 +307,21 @@
       "billing": "月/年",
       "student_discount": "未见",
       "reachable": "能打开",
-      "verified_at": "2026-11-08",
+      "verified_at": "2026-11-15",
       "note": "无免费档",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0015",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "无变化",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：Basic $10/$8、Standard $30/$24、Pro $60/$48、Mega $120/$96，与 2026-11-08 记录一致。"
+        }
+      ]
     },
     {
       "name": "夸克 AI",
@@ -208,7 +334,10 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "未核验到价格（付费版原文：未显示价格，无定价页入口）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0016",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "纳米 AI / 360",
@@ -221,7 +350,10 @@
       "reachable": "打不开",
       "verified_at": "2026-11-08",
       "note": "未核验到价格（付费版原文：未见）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0017",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "海螺 AI / MiniMax",
@@ -234,7 +366,19 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "除¥42起外，其他档位未核验到，不编造",
-      "status": "partial"
+      "status": "partial",
+      "key": "APV-0018",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "未看到价",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：首页今日未见定价，2026-11-08 的“低至 ¥42 每月”按钮未再出现。"
+        }
+      ]
     },
     {
       "name": "通义灵码",
@@ -247,7 +391,10 @@
       "reachable": "能打开",
       "verified_at": "2026-11-08",
       "note": "无付费定价（付费版原文：未显示付费价，无定价页）",
-      "status": "unverified"
+      "status": "unverified",
+      "key": "APV-0019",
+      "session": "20261108-LXM",
+      "history": []
     },
     {
       "name": "Cursor",
@@ -258,9 +405,21 @@
       "billing": "按月",
       "student_discount": "定价页未明示折扣金额，页脚有“学生”链接",
       "reachable": "能打开",
-      "verified_at": "2026-11-08",
+      "verified_at": "2026-11-15",
       "note": "该页同时出现Cursor Agent与Grok/X Premium功能描述，价格按页面实测记录",
-      "status": "verified"
+      "status": "verified",
+      "key": "APV-0020",
+      "session": "20261108-LXM",
+      "history": [
+        {
+          "date": "2026-11-15",
+          "session": "20261115-R1",
+          "change": "无变化",
+          "old_price": "",
+          "new_price": "",
+          "note": "复核：Plus $8/月、高级版 $30/月、Super $100/月、Ultra $200/月、Team $30+/用户/月，与 2026-11-08 记录一致（页面现为 Cursor+Grok 合并页）。"
+        }
+      ]
     }
   ]
 }

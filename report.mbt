@@ -27,6 +27,12 @@ pub(all) struct PricingReport {
   student_seen : Int32 // 学生优惠有说明的
   student_unseen : Int32 // 学生优惠写“未见”的
   stale_count : Int32 // 过期未复核的（距今超 30 天）
+  history_entries : Int32 // 变动/复核轨迹总条数
+  rechecked_tools : Int32 // 有复核轨迹的记录数
+  price_up : Int32 // 涨价条目数
+  price_down : Int32 // 降价条目数
+  delisted : Int32 // 下架条目数
+  unobserved : Int32 // 复核未看到价条目数
   today : String
 }
 
@@ -70,6 +76,12 @@ pub fn build_report(tools : Array[ToolPricing], today : Int32) -> PricingReport 
     student_seen,
     student_unseen: tools.length() - student_seen,
     stale_count: stale,
+    history_entries: history_entries_count(tools),
+    rechecked_tools: rechecked_tools_count(tools),
+    price_up: count_history_change(tools, "涨价"),
+    price_down: count_history_change(tools, "降价"),
+    delisted: count_history_change(tools, "下架"),
+    unobserved: count_history_change(tools, "未看到价"),
     today: days_to_date(today),
   }
 }
@@ -100,6 +112,9 @@ pub fn report_lines(r : PricingReport) -> Array[String] {
   )
   lines.push(
     "过期未复核（距今超 30 天）：\{r.stale_count}/\{r.total}；今天：\{r.today}",
+  )
+  lines.push(
+    "变动轨迹：\{r.history_entries} 条（复核过 \{r.rechecked_tools}/\{r.total} 条记录；涨价 \{r.price_up} 条、降价 \{r.price_down} 条、下架 \{r.delisted} 条、复核未看到价 \{r.unobserved} 条）",
   )
   lines
 }

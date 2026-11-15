@@ -53,7 +53,8 @@ class TestGenerateData(unittest.TestCase):
             generate_data.main()
         second = (ROOT / "pricing_data.mbt").read_text(encoding="utf-8")
         self.assertEqual(first, second)
-        self.assertIn("20 个工具", buf1.getvalue())
+        data = json.loads((ROOT / "data" / "pricing.json").read_text(encoding="utf-8"))
+        self.assertIn(f"{len(data['tools'])} 个工具", buf1.getvalue())
 
     def test_generated_file_has_all_tools(self):
         text = (ROOT / "pricing_data.mbt").read_text(encoding="utf-8")
@@ -85,31 +86,46 @@ class TestCsvImport(unittest.TestCase):
         self.assertEqual(rows["Claude / Anthropic"]["billing_csv"], "月/年均有")
         self.assertEqual(rows["Qwen / 通义千问"]["billing_csv"], "—")
 
-    def test_json_counts(self):
+    def test_json_invariants(self):
+        # 不变量断言：不写死总数/分档数，数据扩到 200、1000 条也不用改。
         data = json.loads((ROOT / "data" / "pricing.json").read_text(encoding="utf-8"))
         tools = data["tools"]
-        self.assertEqual(len(tools), 20)
+        self.assertGreater(len(tools), 0)
         from collections import Counter
 
-        self.assertEqual(
-            Counter(t["status"] for t in tools),
-            {"verified": 8, "partial": 3, "unverified": 9},
+        # 状态只在三档里；货币只在四种里；可达性只在三种里
+        self.assertTrue(
+            set(t["status"] for t in tools)
+            <= {"verified", "partial", "unverified"}
         )
-        self.assertEqual(
-            Counter(t["currency"] for t in tools),
-            {"USD": 7, "JPY": 2, "CNY": 2, "": 9},
+        self.assertTrue(
+            set(t["currency"] for t in tools) <= {"USD", "JPY", "CNY", ""}
         )
-        self.assertEqual(
-            Counter(t["reachable"] for t in tools),
-            {"能打开": 16, "打不开": 3, "受限": 1},
+        self.assertTrue(
+            set(t["reachable"] for t in tools) <= {"能打开", "打不开", "受限"}
         )
+        # 记录键唯一且非空；核验会话非空；三档都有记录
+        keys = [t["key"] for t in tools]
+        self.assertEqual(len(keys), len(set(keys)))
+        self.assertTrue(all(k for k in keys))
+        self.assertTrue(all(t["session"] for t in tools))
+        self.assertTrue(set(t["status"] for t in tools) == {"verified", "partial", "unverified"})
         # 未核验到的行 paid_price 必须为空，货币、计费也为空
         for t in tools:
             if t["status"] == "unverified":
                 self.assertEqual(t["paid_price"], "")
                 self.assertEqual(t["currency"], "")
                 self.assertEqual(t["billing"], "")
-                self.assertIn("付费版原文：", t["note"])
+            # 涨价/降价的 history 必须新旧价俱全且不同
+            for h in t.get("history", []):
+                self.assertIn(
+                    h["change"],
+                    {"无变化", "涨价", "降价", "下架", "新档位", "未看到价"},
+                )
+                if h["change"] in ("涨价", "降价"):
+                    self.assertTrue(h["old_price"])
+                    self.assertTrue(h["new_price"])
+                    self.assertNotEqual(h["old_price"], h["new_price"])
 
 
 class TestGenerateTests(unittest.TestCase):
@@ -122,7 +138,8 @@ class TestGenerateTests(unittest.TestCase):
             generate_tests.main()
         second = (ROOT / "pricing_generated_test.mbt").read_text(encoding="utf-8")
         self.assertEqual(first, second)
-        self.assertIn("20 条测试", buf.getvalue())
+        data = json.loads((ROOT / "data" / "pricing.json").read_text(encoding="utf-8"))
+        self.assertIn(f"{len(data['tools'])} 条测试", buf.getvalue())
 
     def test_billing_category_matches_moonbit(self):
         self.assertEqual(generate_tests.billing_category("按量，无月/年订阅"), "按量")

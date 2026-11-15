@@ -1,16 +1,23 @@
 ///|
 /// 由 scripts/generate_data.py 从 data/pricing.json 生成，不要手改。
 /// 改数据只改 JSON，改完跑：python3 scripts/generate_data.py
-/// 数据来源：Lexmount 云平台真实任务挑战第二份作品提交材料 pricing.csv，
-/// 2026-11-08 Lexmount Cloud Browser 实际打开各官网逐页核验。
-/// 注意：9 条“未核验到”是诚实的空白——没有价格就不写价格，绝不编造；
-/// 3 条“部分核验”（Gemini 只在 Google One 页看到价、Copilot 只核验到
-/// 商业版、海螺只见到起步价）不要写成已核验，也不要丢掉已核验到的价。
+/// 数据来源：两批实测——
+/// ① 2026-11-08 Lexmount 云平台真实任务挑战第二份作品提交材料 pricing.csv，
+///    Lexmount Cloud Browser 实际打开各官网逐页核验（原始 20 条，会话 20261108-LXM）；
+/// ② 2026-11-15 扩量批次（会话 20261115-A～F），逐个打开官方定价页核验。
+/// 注意：“未核验到”是诚实的空白——没有价格就不写价格，绝不编造；
+/// “部分核验”不要写成已核验，也不要丢掉已核验到的价。
+/// 每条记录有唯一记录键 key（APV-0001 起按 JSON 顺序分配，追加不重排）
+/// 与核验会话 session；history 只记真实发生过的复核事件。
+/// 2026-11-15 第一次复核（会话 20261115-R1）：复核原始 20 条中带价的
+/// 11 条，6 条直接确认无变动，1 条涨价（智谱 GLM-5.1），4 条未看到价。
 
 ///|
 pub fn all_tools() -> Array[ToolPricing] {
   [
     {
+      key: "APV-0001",
+      session: "20261108-LXM",
       name: "Qwen / 通义千问",
       pricing_url: "https://qwen.ai/home",
       free_tier: "免费使用，对所有人开放，未标具体额度",
@@ -22,8 +29,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "无独立消费版定价页（付费版原文：未显示消费版付费价；API页只写“联系销售”，无价格）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0002",
+      session: "20261108-LXM",
       name: "DeepSeek",
       pricing_url: "https://api-docs.deepseek.com/quick_start/pricing",
       free_tier: "API定价页未给消费版免费额度",
@@ -32,11 +42,16 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "按量，无月/年订阅",
       student_discount: "未见",
       reachable: "能打开",
-      verified_at: "2026-11-08",
+      verified_at: "2026-11-15",
       note: "只有API定价，无订阅制",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：价格与 2026-11-08 记录一致（flash $0.003/$0.006、$0.15/$0.30，输出 $0.6/$1.2；v4-pro $0.022/$0.044、$0.66/$1.32、$1.98/$3.96；Search/Fetch $0.75/1000 次）。" },
+      ],
     },
     {
+      key: "APV-0003",
+      session: "20261108-LXM",
       name: "豆包",
       pricing_url: "https://www.doubao.com/chat/",
       free_tier: "页面未标额度/付费价",
@@ -48,8 +63,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "地区限制，价格未核验到（付费版原文：未显示）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0004",
+      session: "20261108-LXM",
       name: "Kimi / Moonshot AI",
       pricing_url: "https://www.kimi.com/",
       free_tier: "消费版首页未标额度/价格",
@@ -61,8 +79,13 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "消费版无定价页，只有API定价",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "未看到价", old_price: "", new_price: "", note: "复核：首页仍无定价，platform.kimi.ai/docs/pricing 文本抓取无价目表；第三方指南引用的 Moonshot 官方价（kimi-k3.1-pro $2/$10 等）与 2026-11-08 记录一致，但非直接观测。" },
+      ],
     },
     {
+      key: "APV-0005",
+      session: "20261108-LXM",
       name: "ChatGPT / OpenAI",
       pricing_url: "https://chatgpt.com/zh-Hans-CN/pricing/",
       free_tier: "Free JP¥0/月，可用旗舰模型、图片/语音",
@@ -74,8 +97,13 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "价格为本次页面实际显示的日元价，未换算",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "未看到价", old_price: "", new_price: "", note: "复核：定价页文本抓取不含价格数字（JS 渲染）；多家第三方日文文章引用官方页与 2026-11-08 记录一致（Go JP¥1,400、Plus JP¥3,000、Pro JP¥16,800 起），但非直接观测。" },
+      ],
     },
     {
+      key: "APV-0006",
+      session: "20261108-LXM",
       name: "Claude / Anthropic",
       pricing_url: "https://claude.com/pricing",
       free_tier: "Free $0，Claude Sonnet 5 高峰5小时/周，其余模型其余时段，基础版",
@@ -84,11 +112,16 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "月/年均有",
       student_discount: "定价页只见Campus项目链接，未明示折扣金额",
       reachable: "能打开",
-      verified_at: "2026-11-08",
+      verified_at: "2026-11-15",
       note: "—",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：Pro $17/月（按年）/$20/月（按月）、Max $100/月、Ultra $200/月，与 2026-11-08 记录一致。" },
+      ],
     },
     {
+      key: "APV-0007",
+      session: "20261108-LXM",
       name: "Gemini / Google",
       pricing_url: "https://one.google.com/about/plans",
       free_tier: "未标免费版具体次数（AI Plus为“未订阅限额2倍”，Pro为4倍）",
@@ -100,8 +133,13 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "价格为本次页面实际显示的日元价",
       status: PriceStatus::VerifiedPartial,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "未看到价", old_price: "", new_price: "", note: "复核：Google One 套餐页今日文本无任何价格（仅免费 15GB 显示 0 USD）。" },
+      ],
     },
     {
+      key: "APV-0008",
+      session: "20261108-LXM",
       name: "Grok / xAI",
       pricing_url: "https://x.ai/pricing",
       free_tier: "Free $0，有限次数/速率限制",
@@ -110,11 +148,16 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "按月",
       student_discount: "未见",
       reachable: "能打开",
-      verified_at: "2026-11-08",
+      verified_at: "2026-11-15",
       note: "—",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：Plus $8/月、Premium $30/月、Super $100/月、Ultra $200/月、Team $30+/用户/月，与 2026-11-08 记录一致。" },
+      ],
     },
     {
+      key: "APV-0009",
+      session: "20261108-LXM",
       name: "文心一言 / 百度",
       pricing_url: "https://yiyan.baidu.com/",
       free_tier: "需登录，未标免费额度",
@@ -126,8 +169,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "价格只可能在登录/App后，未核验到（付费版原文：未显示价格，无定价页入口）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0010",
+      session: "20261108-LXM",
       name: "讯飞星火",
       pricing_url: "https://xinghuo.xfyun.cn/",
       free_tier: "未见",
@@ -139,21 +185,29 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "未核验到价格（付费版原文：未见）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0011",
+      session: "20261108-LXM",
       name: "智谱清言 / GLM",
       pricing_url: "https://docs.bigmodel.cn/cn/guide/start/pricing",
       free_tier: "chatglm.cn未显示内容；API页未给免费额度",
-      paid_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥3.5、输出 ¥12.5；GLM-5.1-Flash 输入 ¥0.8、输出 ¥2.8",
+      paid_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8",
       currency: "CNY",
       billing: "按量",
       student_discount: "未见",
       reachable: "能打开",
-      verified_at: "2026-11-08",
+      verified_at: "2026-11-15",
       note: "只有API定价，无消费订阅价",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "涨价", old_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥3.5、输出 ¥12.5；GLM-5.1-Flash 输入 ¥0.8、输出 ¥2.8", new_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8", note: "复核：GLM-5.1 输入 ¥3.5→¥6（<32K）/¥8（≥32K）、输出 ¥12.5→¥24/¥28；GLM-5.3 不变（输入 ¥8、缓存命中 ¥2、输出 ¥28）；GLM-5.1-Flash 在今日价目表已无此名，同价 ¥0.8/¥2.8 现为 GLM-5.3-Flash。" },
+      ],
     },
     {
+      key: "APV-0012",
+      session: "20261108-LXM",
       name: "腾讯元宝 / 混元",
       pricing_url: "https://yuanbao.tencent.com/",
       free_tier: "未标额度",
@@ -165,8 +219,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "未核验到价格（付费版原文：未显示价格，无定价页入口）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0013",
+      session: "20261108-LXM",
       name: "Copilot / Microsoft",
       pricing_url: "https://www.microsoft.com/en-us/copilot/pricing/business",
       free_tier: "可免费试用Copilot Chat，未标具体次数",
@@ -178,8 +235,13 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "本次只核验到商业版定价，未核验个人版",
       status: PriceStatus::VerifiedPartial,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：含 Copilot 的 Business Premium $32/用户/月、Business Standard $23.50/用户/月与 2026-11-08 记录一致；附加价 $18/用户/月今日页未见。" },
+      ],
     },
     {
+      key: "APV-0014",
+      session: "20261108-LXM",
       name: "Perplexity",
       pricing_url: "https://www.perplexity.ai/pricing",
       free_tier: "未见",
@@ -191,8 +253,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "未核验到价格，不用旧价格代替（付费版原文：未见）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0015",
+      session: "20261108-LXM",
       name: "Midjourney",
       pricing_url: "https://www.midjourney.com/pricing",
       free_tier: "定价页未列免费版",
@@ -201,11 +266,16 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "月/年",
       student_discount: "未见",
       reachable: "能打开",
-      verified_at: "2026-11-08",
+      verified_at: "2026-11-15",
       note: "无免费档",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：Basic $10/$8、Standard $30/$24、Pro $60/$48、Mega $120/$96，与 2026-11-08 记录一致。" },
+      ],
     },
     {
+      key: "APV-0016",
+      session: "20261108-LXM",
       name: "夸克 AI",
       pricing_url: "https://www.quark.cn/",
       free_tier: "未标额度",
@@ -217,8 +287,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "未核验到价格（付费版原文：未显示价格，无定价页入口）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0017",
+      session: "20261108-LXM",
       name: "纳米 AI / 360",
       pricing_url: "https://www.n.cn/",
       free_tier: "未见",
@@ -230,8 +303,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "未核验到价格（付费版原文：未见）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0018",
+      session: "20261108-LXM",
       name: "海螺 AI / MiniMax",
       pricing_url: "https://hailuoai.com/",
       free_tier: "新用户免费积分弹窗：本次弹出“80点积分”",
@@ -243,8 +319,13 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "除¥42起外，其他档位未核验到，不编造",
       status: PriceStatus::VerifiedPartial,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "未看到价", old_price: "", new_price: "", note: "复核：首页今日未见定价，2026-11-08 的“低至 ¥42 每月”按钮未再出现。" },
+      ],
     },
     {
+      key: "APV-0019",
+      session: "20261108-LXM",
       name: "通义灵码",
       pricing_url: "https://lingma.aliyun.com/",
       free_tier: "个人免费使用、企业版免费开放，未标额度",
@@ -256,8 +337,11 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-08",
       note: "无付费定价（付费版原文：未显示付费价，无定价页）",
       status: PriceStatus::Unverified,
+      history: [],
     },
     {
+      key: "APV-0020",
+      session: "20261108-LXM",
       name: "Cursor",
       pricing_url: "https://cursor.com/pricing",
       free_tier: "Free $0，有限AI使用量",
@@ -266,9 +350,12 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "按月",
       student_discount: "定价页未明示折扣金额，页脚有“学生”链接",
       reachable: "能打开",
-      verified_at: "2026-11-08",
+      verified_at: "2026-11-15",
       note: "该页同时出现Cursor Agent与Grok/X Premium功能描述，价格按页面实测记录",
       status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：Plus $8/月、高级版 $30/月、Super $100/月、Ultra $200/月、Team $30+/用户/月，与 2026-11-08 记录一致（页面现为 Cursor+Grok 合并页）。" },
+      ],
     },
   ]
 }

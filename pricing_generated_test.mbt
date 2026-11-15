@@ -1,6 +1,6 @@
 ///|
 /// 由 scripts/generate_tests.py 从 data/pricing.json 生成，不要手改。
-/// 每个工具一条测试：状态、货币、可达性、计费周期归类。
+/// 每个工具一条测试：状态、货币、可达性、计费周期归类、记录键、核验会话。
 /// 黑盒测试：只用公开 API（status_text 读状态，不构造枚举值）。
 
 ///|
@@ -12,6 +12,8 @@ test "generated: Qwen / 通义千问 status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0001")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -25,7 +27,9 @@ test "generated: DeepSeek status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0002")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -40,6 +44,8 @@ test "generated: 豆包 status" {
       assert_eq(t.reachable, "受限")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0003")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -54,6 +60,8 @@ test "generated: Kimi / Moonshot AI status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0004")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -68,6 +76,8 @@ test "generated: ChatGPT / OpenAI status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0005")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -81,7 +91,9 @@ test "generated: Claude / Anthropic status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0006")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -96,6 +108,8 @@ test "generated: Gemini / Google status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0007")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -109,7 +123,9 @@ test "generated: Grok / xAI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0008")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -124,6 +140,8 @@ test "generated: 文心一言 / 百度 status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0009")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -138,6 +156,8 @@ test "generated: 讯飞星火 status" {
       assert_eq(t.reachable, "打不开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0010")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -151,7 +171,9 @@ test "generated: 智谱清言 / GLM status" {
       assert_eq(t.currency, "CNY")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0011")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -166,6 +188,8 @@ test "generated: 腾讯元宝 / 混元 status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0012")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -180,6 +204,8 @@ test "generated: Copilot / Microsoft status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0013")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -194,6 +220,8 @@ test "generated: Perplexity status" {
       assert_eq(t.reachable, "打不开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0014")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -207,7 +235,9 @@ test "generated: Midjourney status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0015")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -222,6 +252,8 @@ test "generated: 夸克 AI status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0016")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -236,6 +268,8 @@ test "generated: 纳米 AI / 360 status" {
       assert_eq(t.reachable, "打不开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0017")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -250,6 +284,8 @@ test "generated: 海螺 AI / MiniMax status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0018")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -264,6 +300,8 @@ test "generated: 通义灵码 status" {
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
       assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.key, "APV-0019")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }
@@ -277,7 +315,9 @@ test "generated: Cursor status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0020")
+      assert_eq(t.session, "20261108-LXM")
     }
     None => assert_true(false)
   }

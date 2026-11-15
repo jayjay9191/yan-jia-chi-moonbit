@@ -20,7 +20,7 @@ OUT_PATH = ROOT / "pricing_generated_test.mbt"
 
 HEADER = """///|
 /// 由 scripts/generate_tests.py 从 data/pricing.json 生成，不要手改。
-/// 每个工具一条测试：状态、货币、可达性、计费周期归类。
+/// 每个工具一条测试：状态、货币、可达性、计费周期归类、记录键、核验会话。
 /// 黑盒测试：只用公开 API（status_text 读状态，不构造枚举值）。
 """
 
@@ -92,6 +92,12 @@ def main() -> int:
         )
         parts.append(
             "      assert_eq(t.verified_at, " + mbt_str(t["verified_at"]) + ")"
+        )
+        parts.append(
+            "      assert_eq(t.key, " + mbt_str(t["key"]) + ")"
+        )
+        parts.append(
+            "      assert_eq(t.session, " + mbt_str(t["session"]) + ")"
         )
         parts.append("    }")
         parts.append("    None => assert_true(false)")

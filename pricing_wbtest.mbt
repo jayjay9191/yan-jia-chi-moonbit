@@ -7,6 +7,8 @@
 /// 一个全部合法的合成记录，其他测试只改其中一个字段。
 fn valid_tool() -> ToolPricing {
   {
+    key: "APV-0001",
+    session: "20261115-T",
     name: "测试工具",
     pricing_url: "https://example.com/pricing",
     free_tier: "Free $0",
@@ -18,6 +20,7 @@ fn valid_tool() -> ToolPricing {
     verified_at: "2026-11-08",
     note: "测试",
     status: PriceStatus::Verified,
+    history: [],
   }
 }
 
@@ -35,6 +38,8 @@ fn tool_with(
   name : String,
 ) -> ToolPricing {
   {
+    key: "APV-0001",
+    session: "20261115-T",
     name,
     pricing_url: url,
     free_tier,
@@ -46,6 +51,7 @@ fn tool_with(
     verified_at,
     note: "测试",
     status,
+    history: [],
   }
 }
 
@@ -65,6 +71,9 @@ fn with_name(t : ToolPricing, name : String) -> ToolPricing {
     verified_at: t.verified_at,
     note: t.note,
     status: t.status,
+    key: t.key,
+    session: t.session,
+    history: t.history,
   }
 }
 
@@ -82,6 +91,9 @@ fn with_url(t : ToolPricing, url : String) -> ToolPricing {
     verified_at: t.verified_at,
     note: t.note,
     status: t.status,
+    key: t.key,
+    session: t.session,
+    history: t.history,
   }
 }
 
@@ -99,6 +111,9 @@ fn with_verified_at(t : ToolPricing, v : String) -> ToolPricing {
     verified_at: v,
     note: t.note,
     status: t.status,
+    key: t.key,
+    session: t.session,
+    history: t.history,
   }
 }
 
@@ -116,6 +131,9 @@ fn with_reachable(t : ToolPricing, r : String) -> ToolPricing {
     verified_at: t.verified_at,
     note: t.note,
     status: t.status,
+    key: t.key,
+    session: t.session,
+    history: t.history,
   }
 }
 
@@ -133,6 +151,9 @@ fn with_student(t : ToolPricing, s : String) -> ToolPricing {
     verified_at: t.verified_at,
     note: t.note,
     status: t.status,
+    key: t.key,
+    session: t.session,
+    history: t.history,
   }
 }
 
@@ -150,6 +171,9 @@ fn with_free_tier(t : ToolPricing, f : String) -> ToolPricing {
     verified_at: t.verified_at,
     note: t.note,
     status: t.status,
+    key: t.key,
+    session: t.session,
+    history: t.history,
   }
 }
 
@@ -160,7 +184,8 @@ test "valid synthetic record passes" {
 
 ///|
 test "duplicate name is an issue" {
-  let issues = validate_tools([valid_tool(), valid_tool()])
+  // 两条同名记录，key 不同——只应报重名 1 个问题，不报 key 重复
+  let issues = validate_tools([valid_tool(), with_key(valid_tool(), "APV-0002")])
   assert_eq(issues.length(), 1)
   assert_true(issues[0].contains("重复"))
 }
@@ -487,4 +512,206 @@ test "digit value covers all arms" {
   assert_eq(digit_value('3'), 3)
   assert_eq(digit_value('x'), -1)
   assert_eq(date_to_days("2023-03-03"), 19419)
+}
+
+///|
+/// 只改 key / session / history，其他字段保持合法。
+fn with_key(t : ToolPricing, k : String) -> ToolPricing {
+  {
+    key: k,
+    session: t.session,
+    name: t.name,
+    pricing_url: t.pricing_url,
+    free_tier: t.free_tier,
+    paid_price: t.paid_price,
+    currency: t.currency,
+    billing: t.billing,
+    student_discount: t.student_discount,
+    reachable: t.reachable,
+    verified_at: t.verified_at,
+    note: t.note,
+    status: t.status,
+    history: t.history,
+  }
+}
+
+///|
+fn with_session(t : ToolPricing, s : String) -> ToolPricing {
+  {
+    key: t.key,
+    session: s,
+    name: t.name,
+    pricing_url: t.pricing_url,
+    free_tier: t.free_tier,
+    paid_price: t.paid_price,
+    currency: t.currency,
+    billing: t.billing,
+    student_discount: t.student_discount,
+    reachable: t.reachable,
+    verified_at: t.verified_at,
+    note: t.note,
+    status: t.status,
+    history: t.history,
+  }
+}
+
+///|
+fn with_history(t : ToolPricing, h : Array[HistoryEntry]) -> ToolPricing {
+  {
+    key: t.key,
+    session: t.session,
+    name: t.name,
+    pricing_url: t.pricing_url,
+    free_tier: t.free_tier,
+    paid_price: t.paid_price,
+    currency: t.currency,
+    billing: t.billing,
+    student_discount: t.student_discount,
+    reachable: t.reachable,
+    verified_at: t.verified_at,
+    note: t.note,
+    status: t.status,
+    history: h,
+  }
+}
+
+///|
+fn recheck_entry() -> HistoryEntry {
+  {
+    date: "2026-11-15",
+    session: "20261115-R1",
+    change: "无变化",
+    old_price: "",
+    new_price: "",
+    note: "复核：价格无变化",
+  }
+}
+
+///|
+fn price_up_entry() -> HistoryEntry {
+  {
+    date: "2026-11-15",
+    session: "20261115-R1",
+    change: "涨价",
+    old_price: "输入 ¥3.5、输出 ¥12.5",
+    new_price: "输入 ¥6、输出 ¥24",
+    note: "复核：GLM-5.1 涨价",
+  }
+}
+
+///|
+test "empty key is an issue" {
+  let t = with_key(valid_tool(), "")
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+}
+
+///|
+test "duplicate key is an issue" {
+  let a = valid_tool()
+  let b = with_name(valid_tool(), "另一工具")
+  let issues = validate_tools([a, b])
+  assert_eq(issues.length(), 1)
+}
+
+///|
+test "empty session is an issue" {
+  let t = with_session(valid_tool(), "")
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+}
+
+///|
+test "valid history entries pass" {
+  let t = with_history(valid_tool(), [recheck_entry(), price_up_entry()])
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 0)
+}
+
+///|
+test "history with bad date is an issue" {
+  let h : HistoryEntry = {
+    date: "2026-13-01",
+    session: "20261115-R1",
+    change: "无变化",
+    old_price: "",
+    new_price: "",
+    note: "测试",
+  }
+  let t = with_history(valid_tool(), [h])
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+}
+
+///|
+test "history with bad change is an issue" {
+  let h : HistoryEntry = {
+    date: "2026-11-15",
+    session: "20261115-R1",
+    change: "随便改",
+    old_price: "",
+    new_price: "",
+    note: "测试",
+  }
+  let t = with_history(valid_tool(), [h])
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+}
+
+///|
+test "history price up without prices is an issue" {
+  let h : HistoryEntry = {
+    date: "2026-11-15",
+    session: "20261115-R1",
+    change: "涨价",
+    old_price: "",
+    new_price: "",
+    note: "测试",
+  }
+  let t = with_history(valid_tool(), [h])
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+}
+
+///|
+test "history price up with same price is an issue" {
+  let h : HistoryEntry = {
+    date: "2026-11-15",
+    session: "20261115-R1",
+    change: "涨价",
+    old_price: "输入 ¥3.5、输出 ¥12.5",
+    new_price: "输入 ¥3.5、输出 ¥12.5",
+    note: "测试",
+  }
+  let t = with_history(valid_tool(), [h])
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+}
+
+///|
+test "history change counts" {
+  let tools = [
+    with_history(valid_tool(), [recheck_entry()]),
+    with_history(
+      with_name(with_key(valid_tool(), "APV-0002"), "另一工具"),
+      [price_up_entry()],
+    ),
+  ]
+  assert_eq(history_entries_count(tools), 2)
+  assert_eq(rechecked_tools_count(tools), 2)
+  assert_eq(count_history_change(tools, "涨价"), 1)
+  assert_eq(count_history_change(tools, "无变化"), 1)
+  assert_eq(count_history_change(tools, "降价"), 0)
+}
+
+///|
+test "is valid change covers six kinds" {
+  assert_true(is_valid_change("无变化"))
+  assert_true(is_valid_change("涨价"))
+  assert_true(is_valid_change("降价"))
+  assert_true(is_valid_change("下架"))
+  assert_true(is_valid_change("新档位"))
+  assert_true(is_valid_change("未看到价"))
+  assert_true(!is_valid_change("随便改"))
+  assert_true(!is_valid_change(""))
 }

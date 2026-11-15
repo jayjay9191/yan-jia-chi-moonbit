@@ -1,7 +1,7 @@
 ///|
 /// 数据校验：检查定价记录本身是否自洽，返回问题列表（空列表表示通过）。
 /// 校验规则（学 J085 的验证方法论：每条规则都要能当场验出 0 错或报错，
-/// 不靠“看着对”）：
+/// 不靠“看着对”）。共 13 条条目；第 3 条双向，合计 14 项检查：
 /// 1. 每个工具必须有名字；名字不重复
 /// 2. 定价页 URL 必须以 https:// 开头（本批 20 条全是 https）
 /// 3. 价格缺失时必须明确标未核验：paid_price 为空 ⟺ status 为未核验到
@@ -15,14 +15,50 @@
 /// 8. reachable 只能是“能打开”/“打不开”/“受限”
 /// 9. 页面打不开或受限 → 不能标已核验/部分核验（看不到页面就没法核验价格）
 /// 10. 免费版、学生优惠字段非空（"未见"也是明确表态，不能空着）
+/// 11. 记录键 key 非空且不重复（证据链第 2 步的锚点，丢了就没法追溯）
+/// 12. 核验会话 session 非空（哪一批次、哪天核验的）
+/// 13. history 条目合法：日期格式正确；变动类型在 6 种以内
+///     （无变化/涨价/降价/下架/新档位/未看到价）；会话非空；
+///     涨价/降价必须新旧价俱全且不同（空着或相同都是假轨迹）
 
 ///|
 pub fn validate_tools(tools : Array[ToolPricing]) -> Array[String] {
   let issues : Array[String] = []
   let seen_names : Array[String] = []
+  let seen_keys : Array[String] = []
   for i in 0..<tools.length() {
     let t = tools[i]
     let tag = "《" + t.name + "》"
+    if t.key == "" {
+      issues.push(tag + "记录键 key 为空")
+    } else if contains_string(seen_keys, t.key) {
+      issues.push("记录键 key 重复：" + t.key)
+    } else {
+      seen_keys.push(t.key)
+    }
+    if t.session == "" {
+      issues.push(tag + "核验会话 session 为空")
+    }
+    for j in 0..<t.history.length() {
+      let h = t.history[j]
+      let htag = tag + "第 \{j + 1} 条变动轨迹"
+      if !is_valid_date(h.date) {
+        issues.push(htag + "日期格式不对：" + h.date)
+      }
+      if !is_valid_change(h.change) {
+        issues.push(htag + "变动类型不在 6 种以内：" + h.change)
+      }
+      if h.session == "" {
+        issues.push(htag + "会话为空")
+      }
+      if h.change == "涨价" || h.change == "降价" {
+        if h.old_price == "" || h.new_price == "" {
+          issues.push(htag + "涨价/降价必须新旧价俱全")
+        } else if h.old_price == h.new_price {
+          issues.push(htag + "涨价/降价新旧价相同：假轨迹")
+        }
+      }
+    }
     if t.name == "" {
       issues.push("第 \{i + 1} 个工具没有名字")
     } else if contains_string(seen_names, t.name) {

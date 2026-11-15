@@ -1,6 +1,6 @@
 ///|
 /// AI 工具定价记录的结构定义与按名查找。
-/// 数据不在这里：20 个工具的真实数据在 data/pricing.json，
+/// 数据不在这里：工具的真实数据在 data/pricing.json，
 /// 由 scripts/generate_data.py 生成 pricing_data.mbt。
 /// 改数据只改 JSON，改完跑：python3 scripts/generate_data.py
 
@@ -20,6 +20,32 @@ pub enum PriceStatus {
 }
 
 ///|
+/// 变动类型。只允许这 6 种；"未看到价"是复核事件，不是变动，
+/// 但它必须留痕——否则没人知道这条记录被复核过、结果是没看到。
+pub fn is_valid_change(change : String) -> Bool {
+  change == "无变化" ||
+  change == "涨价" ||
+  change == "降价" ||
+  change == "下架" ||
+  change == "新档位" ||
+  change == "未看到价"
+}
+
+///|
+/// 一条变动/复核轨迹。history 只记录真实发生过的事：
+/// 复核时价格没变 → 记 "无变化"；价格变了 → 记涨价/降价并写新旧价；
+/// 复核时没看到价 → 记 "未看到价"，原价不动。
+/// 没有第二次实测，就没有变动记录——绝不凭空编一条。
+pub(all) struct HistoryEntry {
+  date : String // 复核日期 "YYYY-MM-DD"
+  session : String // 复核会话，如 "20261115-R1"（R = recheck）
+  change : String // "无变化" | "涨价" | "降价" | "下架" | "新档位" | "未看到价"
+  old_price : String // 变动前的付费价原文；无变化/未看到价时为空
+  new_price : String // 变动后的付费价原文；无变化/未看到价时为空
+  note : String
+}
+
+///|
 /// 枚举判等（不用 #derive(Eq)：它会把 equal/not_equal 提升为方法，
 /// 触发废弃警告；三档 match 就够了）。
 pub fn status_eq(a : PriceStatus, b : PriceStatus) -> Bool {
@@ -33,6 +59,8 @@ pub fn status_eq(a : PriceStatus, b : PriceStatus) -> Bool {
 
 ///|
 pub(all) struct ToolPricing {
+  key : String // 唯一记录键，如 "APV-0001"，按 JSON 顺序分配，追加不重排
+  session : String // 首次核验会话，如 "20261108-LXM"（Lexmount 原始批）、"20261115-A"（扩量 A 批）
   name : String
   pricing_url : String
   free_tier : String
@@ -41,9 +69,10 @@ pub(all) struct ToolPricing {
   billing : String // 计费周期原文；未核验到的行必须为空字符串
   student_discount : String // 学生/教育优惠；"未见"也是明确表态，不能空着
   reachable : String // "能打开" | "打不开" | "受限"
-  verified_at : String // 最后核验日期 "YYYY-MM-DD"，本批全是 2026-11-08
+  verified_at : String // 最后核验日期 "YYYY-MM-DD"（复核确认无变动后会更新到复核日）
   note : String
   status : PriceStatus
+  history : Array[HistoryEntry] // 变动/复核轨迹；没有第二次实测就没有记录
 }
 
 ///|
@@ -190,35 +219,109 @@ pub fn count_billing_category(
 }
 
 ///|
-/// 单条证据链：来源 URL → 记录 → 核验时间 → 状态。
-/// 学 J006 的 5 步证据链（来源 URL → 原始记录 → 键 → 复核 → 实时页面），
-/// 这里是 MoonBit 版的 4 步：定价页 URL → 免费版/付费价/货币/计费 →
-/// 学生优惠/可达性 → 核验时间 + 状态。未核验到的行不打印价格，
-/// 只打印“未核验到（无价格记录）”。
+/// 变动轨迹统计（学 J006 的生命周期追踪：197 停招 + 130 重开）。
+/// history 里每一条都是真实发生过的复核事件。
+
+///|
+/// 全部 history 条目数。
+pub fn history_entries_count(tools : Array[ToolPricing]) -> Int32 {
+  let mut n = 0
+  for i in 0..<tools.length() {
+    n = n + tools[i].history.length()
+  }
+  n
+}
+
+///|
+/// 有复核轨迹的记录数（history 非空的工具）。
+pub fn rechecked_tools_count(tools : Array[ToolPricing]) -> Int32 {
+  let mut n = 0
+  for i in 0..<tools.length() {
+    if tools[i].history.length() > 0 {
+      n = n + 1
+    }
+  }
+  n
+}
+
+///|
+/// 某种变动类型的条目数，如 "涨价"、"降价"、"下架"、"未看到价"。
+pub fn count_history_change(
+  tools : Array[ToolPricing],
+  change : String,
+) -> Int32 {
+  let mut n = 0
+  for i in 0..<tools.length() {
+    for j in 0..<tools[i].history.length() {
+      if tools[i].history[j].change == change {
+        n = n + 1
+      }
+    }
+  }
+  n
+}
+
+///|
+/// 单条证据链：5 步可追溯（学 J006 的 5 步证据链：
+/// 来源 URL → 原始记录 → 记录键 → 复核 → 实时页面）。
+/// 第 1 步 来源 URL：第 2 步 记录键：第 3 步 原始记录（免费版/付费价/
+/// 货币/计费/学生优惠/可达性）：第 4 步 复核（最后核验日期 + 首次核验
+/// 会话，再列全部 history 条目）：第 5 步 实时页面（按 pricing_url 可重走一遍）。
+/// 未核验到的行不打印价格，只打印“未核验到（无价格记录）”。
 pub fn evidence_lines(t : ToolPricing) -> Array[String] {
   let lines : Array[String] = []
   lines.push("工具：" + t.name)
-  lines.push("定价页：" + t.pricing_url)
-  lines.push("免费版：" + t.free_tier)
+  lines.push("第 1 步 · 来源 URL：" + t.pricing_url)
+  lines.push("第 2 步 · 记录键：" + t.key)
+  lines.push("第 3 步 · 原始记录：")
+  lines.push("  免费版：" + t.free_tier)
   if t.paid_price == "" {
-    lines.push("付费价：未核验到（无价格记录）")
+    lines.push("  付费价：未核验到（无价格记录）")
   } else {
-    lines.push("付费价：" + t.paid_price)
+    lines.push("  付费价：" + t.paid_price)
   }
   if t.currency == "" {
-    lines.push("货币：（无，付费价未核验到）")
+    lines.push("  货币：（无，付费价未核验到）")
   } else {
-    lines.push("货币：" + t.currency)
+    lines.push("  货币：" + t.currency)
   }
   if t.billing == "" {
-    lines.push("计费周期：（无，付费价未核验到）")
+    lines.push("  计费周期：（无，付费价未核验到）")
   } else {
-    lines.push("计费周期：" + t.billing)
+    lines.push("  计费周期：" + t.billing)
   }
-  lines.push("学生/教育优惠：" + t.student_discount)
-  lines.push("页面可达：" + t.reachable)
-  lines.push("核验时间：" + t.verified_at)
-  lines.push("状态：" + status_text(t.status))
+  lines.push("  学生/教育优惠：" + t.student_discount)
+  lines.push("  页面可达：" + t.reachable)
+  lines.push(
+    "第 4 步 · 复核：最后核验 " +
+    t.verified_at +
+    "（首次核验会话 " +
+    t.session +
+    "），状态 " +
+    status_text(t.status),
+  )
+  if t.history.length() == 0 {
+    lines.push("  变动轨迹：无（尚未复核）")
+  } else {
+    lines.push("  变动轨迹（\{t.history.length()} 条）：")
+    for i in 0..<t.history.length() {
+      let h = t.history[i]
+      if h.change == "涨价" || h.change == "降价" {
+        lines.push(
+          "  - \{h.date}（\{h.session}）\{h.change}：\{h.old_price} → \{h.new_price}；\{h.note}",
+        )
+      } else {
+        lines.push("  - \{h.date}（\{h.session}）\{h.change}；\{h.note}")
+      }
+    }
+  }
+  lines.push(
+    "第 5 步 · 实时页面：" +
+    t.pricing_url +
+    "（按此链接可重走一遍；页面可达：" +
+    t.reachable +
+    "）",
+  )
   lines.push("备注：" + t.note)
   lines
 }
