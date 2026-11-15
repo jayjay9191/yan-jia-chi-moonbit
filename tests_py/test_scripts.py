@@ -94,13 +94,15 @@ class TestCsvImport(unittest.TestCase):
         self.assertGreater(len(tools), 0)
         from collections import Counter
 
-        # 状态只在三档里；货币只在四种里；可达性只在三种里
+        # 状态只在三档里；货币只在 11 种口径 + 空里（R4 起含 EUR/GBP/CAD/AUD/
+        # SAR/INR/kr/AC）；可达性只在三种里
         self.assertTrue(
             set(t["status"] for t in tools)
             <= {"verified", "partial", "unverified"}
         )
         self.assertTrue(
-            set(t["currency"] for t in tools) <= {"USD", "JPY", "CNY", ""}
+            set(t["currency"] for t in tools)
+            <= {"USD", "JPY", "CNY", "EUR", "GBP", "CAD", "AUD", "SAR", "INR", "kr", "AC", ""}
         )
         self.assertTrue(
             set(t["reachable"] for t in tools) <= {"能打开", "打不开", "受限"}
@@ -186,6 +188,16 @@ class TestMirrorValidate(unittest.TestCase):
         issues = merge_batches.mirror_validate([t])
         self.assertEqual(len(issues), 1)
         self.assertIn("没有 $", issues[0])
+
+    def test_eur_price_with_euro_sign_ok(self):
+        t = self._tool(paid_price="Plus €8/月", currency="EUR")
+        self.assertEqual(merge_batches.mirror_validate([t]), [])
+
+    def test_eur_price_without_euro_sign_is_issue(self):
+        t = self._tool(paid_price="Plus 8/月", currency="EUR")
+        issues = merge_batches.mirror_validate([t])
+        self.assertEqual(len(issues), 1)
+        self.assertIn("没有 €", issues[0])
 
 
 if __name__ == "__main__":

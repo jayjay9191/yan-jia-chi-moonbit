@@ -114,6 +114,15 @@ pub fn today_string(now_ms : UInt64) -> String {
 }
 
 ///|
+/// 北京时间今天（UTC+8）：本项目所有日期（verified_at、复核会话日期）都是
+/// 北京时间日期；服务器时钟是 UTC，直接用会把北京时间的“今天”算成昨天，
+/// 导致刚复核过的记录被误判过期（R4 发现：274 条 11-16 的记录在 UTC 11-15
+/// 当天被算成过期，CLI 的 report/stale 都受影响）。
+pub fn today_days_cst(now_ms : UInt64) -> Int32 {
+  today_days(now_ms + 28800000UL)
+}
+
+///|
 /// 核验过期阈值：verified_at 距今超过 30 天算过期。
 pub const STALE_DAYS : Int32 = 30
 

@@ -18,6 +18,13 @@ pub(all) struct PricingReport {
   currency_usd : Int32
   currency_jpy : Int32
   currency_cny : Int32
+  currency_eur : Int32
+  currency_gbp : Int32
+  currency_cad : Int32
+  currency_aud : Int32
+  currency_sar : Int32
+  currency_inr : Int32
+  currency_other : Int32 // 非 ISO 计价单位：kr（Mondly 页面原文）、AC（Anyscale Credits）
   currency_empty : Int32
   billing_pay_as_you_go : Int32 // 按量
   billing_monthly : Int32 // 按月
@@ -68,6 +75,13 @@ pub fn build_report(tools : Array[ToolPricing], today : Int32) -> PricingReport 
     currency_usd: count_currency(tools, "USD"),
     currency_jpy: count_currency(tools, "JPY"),
     currency_cny: count_currency(tools, "CNY"),
+    currency_eur: count_currency(tools, "EUR"),
+    currency_gbp: count_currency(tools, "GBP"),
+    currency_cad: count_currency(tools, "CAD"),
+    currency_aud: count_currency(tools, "AUD"),
+    currency_sar: count_currency(tools, "SAR"),
+    currency_inr: count_currency(tools, "INR"),
+    currency_other: count_currency(tools, "kr") + count_currency(tools, "AC"),
     currency_empty: count_currency(tools, ""),
     billing_pay_as_you_go: count_billing_category(tools, "按量"),
     billing_monthly: count_billing_category(tools, "按月"),
@@ -104,7 +118,7 @@ pub fn report_lines(r : PricingReport) -> Array[String] {
     "页面能打开：\{r.reachable_ok}/\{r.total}；打不开：\{r.reachable_blocked}/\{r.total}；受限（地区限制）：\{r.reachable_limited}/\{r.total}",
   )
   lines.push(
-    "货币：USD \{r.currency_usd} 个，JPY \{r.currency_jpy} 个，CNY \{r.currency_cny} 个，无货币（未核验到）\{r.currency_empty} 个",
+    "货币：USD \{r.currency_usd} 个，JPY \{r.currency_jpy} 个，CNY \{r.currency_cny} 个，EUR \{r.currency_eur} 个，GBP \{r.currency_gbp} 个，CAD \{r.currency_cad} 个，AUD \{r.currency_aud} 个，SAR \{r.currency_sar} 个，INR \{r.currency_inr} 个，其他（kr/AC）\{r.currency_other} 个，无货币（未核验到）\{r.currency_empty} 个",
   )
   lines.push(
     "计费：按量 \{r.billing_pay_as_you_go} 个，按月 \{r.billing_monthly} 个，月/年 \{r.billing_monthly_yearly} 个，按年 \{r.billing_yearly} 个，无（未核验到）\{r.billing_empty} 个，其他（非订阅）\{r.billing_other} 个",

@@ -181,6 +181,126 @@ def apply_recheck3(tools: list) -> int:
     return applied
 
 
+# 2026-11-16 第四次复核（会话 20261116-R4）：第一组 128 条部分核验 + AE 暂扣 6 条；
+# 第二组 APV-0001～0500 的 182 条未核验到；第三组 APV-0501～0999 的 287 条未核验到。
+# 结论来自 /tmp/recheck_R4_part{1,2,3}_result.json（/tmp 被清空时用 ~/workspace 下的备份）。
+RECHECK4_SESSION = "20261116-R4"
+RECHECK4_DATE = "2026-11-16"
+RECHECK4_FILES = [
+    "/tmp/recheck_R4_part1_result.json",
+    "/tmp/recheck_R4_part2_result.json",
+    "/tmp/recheck_R4_part3_result.json",
+]
+
+# part3 有 36 条 status 写了中文（已核验/部分核验），归一化成英文口径。
+STATUS_CN = {"已核验": "verified", "部分核验": "partial", "未核验到": "unverified"}
+
+
+def apply_recheck4(tools: list) -> int:
+    """应用第四次复核结论，返回新增轨迹条数。幂等：同一会话只记一次。
+    - part1 的 AE-* 键按名字匹配；AE 6 条不在 JSON 里（从未合入），
+      且本次仍未看到价，无可附加的记录，跳过（总数仍为 1000，不变 1006）。
+    - change 新档位：首次核验到价，按结果里的新价字段完整写回并改状态
+      （中文状态先归一化；二手转述来源的即使标已核验也只给部分核验，
+      只有 Bettermode 一条命中此规则；reachable 写“未直接打开”的 22 条
+      统一归一化为“能打开”——官网页均已找到/打开，来源以 note 为准；
+      DappRadar 的质押押金不是现金订阅价，改记未看到价）。
+    - change 下架：只追加轨迹 + bump，不动 paid_price/status（沿用 R2 Cline 的先例）。
+    - upgrade=true 且 change 为“无变化”：部分核验升已核验（沿用 R3 的规则）。
+    - 名字允许改名前缀匹配（如 Táve → Táve (现 VSCO Workspace)），同 key 才接受。"""
+    by_key = {t["key"]: t for t in tools}
+    by_name = {t["name"]: t for t in tools}
+    applied = 0
+    for path in RECHECK4_FILES:
+        p = Path(path)
+        if not p.exists():
+            alt = Path("/home/hatch/workspace") / p.name
+            p = alt if alt.exists() else p
+        if not p.exists():
+            print(f"跳过 {path}（不存在）")
+            continue
+        results = json.loads(p.read_text(encoding="utf-8"))["results"]
+        for r in results:
+            t = by_key.get(r["key"])
+            if t is None and r["key"].startswith("AE-"):
+                t = by_name.get(r["name"])
+            if t is None:
+                print(f"跳过未知记录键：{r['key']}（{r['name']}）")
+                continue
+            if t["name"] != r["name"] and not t["name"].startswith(r["name"]):
+                print(f"跳过名字不符：{r['key']} 表里是 {t['name']}，复核写的是 {r['name']}")
+                continue
+            if t["name"] != r["name"]:
+                print(f"名字已改名仍接受：{r['key']} 表里是 {t['name']}，复核写的是 {r['name']}")
+            if any(h.get("session") == RECHECK4_SESSION for h in t.get("history", [])):
+                continue
+            # DappRadar 的“价格”是质押押金（30,000 RADAR，可解质押），不是现金
+            # 订阅价：不记为付费价，改记未看到价（只追加轨迹，不改状态/价格）。
+            if r["key"] == "APV-0996" and r["change"] == "新档位":
+                print("修正：DappRadar 质押押金不是现金订阅价，改记未看到价")
+                t.setdefault("history", []).append({
+                    "date": RECHECK4_DATE,
+                    "session": RECHECK4_SESSION,
+                    "change": "未看到价",
+                    "old_price": "",
+                    "new_price": "",
+                    "note": "复核：官网博客称 PRO 需质押至少 30,000 RADAR（可解质押），属于质押押金、不是现金订阅价，故不记为付费价；仍记未看到价。",
+                })
+                applied += 1
+                continue
+            # 货币字段只写口径代码，括号里的说明（如“欧洲客户欧元计价”）
+            # 归 note；若 note 里还没有这句，补进去，不丢信息。
+            # 注意：必须在 entry 生成前做，entry 的 note 取自 r。
+            if r["change"] == "新档位":
+                cur = r.get("currency", "")
+                if "（" in cur or "(" in cur:
+                    code = cur.split("（")[0].split("(")[0].strip()
+                    inner = cur[len(code):].strip("（）()")
+                    if inner and inner[:6] not in r.get("note", ""):
+                        r = {**r, "note": r.get("note", "") + "；货币口径：" + inner}
+                    print(f"归一化货币：{t['name']} {cur} → {code}")
+                    r = {**r, "currency": code}
+            entry = {
+                "date": RECHECK4_DATE,
+                "session": RECHECK4_SESSION,
+                "change": r["change"],
+                "old_price": r.get("old_price", ""),
+                "new_price": r.get("new_price", ""),
+                "note": "复核：" + r.get("note", ""),
+            }
+            if r["change"] in ("涨价", "降价"):
+                entry["old_price"] = t["paid_price"]
+                entry["new_price"] = r["new_price"]
+                t["paid_price"] = r["new_price"]
+            elif r["change"] == "新档位":
+                new_status = STATUS_CN.get(r.get("status", ""), r.get("status", ""))
+                if new_status == "verified" and ("转述" in r.get("note", "") or "非官网" in r.get("note", "")):
+                    print(f"降级：{t['name']} 二手转述来源不升已核验，只给部分核验")
+                    new_status = "partial"
+                # reachable 写“未直接打开”是 part3 的口径偏差：这些记录的官网页
+                # 均已找到/打开（官方定价页、帮助页、博客或官方域名片段），金额未在
+                # 定价页渲染、或来自已注明来源的转述；按本项目既定口径（片段核验
+                # 的页面也记能打开，见验证流程文档 §2），统一记“能打开”，
+                # 来源以 note 为准。
+                if r.get("reachable") == "未直接打开":
+                    print(f"归一化 reachable：{t['name']} 未直接打开 → 能打开（官网页已找到，来源见 note）")
+                    r = {**r, "reachable": "能打开"}
+                for f in ("paid_price", "currency", "billing", "reachable", "free_tier", "student_discount"):
+                    if f in r:
+                        t[f] = r[f]
+                if new_status in ("verified", "partial"):
+                    t["status"] = new_status
+                entry["new_price"] = r.get("paid_price", "")
+            t.setdefault("history", []).append(entry)
+            if r.get("bump"):
+                t["verified_at"] = RECHECK4_DATE
+            if r.get("upgrade") and r["change"] == "无变化":
+                t["status"] = "verified"
+            applied += 1
+        print(f"应用 {path}：累计新增轨迹 {applied} 条")
+    return applied
+
+
 def apply_recheck2(tools: list) -> int:
     """应用第二次复核结论，返回新增轨迹条数。幂等：同一会话只记一次。"""
     by_key = {t["key"]: t for t in tools}
@@ -259,8 +379,28 @@ def is_rate_only(price: str) -> bool:
     return "%" in price and "$" not in price and "¥" not in price
 
 
+# 每种货币在付费价里应有的符号/标记，与 validate.mbt 的 currency_symbol 一致。
+# R4 起口径为 11 种：kr 是 Mondly 页面原文（未注明是哪种克朗）；AC 是
+# Anyscale Credits 计价单位（官网只给 AC 价、无美元换算）。
+CURRENCY_SYMBOLS = {
+    "USD": "$",
+    "JPY": "¥",
+    "CNY": "¥",
+    "EUR": "€",
+    "GBP": "£",
+    "CAD": "$",
+    "AUD": "$",
+    "SAR": "SAR",
+    "INR": "₹",
+    "kr": "kr",
+    "AC": "AC",
+}
+
+
 def mirror_validate(tools: list) -> list:
-    """Python 镜像 validate.mbt 的全部 14 项检查，返回问题列表。"""
+    """Python 镜像 validate.mbt 的全部 14 项检查，返回问题列表。
+    货币口径与 validate.mbt 的 currency_symbol 一致（R4 起 11 种）：
+    USD/JPY/CNY/EUR/GBP/CAD/AUD/SAR/INR/kr/AC。"""
     issues = []
     seen_names = set()
     seen_keys = set()
@@ -293,12 +433,13 @@ def mirror_validate(tools: list) -> list:
             if t["billing"] != "":
                 issues.append(tag + "未核验到但计费非空")
         else:
-            if t["currency"] not in ("USD", "JPY", "CNY"):
-                issues.append(tag + "货币不在 USD/JPY/CNY 内：" + t["currency"])
-            elif t["currency"] == "USD" and "$" not in t["paid_price"] and not is_rate_only(t["paid_price"]):
-                issues.append(tag + "USD 价格里没有 $")
-            elif t["currency"] in ("JPY", "CNY") and "¥" not in t["paid_price"] and not is_rate_only(t["paid_price"]):
-                issues.append(tag + "JPY/CNY 价格里没有 ¥")
+            symbol = CURRENCY_SYMBOLS.get(t["currency"])
+            if symbol is None:
+                issues.append(
+                    tag + "货币不在 USD/JPY/CNY/EUR/GBP/CAD/AUD/SAR/INR/kr/AC 内：" + t["currency"]
+                )
+            elif symbol not in t["paid_price"] and not is_rate_only(t["paid_price"]):
+                issues.append(tag + "货币是 " + t["currency"] + "，但付费价里没有 " + symbol + " 符号")
             if t["billing"] == "":
                 issues.append(tag + "已核验/部分核验但计费为空")
         if not valid_date(t["verified_at"]):
@@ -398,6 +539,7 @@ def main() -> int:
     reverify_only = "--reverify-only" in sys.argv
     recheck2_only = "--recheck2-only" in sys.argv
     recheck3_only = "--recheck3-only" in sys.argv
+    recheck4_only = "--recheck4-only" in sys.argv
     only = None
     if "--only" in sys.argv:
         only = sys.argv[sys.argv.index("--only") + 1].upper()
@@ -410,8 +552,9 @@ def main() -> int:
     apply_reverify(tools)
     applied2 = apply_recheck2(tools)
     applied3 = apply_recheck3(tools)
+    applied4 = apply_recheck4(tools)
     added = 0
-    if not reverify_only and not recheck2_only and not recheck3_only:
+    if not reverify_only and not recheck2_only and not recheck3_only and not recheck4_only:
         added = merge_batches(tools, only=only)
     issues = mirror_validate(tools)
     if issues:
@@ -425,7 +568,7 @@ def main() -> int:
     )
     from collections import Counter
 
-    print(f"写盘完成：共 {len(tools)} 条（新增 {added} 条，R2 复核轨迹 {applied2} 条，R3 复核轨迹 {applied3} 条）")
+    print(f"写盘完成：共 {len(tools)} 条（新增 {added} 条，R2 复核轨迹 {applied2} 条，R3 复核轨迹 {applied3} 条，R4 复核轨迹 {applied4} 条）")
     print(f"状态：{dict(Counter(t['status'] for t in tools))}")
     print(f"history 总条数：{sum(len(t.get('history', [])) for t in tools)}")
     print("下一步：python3 scripts/generate_data.py && python3 scripts/generate_tests.py")

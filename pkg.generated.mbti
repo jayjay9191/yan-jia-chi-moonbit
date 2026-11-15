@@ -58,6 +58,8 @@ pub fn status_text(PriceStatus) -> String
 
 pub fn today_days(UInt64) -> Int32
 
+pub fn today_days_cst(UInt64) -> Int32
+
 pub fn today_string(UInt64) -> String
 
 pub fn tool_by_name(String) -> ToolPricing?
@@ -101,6 +103,13 @@ pub(all) struct PricingReport {
   currency_usd : Int32
   currency_jpy : Int32
   currency_cny : Int32
+  currency_eur : Int32
+  currency_gbp : Int32
+  currency_cad : Int32
+  currency_aud : Int32
+  currency_sar : Int32
+  currency_inr : Int32
+  currency_other : Int32
   currency_empty : Int32
   billing_pay_as_you_go : Int32
   billing_monthly : Int32

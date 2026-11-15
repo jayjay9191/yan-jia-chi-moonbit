@@ -103,9 +103,9 @@ fn cmd_verify() -> Unit {
 ///|
 fn cmd_stale() -> Unit {
   let tools = @lib.all_tools()
-  let today = @lib.today_days(@env.now())
+  let today = @lib.today_days_cst(@env.now())
   println("== 过期未复核（verified_at 距今超 30 天）==")
-  println("今天：\{@lib.today_string(@env.now())}")
+  println("今天：\{@lib.days_to_date(today)}")
   let mut stale_count = 0
   for i in 0..<tools.length() {
     let t = tools[i]
@@ -140,7 +140,7 @@ fn cmd_stale() -> Unit {
 ///|
 fn cmd_report() -> Unit {
   let tools = @lib.all_tools()
-  let today = @lib.today_days(@env.now())
+  let today = @lib.today_days_cst(@env.now())
   let r = @lib.build_report(tools, today)
   println("== AI 工具定价核验 · 汇总 ==")
   for line in @lib.report_lines(r) {

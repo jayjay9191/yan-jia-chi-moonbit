@@ -65,7 +65,7 @@ pub(all) struct ToolPricing {
   pricing_url : String
   free_tier : String
   paid_price : String // 付费价原文；未核验到的行必须为空字符串
-  currency : String // "USD" | "JPY" | "CNY"；未核验到的行必须为空字符串
+  currency : String // "USD" | "JPY" | "CNY" | "EUR" | "GBP" | "CAD" | "AUD" | "SAR" | "INR" | "kr" | "AC"；未核验到的行必须为空字符串
   billing : String // 计费周期原文；未核验到的行必须为空字符串
   student_discount : String // 学生/教育优惠；"未见"也是明确表态，不能空着
   reachable : String // "能打开" | "打不开" | "受限"

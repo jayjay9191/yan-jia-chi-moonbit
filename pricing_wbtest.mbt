@@ -394,6 +394,44 @@ test "cny price without yen sign is an issue" {
 }
 
 ///|
+/// R4 起货币口径扩到 11 种：官网实测的欧元价不再为凑旧口径改写。
+test "eur price with euro sign is ok" {
+  let t = tool_with(
+    PriceStatus::Verified,
+    "Plus €8/月",
+    "EUR",
+    "按月",
+    "能打开",
+    "https://example.com/pricing",
+    "2026-11-16",
+    "未见",
+    "Free €0",
+    "测试工具",
+  )
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 0)
+}
+
+///|
+test "eur price without euro sign is an issue" {
+  let t = tool_with(
+    PriceStatus::Verified,
+    "Plus 8/月",
+    "EUR",
+    "按月",
+    "能打开",
+    "https://example.com/pricing",
+    "2026-11-16",
+    "未见",
+    "Free €0",
+    "测试工具",
+  )
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+  assert_true(issues[0].contains("没有 € 符号"))
+}
+
+///|
 test "verified with empty billing is an issue" {
   let t = tool_with(
     PriceStatus::Verified,
@@ -749,4 +787,19 @@ test "is valid change covers six kinds" {
   assert_true(is_valid_change("未看到价"))
   assert_true(!is_valid_change("随便改"))
   assert_true(!is_valid_change(""))
+}
+
+///|
+/// R4 后真实数据里所有证据链测试用的工具都有了复核轨迹，黑盒测试不再
+/// 走到“无轨迹”分支（history 为空）；白盒用合成记录补一条，覆盖
+/// evidence_lines 的空轨迹分支（283 条未复核过的记录仍走这条分支）。
+test "evidence lines with no history says none" {
+  let lines = evidence_lines(valid_tool())
+  let mut found = false
+  for line in lines {
+    if line.contains("变动轨迹：无（尚未复核）") {
+      found = true
+    }
+  }
+  assert_true(found)
 }

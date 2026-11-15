@@ -7,9 +7,13 @@
 /// 3. 价格缺失时必须明确标未核验：paid_price 为空 ⟺ status 为未核验到
 ///    （双向：空价格 + 已核验 = 冒充已核验；有价格 + 未核验到 = 自相矛盾；
 ///    部分核验也必须有价格）
-/// 4. 货币一致：已核验/部分核验 → 货币必须是 USD/JPY/CNY；未核验到 →
-///    货币必须为空（没有价格就不编货币）
-/// 5. 货币符号一致：USD 的价格里必须有 "$"，JPY/CNY 的价格里必须有 "¥"；
+/// 4. 货币一致：已核验/部分核验 → 货币必须是 USD/JPY/CNY/EUR/GBP/CAD/
+///    AUD/SAR/INR/kr/AC（R4 起：欧洲工具的欧元/英镑等是官网实测的真实货币，
+///    不能为凑旧口径改写；kr 是 Mondly 页面原文、未注明是哪种克朗；AC 是
+///    Anyscale Credits 计价单位）；未核验到 → 货币必须为空
+///    （没有价格就不编货币）
+/// 5. 货币符号一致：USD/CAD/AUD 的价格里必须有 "$"，JPY/CNY 的价格里必须有
+///    "¥"，EUR "€"、GBP "£"、SAR "SAR"、INR "₹"、kr "kr"、AC "AC"；
 ///    例外：纯费率价（只有百分比、没有固定金额，如 Patreon 平台费为收入的
 ///    10%）没有货币符号可查，货币按官网市场记 USD，符号检查不适用
 /// 6. 计费周期：已核验/部分核验 → 非空；未核验到 → 必须为空
@@ -32,6 +36,33 @@ fn is_rate_only_price(paid_price : String) -> Bool {
   paid_price.contains("%") &&
   !paid_price.contains("$") &&
   !paid_price.contains("¥")
+}
+
+///|
+/// 每种货币在付费价里应有的符号/标记；空字符串表示不在口径内。
+/// R4 起口径为 11 种：USD/JPY/CNY/EUR/GBP/CAD/AUD/SAR/INR 是官网实测的
+/// 真实货币；kr 是 Mondly 页面原文（未注明是哪种克朗，照实记、不猜）；
+/// AC 是 Anyscale Credits 计价单位（官网只给 AC 价、无美元换算）。
+fn currency_symbol(currency : String) -> String {
+  if currency == "USD" || currency == "CAD" || currency == "AUD" {
+    "$"
+  } else if currency == "JPY" || currency == "CNY" {
+    "¥"
+  } else if currency == "EUR" {
+    "€"
+  } else if currency == "GBP" {
+    "£"
+  } else if currency == "SAR" {
+    "SAR"
+  } else if currency == "INR" {
+    "₹"
+  } else if currency == "kr" {
+    "kr"
+  } else if currency == "AC" {
+    "AC"
+  } else {
+    ""
+  }
 }
 
 ///|
@@ -117,19 +148,22 @@ pub fn validate_tools(tools : Array[ToolPricing]) -> Array[String] {
         )
       }
     } else {
-      if t.currency != "USD" && t.currency != "JPY" && t.currency != "CNY" {
+      let symbol = currency_symbol(t.currency)
+      if symbol == "" {
         issues.push(
-          tag + "货币必须是 USD/JPY/CNY，现在是：" + t.currency,
+          tag +
+          "货币必须是 USD/JPY/CNY/EUR/GBP/CAD/AUD/SAR/INR/kr/AC，现在是：" +
+          t.currency,
         )
-      } else if t.currency == "USD" &&
-        !t.paid_price.contains("$") &&
-        !is_rate_only_price(t.paid_price) {
-        issues.push(tag + "货币是 USD，但付费价里没有 $ 符号")
-      } else if (t.currency == "JPY" || t.currency == "CNY") &&
-        !t.paid_price.contains("¥") &&
+      } else if !t.paid_price.contains(symbol) &&
         !is_rate_only_price(t.paid_price) {
         issues.push(
-          tag + "货币是 " + t.currency + "，但付费价里没有 ¥ 符号",
+          tag +
+          "货币是 " +
+          t.currency +
+          "，但付费价里没有 " +
+          symbol +
+          " 符号",
         )
       }
       if t.billing == "" {

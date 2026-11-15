@@ -79,16 +79,27 @@ test "real data passes all validation rules" {
 
 ///|
 test "report counts are internally consistent" {
-  // today = 2026-11-15（自 1970-01-01 起第 20772 天）
+  // today = 2026-11-16（自 1970-01-01 起第 20773 天；R4 复核在 11-16 做，
+  // 数据里已有 11-16 的 verified_at，today 必须跟到同一天，否则未来日期被算过期）
   let tools = @ai-pricing-verifier.all_tools()
-  let r = @ai-pricing-verifier.build_report(tools, 20772)
+  let r = @ai-pricing-verifier.build_report(tools, 20773)
   let total = tools.length()
   assert_eq(r.total, total)
   assert_eq(r.verified + r.partial + r.unverified, total)
   assert_eq(r.has_price + r.no_price, total)
   assert_eq(r.reachable_ok + r.reachable_blocked + r.reachable_limited, total)
   assert_eq(
-    r.currency_usd + r.currency_jpy + r.currency_cny + r.currency_empty,
+    r.currency_usd +
+    r.currency_jpy +
+    r.currency_cny +
+    r.currency_eur +
+    r.currency_gbp +
+    r.currency_cad +
+    r.currency_aud +
+    r.currency_sar +
+    r.currency_inr +
+    r.currency_other +
+    r.currency_empty,
     total,
   )
   assert_eq(
@@ -101,9 +112,9 @@ test "report counts are internally consistent" {
     total,
   )
   assert_eq(r.student_seen + r.student_unseen, total)
-  // 2026-11-15 当天：11-08 与 11-15 两批都在 30 天内，无过期
+  // 2026-11-16 当天：11-08、11-15 与 11-16 三批都在 30 天内，无过期
   assert_eq(r.stale_count, 0)
-  assert_eq(r.today, "2026-11-15")
+  assert_eq(r.today, "2026-11-16")
   // 变动轨迹：自洽断言，不写死条数（R1 时写死 11/11/1/4，R2 一到就崩；
   // 见设计手记 §6 的教训）。R1 的事实仍可查：会话 20261115-R1 共 11 条、
   // 涨价 1 条、未看到价 4 条；R2（20261115-R2）新增 121 条。
@@ -137,7 +148,7 @@ test "report counts are internally consistent" {
 test "report lines carry denominators" {
   let r = @ai-pricing-verifier.build_report(
     @ai-pricing-verifier.all_tools(),
-    20772,
+    20773,
   )
   let lines = @ai-pricing-verifier.report_lines(r)
   assert_eq(lines[0], "工具总数：\{r.total}")
@@ -282,6 +293,15 @@ test "today from timestamp" {
   // 2026-11-15 00:00 UTC 的毫秒时间戳
   assert_eq(@ai-pricing-verifier.today_days(1794700800000UL), 20772)
   assert_eq(@ai-pricing-verifier.today_string(1794700800000UL), "2026-11-15")
+}
+
+///|
+test "today cst is beijing time" {
+  // 2026-11-15 20:00 UTC = 2026-11-16 04:00 北京时间：UTC 还是 11-15，
+  // 北京已是 11-16；CLI 的 report/stale 必须用北京时间，否则刚复核的
+  // 记录会被误判过期（R4：274 条 11-16 的记录在 UTC 11-15 当天被算过期）。
+  assert_eq(@ai-pricing-verifier.today_days(1794772800000UL), 20772)
+  assert_eq(@ai-pricing-verifier.today_days_cst(1794772800000UL), 20773)
 }
 
 ///|

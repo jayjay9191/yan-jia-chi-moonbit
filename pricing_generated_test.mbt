@@ -203,7 +203,7 @@ test "generated: Copilot / Microsoft status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0013")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -263,11 +263,11 @@ test "generated: 夸克 AI status" {
 test "generated: 纳米 AI / 360 status" {
   match @ai-pricing-verifier.tool_by_name("纳米 AI / 360") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "CNY")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0017")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -427,7 +427,7 @@ test "generated: Wordtune status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0027")
       assert_eq(t.session, "20261115-A")
     }
@@ -443,7 +443,7 @@ test "generated: Sudowrite status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0028")
       assert_eq(t.session, "20261115-A")
     }
@@ -603,7 +603,7 @@ test "generated: Simplified status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0038")
       assert_eq(t.session, "20261115-A")
     }
@@ -619,7 +619,7 @@ test "generated: ContentBot status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0039")
       assert_eq(t.session, "20261115-A")
     }
@@ -683,7 +683,7 @@ test "generated: Article Forge status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0043")
       assert_eq(t.session, "20261115-A")
     }
@@ -711,11 +711,11 @@ test "generated: Kafkai status" {
 test "generated: LongShot AI status" {
   match @ai-pricing-verifier.tool_by_name("LongShot AI") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0045")
       assert_eq(t.session, "20261115-A")
     }
@@ -779,7 +779,7 @@ test "generated: ZimmWriter status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0049")
       assert_eq(t.session, "20261115-A")
     }
@@ -1499,7 +1499,7 @@ test "generated: Murf AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0094")
       assert_eq(t.session, "20261115-C")
     }
@@ -1591,11 +1591,11 @@ test "generated: Speechify status" {
 test "generated: Otter.ai status" {
   match @ai-pricing-verifier.tool_by_name("Otter.ai") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0100")
       assert_eq(t.session, "20261115-C")
     }
@@ -1627,7 +1627,7 @@ test "generated: Rev status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0102")
       assert_eq(t.session, "20261115-C")
     }
@@ -1787,7 +1787,7 @@ test "generated: Tabnine status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0112")
       assert_eq(t.session, "20261115-D")
     }
@@ -1835,7 +1835,7 @@ test "generated: Sourcegraph Cody status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0115")
       assert_eq(t.session, "20261115-D")
     }
@@ -1979,7 +1979,7 @@ test "generated: Cline status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0124")
       assert_eq(t.session, "20261115-D")
     }
@@ -2347,7 +2347,7 @@ test "generated: Together AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0147")
       assert_eq(t.session, "20261115-E")
     }
@@ -2395,7 +2395,7 @@ test "generated: OpenRouter status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0150")
       assert_eq(t.session, "20261115-E")
     }
@@ -2407,11 +2407,11 @@ test "generated: OpenRouter status" {
 test "generated: Replicate status" {
   match @ai-pricing-verifier.tool_by_name("Replicate") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0151")
       assert_eq(t.session, "20261115-E")
     }
@@ -2443,7 +2443,7 @@ test "generated: Hugging Face Inference status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0153")
       assert_eq(t.session, "20261115-E")
     }
@@ -2455,11 +2455,11 @@ test "generated: Hugging Face Inference status" {
 test "generated: Voyage AI status" {
   match @ai-pricing-verifier.tool_by_name("Voyage AI") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0154")
       assert_eq(t.session, "20261115-E")
     }
@@ -2571,7 +2571,7 @@ test "generated: Baseten status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0161")
       assert_eq(t.session, "20261115-E")
     }
@@ -2583,11 +2583,11 @@ test "generated: Baseten status" {
 test "generated: Anyscale status" {
   match @ai-pricing-verifier.tool_by_name("Anyscale") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "AC")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0162")
       assert_eq(t.session, "20261115-E")
     }
@@ -2599,11 +2599,11 @@ test "generated: Anyscale status" {
 test "generated: RunPod status" {
   match @ai-pricing-verifier.tool_by_name("RunPod") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0163")
       assert_eq(t.session, "20261115-E")
     }
@@ -2699,7 +2699,7 @@ test "generated: Snowflake Cortex status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0169")
       assert_eq(t.session, "20261115-E")
     }
@@ -2715,7 +2715,7 @@ test "generated: Databricks status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0170")
       assert_eq(t.session, "20261115-E")
     }
@@ -2795,7 +2795,7 @@ test "generated: Motion status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0175")
       assert_eq(t.session, "20261115-F")
     }
@@ -2811,7 +2811,7 @@ test "generated: Reclaim AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0176")
       assert_eq(t.session, "20261115-F")
     }
@@ -2827,7 +2827,7 @@ test "generated: Mem status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0177")
       assert_eq(t.session, "20261115-F")
     }
@@ -2843,7 +2843,7 @@ test "generated: Tana status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0178")
       assert_eq(t.session, "20261115-F")
     }
@@ -2919,11 +2919,11 @@ test "generated: Sunsama status" {
 test "generated: Dropbox Dash status" {
   match @ai-pricing-verifier.tool_by_name("Dropbox Dash") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0183")
       assert_eq(t.session, "20261115-F")
     }
@@ -2939,7 +2939,7 @@ test "generated: Box AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0184")
       assert_eq(t.session, "20261115-F")
     }
@@ -3035,7 +3035,7 @@ test "generated: You.com status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0190")
       assert_eq(t.session, "20261115-F")
     }
@@ -3243,7 +3243,7 @@ test "generated: Akkio status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0203")
       assert_eq(t.session, "20261115-I")
     }
@@ -3403,7 +3403,7 @@ test "generated: ThoughtSpot status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0213")
       assert_eq(t.session, "20261115-I")
     }
@@ -3451,7 +3451,7 @@ test "generated: Qlik Sense status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0216")
       assert_eq(t.session, "20261115-I")
     }
@@ -3499,7 +3499,7 @@ test "generated: Hex status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0219")
       assert_eq(t.session, "20261115-I")
     }
@@ -3655,11 +3655,11 @@ test "generated: Pendo status" {
 test "generated: Hotjar status" {
   match @ai-pricing-verifier.tool_by_name("Hotjar") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0229")
       assert_eq(t.session, "20261115-I")
     }
@@ -3787,7 +3787,7 @@ test "generated: Mercury status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0237")
       assert_eq(t.session, "20261115-L")
     }
@@ -3819,7 +3819,7 @@ test "generated: Puzzle status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0239")
       assert_eq(t.session, "20261115-L")
     }
@@ -3899,7 +3899,7 @@ test "generated: TrendSpider status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0244")
       assert_eq(t.session, "20261115-L")
     }
@@ -3931,7 +3931,7 @@ test "generated: Kavout status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0246")
       assert_eq(t.session, "20261115-L")
     }
@@ -4087,11 +4087,11 @@ test "generated: Spendesk status" {
 test "generated: Pleo status" {
   match @ai-pricing-verifier.tool_by_name("Pleo") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0256")
       assert_eq(t.session, "20261115-L")
     }
@@ -4139,7 +4139,7 @@ test "generated: Deel status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0259")
       assert_eq(t.session, "20261115-L")
     }
@@ -4171,7 +4171,7 @@ test "generated: Semrush status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0261")
       assert_eq(t.session, "20261115-H")
     }
@@ -4187,7 +4187,7 @@ test "generated: Ahrefs status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0262")
       assert_eq(t.session, "20261115-H")
     }
@@ -4315,7 +4315,7 @@ test "generated: Sprout Social status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0270")
       assert_eq(t.session, "20261115-H")
     }
@@ -4427,7 +4427,7 @@ test "generated: Mangools status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0277")
       assert_eq(t.session, "20261115-H")
     }
@@ -4439,11 +4439,11 @@ test "generated: Mangools status" {
 test "generated: Screaming Frog status" {
   match @ai-pricing-verifier.tool_by_name("Screaming Frog") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "GBP")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0278")
       assert_eq(t.session, "20261115-H")
     }
@@ -4535,11 +4535,11 @@ test "generated: GetResponse status" {
 test "generated: AWeber status" {
   match @ai-pricing-verifier.tool_by_name("AWeber") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0284")
       assert_eq(t.session, "20261115-H")
     }
@@ -4891,7 +4891,7 @@ test "generated: Tidio status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0306")
       assert_eq(t.session, "20261115-G")
     }
@@ -4907,7 +4907,7 @@ test "generated: Gorgias status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0307")
       assert_eq(t.session, "20261115-G")
     }
@@ -4923,7 +4923,7 @@ test "generated: ManyChat status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0308")
       assert_eq(t.session, "20261115-G")
     }
@@ -4939,7 +4939,7 @@ test "generated: Chatwoot status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0309")
       assert_eq(t.session, "20261115-G")
     }
@@ -4999,11 +4999,11 @@ test "generated: Kustomer status" {
 test "generated: Zoho Desk status" {
   match @ai-pricing-verifier.tool_by_name("Zoho Desk") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "INR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0313")
       assert_eq(t.session, "20261115-G")
     }
@@ -5015,11 +5015,11 @@ test "generated: Zoho Desk status" {
 test "generated: Dixa status" {
   match @ai-pricing-verifier.tool_by_name("Dixa") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0314")
       assert_eq(t.session, "20261115-G")
     }
@@ -5047,11 +5047,11 @@ test "generated: Gladly status" {
 test "generated: Trengo status" {
   match @ai-pricing-verifier.tool_by_name("Trengo") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0316")
       assert_eq(t.session, "20261115-G")
     }
@@ -5063,11 +5063,11 @@ test "generated: Trengo status" {
 test "generated: Userlike status" {
   match @ai-pricing-verifier.tool_by_name("Userlike") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0317")
       assert_eq(t.session, "20261115-G")
     }
@@ -5271,11 +5271,11 @@ test "generated: Levels status" {
 test "generated: Zoe status" {
   match @ai-pricing-verifier.tool_by_name("Zoe") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "GBP")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0330")
       assert_eq(t.session, "20261115-K")
     }
@@ -5419,7 +5419,7 @@ test "generated: Hims status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0339")
       assert_eq(t.session, "20261115-K")
     }
@@ -5435,7 +5435,7 @@ test "generated: Ro status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0340")
       assert_eq(t.session, "20261115-K")
     }
@@ -5467,7 +5467,7 @@ test "generated: MyFitnessPal status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0342")
       assert_eq(t.session, "20261115-K")
     }
@@ -5495,11 +5495,11 @@ test "generated: Cronometer status" {
 test "generated: Oura status" {
   match @ai-pricing-verifier.tool_by_name("Oura") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0344")
       assert_eq(t.session, "20261115-K")
     }
@@ -5531,7 +5531,7 @@ test "generated: Eight Sleep status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0346")
       assert_eq(t.session, "20261115-K")
     }
@@ -5819,7 +5819,7 @@ test "generated: Gusto status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0364")
       assert_eq(t.session, "20261115-M")
     }
@@ -5899,7 +5899,7 @@ test "generated: Ashby status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0369")
       assert_eq(t.session, "20261115-M")
     }
@@ -5931,7 +5931,7 @@ test "generated: JazzHR status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0371")
       assert_eq(t.session, "20261115-M")
     }
@@ -5995,7 +5995,7 @@ test "generated: Rippling status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0375")
       assert_eq(t.session, "20261115-M")
     }
@@ -6043,7 +6043,7 @@ test "generated: Justworks status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0378")
       assert_eq(t.session, "20261115-M")
     }
@@ -6263,11 +6263,11 @@ test "generated: Memrise status" {
 test "generated: Babbel status" {
   match @ai-pricing-verifier.tool_by_name("Babbel") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0392")
       assert_eq(t.session, "20261115-J")
     }
@@ -6347,7 +6347,7 @@ test "generated: Coursera Plus status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0397")
       assert_eq(t.session, "20261115-J")
     }
@@ -6407,11 +6407,11 @@ test "generated: Codecademy status" {
 test "generated: MasterClass status" {
   match @ai-pricing-verifier.tool_by_name("MasterClass") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0401")
       assert_eq(t.session, "20261115-J")
     }
@@ -6491,7 +6491,7 @@ test "generated: HelloTalk status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0406")
       assert_eq(t.session, "20261115-J")
     }
@@ -6519,11 +6519,11 @@ test "generated: Cambly status" {
 test "generated: Mondly status" {
   match @ai-pricing-verifier.tool_by_name("Mondly") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "kr")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0408")
       assert_eq(t.session, "20261115-J")
     }
@@ -6683,7 +6683,7 @@ test "generated: Minecraft Realms status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0418")
       assert_eq(t.session, "20261115-N")
     }
@@ -6923,7 +6923,7 @@ test "generated: Streamlabs Ultra status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0433")
       assert_eq(t.session, "20261115-N")
     }
@@ -6939,7 +6939,7 @@ test "generated: Restream status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0434")
       assert_eq(t.session, "20261115-N")
     }
@@ -7015,11 +7015,11 @@ test "generated: Antstream Arcade status" {
 test "generated: Parsec status" {
   match @ai-pricing-verifier.tool_by_name("Parsec") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0439")
       assert_eq(t.session, "20261115-N")
     }
@@ -7067,7 +7067,7 @@ test "generated: Lyft Pink status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0442")
       assert_eq(t.session, "20261115-O")
     }
@@ -7207,11 +7207,11 @@ test "generated: eDreams Prime status" {
 test "generated: Worldpackers status" {
   match @ai-pricing-verifier.tool_by_name("Worldpackers") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0451")
       assert_eq(t.session, "20261115-O")
     }
@@ -7223,11 +7223,11 @@ test "generated: Worldpackers status" {
 test "generated: Roadtrippers status" {
   match @ai-pricing-verifier.tool_by_name("Roadtrippers") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0452")
       assert_eq(t.session, "20261115-O")
     }
@@ -7387,7 +7387,7 @@ test "generated: Japan Rail Pass status" {
       assert_eq(t.currency, "JPY")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0462")
       assert_eq(t.session, "20261115-O")
     }
@@ -7547,7 +7547,7 @@ test "generated: PropStream status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0472")
       assert_eq(t.session, "20261115-P")
     }
@@ -7579,7 +7579,7 @@ test "generated: BatchLeads status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0474")
       assert_eq(t.session, "20261115-P")
     }
@@ -7627,7 +7627,7 @@ test "generated: AppFolio status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0477")
       assert_eq(t.session, "20261115-P")
     }
@@ -7751,11 +7751,11 @@ test "generated: Rentec Direct status" {
 test "generated: Propertyware status" {
   match @ai-pricing-verifier.tool_by_name("Propertyware") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0485")
       assert_eq(t.session, "20261115-P")
     }
@@ -7835,7 +7835,7 @@ test "generated: Crexi status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0490")
       assert_eq(t.session, "20261115-P")
     }
@@ -7975,11 +7975,11 @@ test "generated: CubiCasa status" {
 test "generated: Zillow Premier Agent status" {
   match @ai-pricing-verifier.tool_by_name("Zillow Premier Agent") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0499")
       assert_eq(t.session, "20261115-P")
     }
@@ -8251,7 +8251,7 @@ test "generated: Clio status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0516")
       assert_eq(t.session, "20261115-Q")
     }
@@ -8487,11 +8487,11 @@ test "generated: Trust & Will status" {
 test "generated: Toast status" {
   match @ai-pricing-verifier.tool_by_name("Toast") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0531")
       assert_eq(t.session, "20261115-R")
     }
@@ -8507,7 +8507,7 @@ test "generated: Square for Restaurants status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0532")
       assert_eq(t.session, "20261115-R")
     }
@@ -8523,7 +8523,7 @@ test "generated: Lightspeed Restaurant status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0533")
       assert_eq(t.session, "20261115-R")
     }
@@ -8551,11 +8551,11 @@ test "generated: TouchBistro status" {
 test "generated: Clover status" {
   match @ai-pricing-verifier.tool_by_name("Clover") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0535")
       assert_eq(t.session, "20261115-R")
     }
@@ -8583,11 +8583,11 @@ test "generated: Revel Systems status" {
 test "generated: 7shifts status" {
   match @ai-pricing-verifier.tool_by_name("7shifts") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0537")
       assert_eq(t.session, "20261115-R")
     }
@@ -8599,11 +8599,11 @@ test "generated: 7shifts status" {
 test "generated: Restaurant365 status" {
   match @ai-pricing-verifier.tool_by_name("Restaurant365") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0538")
       assert_eq(t.session, "20261115-R")
     }
@@ -8663,11 +8663,11 @@ test "generated: xtraCHEF status" {
 test "generated: BevSpot status" {
   match @ai-pricing-verifier.tool_by_name("BevSpot") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0542")
       assert_eq(t.session, "20261115-R")
     }
@@ -8695,11 +8695,11 @@ test "generated: Crunchtime status" {
 test "generated: ChowNow status" {
   match @ai-pricing-verifier.tool_by_name("ChowNow") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0544")
       assert_eq(t.session, "20261115-R")
     }
@@ -8711,11 +8711,11 @@ test "generated: ChowNow status" {
 test "generated: GloriaFood status" {
   match @ai-pricing-verifier.tool_by_name("GloriaFood") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0545")
       assert_eq(t.session, "20261115-R")
     }
@@ -8727,11 +8727,11 @@ test "generated: GloriaFood status" {
 test "generated: Flipdish status" {
   match @ai-pricing-verifier.tool_by_name("Flipdish") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0546")
       assert_eq(t.session, "20261115-R")
     }
@@ -8775,11 +8775,11 @@ test "generated: Popmenu status" {
 test "generated: BentoBox status" {
   match @ai-pricing-verifier.tool_by_name("BentoBox") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0549")
       assert_eq(t.session, "20261115-R")
     }
@@ -8871,11 +8871,11 @@ test "generated: SevenRooms status" {
 test "generated: Foodics status" {
   match @ai-pricing-verifier.tool_by_name("Foodics") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "SAR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0555")
       assert_eq(t.session, "20261115-R")
     }
@@ -8971,7 +8971,7 @@ test "generated: Shopify status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0561")
       assert_eq(t.session, "20261115-S")
     }
@@ -9003,7 +9003,7 @@ test "generated: WooCommerce status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0563")
       assert_eq(t.session, "20261115-S")
     }
@@ -9015,11 +9015,11 @@ test "generated: WooCommerce status" {
 test "generated: Wix status" {
   match @ai-pricing-verifier.tool_by_name("Wix") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0564")
       assert_eq(t.session, "20261115-S")
     }
@@ -9047,11 +9047,11 @@ test "generated: Squarespace status" {
 test "generated: Shopware status" {
   match @ai-pricing-verifier.tool_by_name("Shopware") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0566")
       assert_eq(t.session, "20261115-S")
     }
@@ -9063,11 +9063,11 @@ test "generated: Shopware status" {
 test "generated: PrestaShop status" {
   match @ai-pricing-verifier.tool_by_name("PrestaShop") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "EUR")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0567")
       assert_eq(t.session, "20261115-S")
     }
@@ -9179,7 +9179,7 @@ test "generated: Amazon Seller Central status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0574")
       assert_eq(t.session, "20261115-S")
     }
@@ -9191,11 +9191,11 @@ test "generated: Amazon Seller Central status" {
 test "generated: Shift4Shop status" {
   match @ai-pricing-verifier.tool_by_name("Shift4Shop") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0575")
       assert_eq(t.session, "20261115-S")
     }
@@ -9227,7 +9227,7 @@ test "generated: X-Cart status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0577")
       assert_eq(t.session, "20261115-S")
     }
@@ -9243,7 +9243,7 @@ test "generated: Medusa status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0578")
       assert_eq(t.session, "20261115-S")
     }
@@ -9275,7 +9275,7 @@ test "generated: Swell status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0580")
       assert_eq(t.session, "20261115-S")
     }
@@ -9355,7 +9355,7 @@ test "generated: Cin7 status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0585")
       assert_eq(t.session, "20261115-S")
     }
@@ -9371,7 +9371,7 @@ test "generated: inFlow Inventory status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0586")
       assert_eq(t.session, "20261115-S")
     }
@@ -9403,7 +9403,7 @@ test "generated: Shippo status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0588")
       assert_eq(t.session, "20261115-S")
     }
@@ -9479,11 +9479,11 @@ test "generated: EasyPost status" {
 test "generated: ShipEngine status" {
   match @ai-pricing-verifier.tool_by_name("ShipEngine") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0593")
       assert_eq(t.session, "20261115-T")
     }
@@ -9579,7 +9579,7 @@ test "generated: Flexport status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0599")
       assert_eq(t.session, "20261115-T")
     }
@@ -9595,7 +9595,7 @@ test "generated: Freightos status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0600")
       assert_eq(t.session, "20261115-T")
     }
@@ -9639,11 +9639,11 @@ test "generated: project44 status" {
 test "generated: ShipBob status" {
   match @ai-pricing-verifier.tool_by_name("ShipBob") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0603")
       assert_eq(t.session, "20261115-T")
     }
@@ -9703,11 +9703,11 @@ test "generated: Flock Freight status" {
 test "generated: Loadsmart status" {
   match @ai-pricing-verifier.tool_by_name("Loadsmart") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0607")
       assert_eq(t.session, "20261115-T")
     }
@@ -9719,11 +9719,11 @@ test "generated: Loadsmart status" {
 test "generated: Descartes Systems status" {
   match @ai-pricing-verifier.tool_by_name("Descartes Systems") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0608")
       assert_eq(t.session, "20261115-T")
     }
@@ -9831,11 +9831,11 @@ test "generated: RELEX Solutions status" {
 test "generated: E2open status" {
   match @ai-pricing-verifier.tool_by_name("E2open") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0615")
       assert_eq(t.session, "20261115-T")
     }
@@ -9847,11 +9847,11 @@ test "generated: E2open status" {
 test "generated: SPS Commerce status" {
   match @ai-pricing-verifier.tool_by_name("SPS Commerce") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0616")
       assert_eq(t.session, "20261115-T")
     }
@@ -10027,7 +10027,7 @@ test "generated: Protolabs status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0627")
       assert_eq(t.session, "20261115-U")
     }
@@ -10043,7 +10043,7 @@ test "generated: Limble CMMS status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0628")
       assert_eq(t.session, "20261115-U")
     }
@@ -10055,11 +10055,11 @@ test "generated: Limble CMMS status" {
 test "generated: C3 AI status" {
   match @ai-pricing-verifier.tool_by_name("C3 AI") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0629")
       assert_eq(t.session, "20261115-U")
     }
@@ -10311,11 +10311,11 @@ test "generated: Fracttal status" {
 test "generated: Tractian status" {
   match @ai-pricing-verifier.tool_by_name("Tractian") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0645")
       assert_eq(t.session, "20261115-U")
     }
@@ -10375,11 +10375,11 @@ test "generated: Markforged status" {
 test "generated: Stratasys status" {
   match @ai-pricing-verifier.tool_by_name("Stratasys") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0649")
       assert_eq(t.session, "20261115-U")
     }
@@ -10491,7 +10491,7 @@ test "generated: Energy Toolbase status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0656")
       assert_eq(t.session, "20261115-V")
     }
@@ -10507,7 +10507,7 @@ test "generated: Sweep / sweep.net status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0657")
       assert_eq(t.session, "20261115-V")
     }
@@ -10523,7 +10523,7 @@ test "generated: CarbonChain status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0658")
       assert_eq(t.session, "20261115-V")
     }
@@ -10539,7 +10539,7 @@ test "generated: ChargePoint status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0659")
       assert_eq(t.session, "20261115-V")
     }
@@ -10555,7 +10555,7 @@ test "generated: Wallbox status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0660")
       assert_eq(t.session, "20261115-V")
     }
@@ -10571,7 +10571,7 @@ test "generated: Aurora Solar status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0661")
       assert_eq(t.session, "20261115-V")
     }
@@ -10599,11 +10599,11 @@ test "generated: HelioScope status" {
 test "generated: Electricity Maps status" {
   match @ai-pricing-verifier.tool_by_name("Electricity Maps") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0663")
       assert_eq(t.session, "20261115-V")
     }
@@ -10631,11 +10631,11 @@ test "generated: WattTime status" {
 test "generated: Tomorrow.io status" {
   match @ai-pricing-verifier.tool_by_name("Tomorrow.io") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0665")
       assert_eq(t.session, "20261115-V")
     }
@@ -10663,11 +10663,11 @@ test "generated: Watershed status" {
 test "generated: Persefoni status" {
   match @ai-pricing-verifier.tool_by_name("Persefoni") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0667")
       assert_eq(t.session, "20261115-V")
     }
@@ -10679,11 +10679,11 @@ test "generated: Persefoni status" {
 test "generated: Greenly status" {
   match @ai-pricing-verifier.tool_by_name("Greenly") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0668")
       assert_eq(t.session, "20261115-V")
     }
@@ -10711,11 +10711,11 @@ test "generated: Normative status" {
 test "generated: Emitwise status" {
   match @ai-pricing-verifier.tool_by_name("Emitwise") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "GBP")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0670")
       assert_eq(t.session, "20261115-V")
     }
@@ -10807,11 +10807,11 @@ test "generated: Facilio status" {
 test "generated: Sense status" {
   match @ai-pricing-verifier.tool_by_name("Sense") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0676")
       assert_eq(t.session, "20261115-V")
     }
@@ -10839,11 +10839,11 @@ test "generated: Arcadia status" {
 test "generated: OhmConnect status" {
   match @ai-pricing-verifier.tool_by_name("OhmConnect") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0678")
       assert_eq(t.session, "20261115-V")
     }
@@ -10887,11 +10887,11 @@ test "generated: AMP Robotics status" {
 test "generated: Mapbox status" {
   match @ai-pricing-verifier.tool_by_name("Mapbox") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0681")
       assert_eq(t.session, "20261115-W")
     }
@@ -11015,11 +11015,11 @@ test "generated: Verizon Connect status" {
 test "generated: Lytx status" {
   match @ai-pricing-verifier.tool_by_name("Lytx") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0689")
       assert_eq(t.session, "20261115-W")
     }
@@ -11031,11 +11031,11 @@ test "generated: Lytx status" {
 test "generated: Nauto status" {
   match @ai-pricing-verifier.tool_by_name("Nauto") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0690")
       assert_eq(t.session, "20261115-W")
     }
@@ -11047,11 +11047,11 @@ test "generated: Nauto status" {
 test "generated: Route4Me status" {
   match @ai-pricing-verifier.tool_by_name("Route4Me") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0691")
       assert_eq(t.session, "20261115-W")
     }
@@ -11079,11 +11079,11 @@ test "generated: Circuit status" {
 test "generated: OptimoRoute status" {
   match @ai-pricing-verifier.tool_by_name("OptimoRoute") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0693")
       assert_eq(t.session, "20261115-W")
     }
@@ -11111,11 +11111,11 @@ test "generated: Routific status" {
 test "generated: Onfleet status" {
   match @ai-pricing-verifier.tool_by_name("Onfleet") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0695")
       assert_eq(t.session, "20261115-W")
     }
@@ -11127,11 +11127,11 @@ test "generated: Onfleet status" {
 test "generated: Turo status" {
   match @ai-pricing-verifier.tool_by_name("Turo") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0696")
       assert_eq(t.session, "20261115-W")
     }
@@ -11143,11 +11143,11 @@ test "generated: Turo status" {
 test "generated: Zipcar status" {
   match @ai-pricing-verifier.tool_by_name("Zipcar") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0697")
       assert_eq(t.session, "20261115-W")
     }
@@ -11175,11 +11175,11 @@ test "generated: Lime status" {
 test "generated: Bird status" {
   match @ai-pricing-verifier.tool_by_name("Bird") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0699")
       assert_eq(t.session, "20261115-W")
     }
@@ -11191,11 +11191,11 @@ test "generated: Bird status" {
 test "generated: Uber status" {
   match @ai-pricing-verifier.tool_by_name("Uber") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0700")
       assert_eq(t.session, "20261115-W")
     }
@@ -11207,11 +11207,11 @@ test "generated: Uber status" {
 test "generated: Lyft status" {
   match @ai-pricing-verifier.tool_by_name("Lyft") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0701")
       assert_eq(t.session, "20261115-W")
     }
@@ -11223,11 +11223,11 @@ test "generated: Lyft status" {
 test "generated: Waymo status" {
   match @ai-pricing-verifier.tool_by_name("Waymo") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0702")
       assert_eq(t.session, "20261115-W")
     }
@@ -11239,11 +11239,11 @@ test "generated: Waymo status" {
 test "generated: BlaBlaCar status" {
   match @ai-pricing-verifier.tool_by_name("BlaBlaCar") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "EUR")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0703")
       assert_eq(t.session, "20261115-W")
     }
@@ -11271,11 +11271,11 @@ test "generated: FlixBus status" {
 test "generated: Citymapper status" {
   match @ai-pricing-verifier.tool_by_name("Citymapper") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "GBP")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0705")
       assert_eq(t.session, "20261115-W")
     }
@@ -11319,11 +11319,11 @@ test "generated: Moovit status" {
 test "generated: Tesla status" {
   match @ai-pricing-verifier.tool_by_name("Tesla") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0708")
       assert_eq(t.session, "20261115-W")
     }
@@ -11335,11 +11335,11 @@ test "generated: Tesla status" {
 test "generated: Rivian status" {
   match @ai-pricing-verifier.tool_by_name("Rivian") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "CAD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0709")
       assert_eq(t.session, "20261115-W")
     }
@@ -11351,11 +11351,11 @@ test "generated: Rivian status" {
 test "generated: Lucid Motors status" {
   match @ai-pricing-verifier.tool_by_name("Lucid Motors") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0710")
       assert_eq(t.session, "20261115-W")
     }
@@ -11367,11 +11367,11 @@ test "generated: Lucid Motors status" {
 test "generated: Bloomberg status" {
   match @ai-pricing-verifier.tool_by_name("Bloomberg") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0711")
       assert_eq(t.session, "20261115-X")
     }
@@ -11383,11 +11383,11 @@ test "generated: Bloomberg status" {
 test "generated: Financial Times status" {
   match @ai-pricing-verifier.tool_by_name("Financial Times") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0712")
       assert_eq(t.session, "20261115-X")
     }
@@ -11399,11 +11399,11 @@ test "generated: Financial Times status" {
 test "generated: The Economist status" {
   match @ai-pricing-verifier.tool_by_name("The Economist") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0713")
       assert_eq(t.session, "20261115-X")
     }
@@ -11447,11 +11447,11 @@ test "generated: The Washington Post status" {
 test "generated: The New York Times status" {
   match @ai-pricing-verifier.tool_by_name("The New York Times") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0716")
       assert_eq(t.session, "20261115-X")
     }
@@ -11463,11 +11463,11 @@ test "generated: The New York Times status" {
 test "generated: The Athletic status" {
   match @ai-pricing-verifier.tool_by_name("The Athletic") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0717")
       assert_eq(t.session, "20261115-X")
     }
@@ -11511,11 +11511,11 @@ test "generated: Medium status" {
 test "generated: Substack status" {
   match @ai-pricing-verifier.tool_by_name("Substack") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0720")
       assert_eq(t.session, "20261115-X")
     }
@@ -11527,11 +11527,11 @@ test "generated: Substack status" {
 test "generated: The Guardian status" {
   match @ai-pricing-verifier.tool_by_name("The Guardian") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "GBP")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0721")
       assert_eq(t.session, "20261115-X")
     }
@@ -11559,11 +11559,11 @@ test "generated: Wired status" {
 test "generated: The Atlantic status" {
   match @ai-pricing-verifier.tool_by_name("The Atlantic") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0723")
       assert_eq(t.session, "20261115-X")
     }
@@ -11575,11 +11575,11 @@ test "generated: The Atlantic status" {
 test "generated: Rolling Stone status" {
   match @ai-pricing-verifier.tool_by_name("Rolling Stone") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0724")
       assert_eq(t.session, "20261115-X")
     }
@@ -11607,11 +11607,11 @@ test "generated: NewsAPI status" {
 test "generated: GNews API status" {
   match @ai-pricing-verifier.tool_by_name("GNews API") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "EUR")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0726")
       assert_eq(t.session, "20261115-X")
     }
@@ -11623,11 +11623,11 @@ test "generated: GNews API status" {
 test "generated: Mediastack status" {
   match @ai-pricing-verifier.tool_by_name("Mediastack") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0727")
       assert_eq(t.session, "20261115-X")
     }
@@ -11639,11 +11639,11 @@ test "generated: Mediastack status" {
 test "generated: DaVinci Resolve Studio status" {
   match @ai-pricing-verifier.tool_by_name("DaVinci Resolve Studio") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0728")
       assert_eq(t.session, "20261115-X")
     }
@@ -11671,11 +11671,11 @@ test "generated: Final Cut Pro status" {
 test "generated: OBS Studio status" {
   match @ai-pricing-verifier.tool_by_name("OBS Studio") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0730")
       assert_eq(t.session, "20261115-X")
     }
@@ -11687,11 +11687,11 @@ test "generated: OBS Studio status" {
 test "generated: Streamlabs status" {
   match @ai-pricing-verifier.tool_by_name("Streamlabs") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0731")
       assert_eq(t.session, "20261115-X")
     }
@@ -11703,11 +11703,11 @@ test "generated: Streamlabs status" {
 test "generated: Epidemic Sound status" {
   match @ai-pricing-verifier.tool_by_name("Epidemic Sound") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0732")
       assert_eq(t.session, "20261115-X")
     }
@@ -11719,11 +11719,11 @@ test "generated: Epidemic Sound status" {
 test "generated: Artlist status" {
   match @ai-pricing-verifier.tool_by_name("Artlist") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0733")
       assert_eq(t.session, "20261115-X")
     }
@@ -11735,11 +11735,11 @@ test "generated: Artlist status" {
 test "generated: Pond5 status" {
   match @ai-pricing-verifier.tool_by_name("Pond5") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0734")
       assert_eq(t.session, "20261115-X")
     }
@@ -11751,11 +11751,11 @@ test "generated: Pond5 status" {
 test "generated: Getty Images status" {
   match @ai-pricing-verifier.tool_by_name("Getty Images") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0735")
       assert_eq(t.session, "20261115-X")
     }
@@ -11767,11 +11767,11 @@ test "generated: Getty Images status" {
 test "generated: Shutterstock status" {
   match @ai-pricing-verifier.tool_by_name("Shutterstock") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0736")
       assert_eq(t.session, "20261115-X")
     }
@@ -11783,11 +11783,11 @@ test "generated: Shutterstock status" {
 test "generated: Unsplash status" {
   match @ai-pricing-verifier.tool_by_name("Unsplash") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0737")
       assert_eq(t.session, "20261115-X")
     }
@@ -11799,11 +11799,11 @@ test "generated: Unsplash status" {
 test "generated: Semafor status" {
   match @ai-pricing-verifier.tool_by_name("Semafor") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0738")
       assert_eq(t.session, "20261115-X")
     }
@@ -11815,11 +11815,11 @@ test "generated: Semafor status" {
 test "generated: Puck status" {
   match @ai-pricing-verifier.tool_by_name("Puck") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0739")
       assert_eq(t.session, "20261115-X")
     }
@@ -12139,7 +12139,7 @@ test "generated: Meetup status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0759")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12155,7 +12155,7 @@ test "generated: Cvent status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0760")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12167,11 +12167,11 @@ test "generated: Cvent status" {
 test "generated: Ticket Tailor status" {
   match @ai-pricing-verifier.tool_by_name("Ticket Tailor") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "GBP")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0761")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12183,11 +12183,11 @@ test "generated: Ticket Tailor status" {
 test "generated: Billetto status" {
   match @ai-pricing-verifier.tool_by_name("Billetto") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0762")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12231,11 +12231,11 @@ test "generated: Ticketmaster status" {
 test "generated: StubHub status" {
   match @ai-pricing-verifier.tool_by_name("StubHub") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0765")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12247,11 +12247,11 @@ test "generated: StubHub status" {
 test "generated: SeatGeek status" {
   match @ai-pricing-verifier.tool_by_name("SeatGeek") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0766")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12263,11 +12263,11 @@ test "generated: SeatGeek status" {
 test "generated: DICE status" {
   match @ai-pricing-verifier.tool_by_name("DICE") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "GBP")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0767")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12279,11 +12279,11 @@ test "generated: DICE status" {
 test "generated: Fever status" {
   match @ai-pricing-verifier.tool_by_name("Fever") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0768")
       assert_eq(t.session, "20261115-Z")
     }
@@ -12343,11 +12343,11 @@ test "generated: Wag! status" {
 test "generated: PetBacker status" {
   match @ai-pricing-verifier.tool_by_name("PetBacker") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0772")
       assert_eq(t.session, "20261115-AA")
     }
@@ -12359,11 +12359,11 @@ test "generated: PetBacker status" {
 test "generated: Pawshake status" {
   match @ai-pricing-verifier.tool_by_name("Pawshake") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0773")
       assert_eq(t.session, "20261115-AA")
     }
@@ -12375,11 +12375,11 @@ test "generated: Pawshake status" {
 test "generated: Mad Paws status" {
   match @ai-pricing-verifier.tool_by_name("Mad Paws") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "AUD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0774")
       assert_eq(t.session, "20261115-AA")
     }
@@ -12507,7 +12507,7 @@ test "generated: Figo status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0782")
       assert_eq(t.session, "20261115-AA")
     }
@@ -12519,11 +12519,11 @@ test "generated: Figo status" {
 test "generated: Trupanion status" {
   match @ai-pricing-verifier.tool_by_name("Trupanion") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0783")
       assert_eq(t.session, "20261115-AA")
     }
@@ -12603,7 +12603,7 @@ test "generated: MetLife Pet status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0788")
       assert_eq(t.session, "20261115-AA")
     }
@@ -12663,11 +12663,11 @@ test "generated: Whistle status" {
 test "generated: Fi status" {
   match @ai-pricing-verifier.tool_by_name("Fi") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0792")
       assert_eq(t.session, "20261115-AA")
     }
@@ -12987,7 +12987,7 @@ test "generated: Owlet status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0812")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13003,7 +13003,7 @@ test "generated: Kinedu status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0813")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13019,7 +13019,7 @@ test "generated: Cradlewise status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0814")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13035,7 +13035,7 @@ test "generated: SNOO status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0815")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13063,11 +13063,11 @@ test "generated: Flo status" {
 test "generated: Hatch status" {
   match @ai-pricing-verifier.tool_by_name("Hatch") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0817")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13079,11 +13079,11 @@ test "generated: Hatch status" {
 test "generated: Wonder Weeks status" {
   match @ai-pricing-verifier.tool_by_name("Wonder Weeks") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0818")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13111,11 +13111,11 @@ test "generated: Clue status" {
 test "generated: Ovia status" {
   match @ai-pricing-verifier.tool_by_name("Ovia") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0820")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13127,11 +13127,11 @@ test "generated: Ovia status" {
 test "generated: Natural Cycles status" {
   match @ai-pricing-verifier.tool_by_name("Natural Cycles") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0821")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13143,11 +13143,11 @@ test "generated: Natural Cycles status" {
 test "generated: Otsimo status" {
   match @ai-pricing-verifier.tool_by_name("Otsimo") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0822")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13175,11 +13175,11 @@ test "generated: Joon status" {
 test "generated: Epic status" {
   match @ai-pricing-verifier.tool_by_name("Epic") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0824")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13191,11 +13191,11 @@ test "generated: Epic status" {
 test "generated: Nara Baby status" {
   match @ai-pricing-verifier.tool_by_name("Nara Baby") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0825")
       assert_eq(t.session, "20261115-AB")
     }
@@ -13271,11 +13271,11 @@ test "generated: X Premium status" {
 test "generated: LinkedIn Premium status" {
   match @ai-pricing-verifier.tool_by_name("LinkedIn Premium") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0830")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13287,11 +13287,11 @@ test "generated: LinkedIn Premium status" {
 test "generated: Reddit Premium status" {
   match @ai-pricing-verifier.tool_by_name("Reddit Premium") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0831")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13303,11 +13303,11 @@ test "generated: Reddit Premium status" {
 test "generated: Telegram Premium status" {
   match @ai-pricing-verifier.tool_by_name("Telegram Premium") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0832")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13335,11 +13335,11 @@ test "generated: Snapchat+ status" {
 test "generated: YouTube Premium status" {
   match @ai-pricing-verifier.tool_by_name("YouTube Premium") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0834")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13351,11 +13351,11 @@ test "generated: YouTube Premium status" {
 test "generated: Meta Verified status" {
   match @ai-pricing-verifier.tool_by_name("Meta Verified") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0835")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13371,7 +13371,7 @@ test "generated: Patreon status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0836")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13383,11 +13383,11 @@ test "generated: Patreon status" {
 test "generated: Ko-fi status" {
   match @ai-pricing-verifier.tool_by_name("Ko-fi") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0837")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13399,11 +13399,11 @@ test "generated: Ko-fi status" {
 test "generated: Buy Me a Coffee status" {
   match @ai-pricing-verifier.tool_by_name("Buy Me a Coffee") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0838")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13447,11 +13447,11 @@ test "generated: Circle status" {
 test "generated: Mighty Networks status" {
   match @ai-pricing-verifier.tool_by_name("Mighty Networks") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0841")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13479,11 +13479,11 @@ test "generated: Discourse status" {
 test "generated: Tribe status" {
   match @ai-pricing-verifier.tool_by_name("Tribe") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0843")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13495,11 +13495,11 @@ test "generated: Tribe status" {
 test "generated: Bettermode status" {
   match @ai-pricing-verifier.tool_by_name("Bettermode") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0844")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13559,11 +13559,11 @@ test "generated: BuddyBoss status" {
 test "generated: Whop status" {
   match @ai-pricing-verifier.tool_by_name("Whop") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0848")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13591,11 +13591,11 @@ test "generated: Geneva status" {
 test "generated: Mastodon status" {
   match @ai-pricing-verifier.tool_by_name("Mastodon") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0850")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13623,11 +13623,11 @@ test "generated: Bluesky status" {
 test "generated: Tumblr status" {
   match @ai-pricing-verifier.tool_by_name("Tumblr") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0852")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13639,11 +13639,11 @@ test "generated: Tumblr status" {
 test "generated: Pinterest status" {
   match @ai-pricing-verifier.tool_by_name("Pinterest") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0853")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13671,11 +13671,11 @@ test "generated: Quora+ status" {
 test "generated: Rumble Premium status" {
   match @ai-pricing-verifier.tool_by_name("Rumble Premium") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "受限")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0855")
       assert_eq(t.session, "20261115-Y")
     }
@@ -13691,7 +13691,7 @@ test "generated: Locals status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0856")
       assert_eq(t.session, "20261115-Y")
     }
@@ -14027,7 +14027,7 @@ test "generated: Sprout Studio status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0877")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14039,11 +14039,11 @@ test "generated: Sprout Studio status" {
 test "generated: ShootProof status" {
   match @ai-pricing-verifier.tool_by_name("ShootProof") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0878")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14055,11 +14055,11 @@ test "generated: ShootProof status" {
 test "generated: Pic-Time status" {
   match @ai-pricing-verifier.tool_by_name("Pic-Time") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0879")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14071,11 +14071,11 @@ test "generated: Pic-Time status" {
 test "generated: DxO PhotoLab status" {
   match @ai-pricing-verifier.tool_by_name("DxO PhotoLab") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0880")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14087,11 +14087,11 @@ test "generated: DxO PhotoLab status" {
 test "generated: Capture One status" {
   match @ai-pricing-verifier.tool_by_name("Capture One") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0881")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14103,11 +14103,11 @@ test "generated: Capture One status" {
 test "generated: SmugMug status" {
   match @ai-pricing-verifier.tool_by_name("SmugMug") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0882")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14119,11 +14119,11 @@ test "generated: SmugMug status" {
 test "generated: PhotoShelter status" {
   match @ai-pricing-verifier.tool_by_name("PhotoShelter") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0883")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14135,11 +14135,11 @@ test "generated: PhotoShelter status" {
 test "generated: Táve (现 VSCO Workspace) status" {
   match @ai-pricing-verifier.tool_by_name("Táve (现 VSCO Workspace)") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0884")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14151,11 +14151,11 @@ test "generated: Táve (现 VSCO Workspace) status" {
 test "generated: Studio Ninja status" {
   match @ai-pricing-verifier.tool_by_name("Studio Ninja") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0885")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14167,11 +14167,11 @@ test "generated: Studio Ninja status" {
 test "generated: Zola status" {
   match @ai-pricing-verifier.tool_by_name("Zola") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0886")
       assert_eq(t.session, "20261115-AC")
     }
@@ -14199,11 +14199,11 @@ test "generated: Elicit status" {
 test "generated: Consensus status" {
   match @ai-pricing-verifier.tool_by_name("Consensus") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0888")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14215,11 +14215,11 @@ test "generated: Consensus status" {
 test "generated: Scite.ai status" {
   match @ai-pricing-verifier.tool_by_name("Scite.ai") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0889")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14247,11 +14247,11 @@ test "generated: SciSpace status" {
 test "generated: Paperpal status" {
   match @ai-pricing-verifier.tool_by_name("Paperpal") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0891")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14263,11 +14263,11 @@ test "generated: Paperpal status" {
 test "generated: Trinka AI status" {
   match @ai-pricing-verifier.tool_by_name("Trinka AI") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0892")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14299,7 +14299,7 @@ test "generated: Afforai / Logically status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0894")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14363,7 +14363,7 @@ test "generated: Litmaps status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0898")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14407,11 +14407,11 @@ test "generated: EndNote status" {
 test "generated: Mendeley status" {
   match @ai-pricing-verifier.tool_by_name("Mendeley") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0901")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14439,11 +14439,11 @@ test "generated: Overleaf status" {
 test "generated: Research Rabbit status" {
   match @ai-pricing-verifier.tool_by_name("Research Rabbit") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0903")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14455,11 +14455,11 @@ test "generated: Research Rabbit status" {
 test "generated: Connected Papers status" {
   match @ai-pricing-verifier.tool_by_name("Connected Papers") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0904")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14471,11 +14471,11 @@ test "generated: Connected Papers status" {
 test "generated: Semantic Scholar status" {
   match @ai-pricing-verifier.tool_by_name("Semantic Scholar") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0905")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14503,11 +14503,11 @@ test "generated: Academia.edu status" {
 test "generated: GPTZero status" {
   match @ai-pricing-verifier.tool_by_name("GPTZero") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0907")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14615,11 +14615,11 @@ test "generated: Covidence status" {
 test "generated: Writefull status" {
   match @ai-pricing-verifier.tool_by_name("Writefull") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0914")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14631,11 +14631,11 @@ test "generated: Writefull status" {
 test "generated: Scholarcy status" {
   match @ai-pricing-verifier.tool_by_name("Scholarcy") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0915")
       assert_eq(t.session, "20261115-AD")
     }
@@ -14743,11 +14743,11 @@ test "generated: GovPilot status" {
 test "generated: ClearGov status" {
   match @ai-pricing-verifier.tool_by_name("ClearGov") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0922")
       assert_eq(t.session, "20261115-AE")
     }
@@ -14759,11 +14759,11 @@ test "generated: ClearGov status" {
 test "generated: Polco status" {
   match @ai-pricing-verifier.tool_by_name("Polco") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0923")
       assert_eq(t.session, "20261115-AE")
     }
@@ -14823,11 +14823,11 @@ test "generated: Zencity status" {
 test "generated: Balancing Act status" {
   match @ai-pricing-verifier.tool_by_name("Balancing Act") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0927")
       assert_eq(t.session, "20261115-AE")
     }
@@ -14871,11 +14871,11 @@ test "generated: Envisio status" {
 test "generated: ClearPoint Strategy status" {
   match @ai-pricing-verifier.tool_by_name("ClearPoint Strategy") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0930")
       assert_eq(t.session, "20261115-AE")
     }
@@ -14919,11 +14919,11 @@ test "generated: GovOS status" {
 test "generated: PayIt status" {
   match @ai-pricing-verifier.tool_by_name("PayIt") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0933")
       assert_eq(t.session, "20261115-AE")
     }
@@ -14935,11 +14935,11 @@ test "generated: PayIt status" {
 test "generated: InvoiceCloud status" {
   match @ai-pricing-verifier.tool_by_name("InvoiceCloud") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
-      assert_eq(t.reachable, "打不开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0934")
       assert_eq(t.session, "20261115-AE")
     }
@@ -14983,11 +14983,11 @@ test "generated: GovQA status" {
 test "generated: Laserfiche status" {
   match @ai-pricing-verifier.tool_by_name("Laserfiche") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0937")
       assert_eq(t.session, "20261115-AE")
     }
@@ -15031,11 +15031,11 @@ test "generated: Esri ArcGIS Online status" {
 test "generated: 国家政务服务平台 status" {
   match @ai-pricing-verifier.tool_by_name("国家政务服务平台") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "CNY")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0940")
       assert_eq(t.session, "20261115-AE")
     }
@@ -15051,7 +15051,7 @@ test "generated: Lemonade status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0941")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15131,7 +15131,7 @@ test "generated: Vouch status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0946")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15239,11 +15239,11 @@ test "generated: Openly status" {
 test "generated: Slide Insurance status" {
   match @ai-pricing-verifier.tool_by_name("Slide Insurance") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0953")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15259,7 +15259,7 @@ test "generated: Neptune Flood status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0954")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15275,7 +15275,7 @@ test "generated: Policygenius status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0955")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15291,7 +15291,7 @@ test "generated: Insurify status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0956")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15303,11 +15303,11 @@ test "generated: Insurify status" {
 test "generated: The Zebra status" {
   match @ai-pricing-verifier.tool_by_name("The Zebra") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0957")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15355,7 +15355,7 @@ test "generated: Ladder Life status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0960")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15371,7 +15371,7 @@ test "generated: Ethos Life status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0961")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15399,11 +15399,11 @@ test "generated: Bestow status" {
 test "generated: Haven Life status" {
   match @ai-pricing-verifier.tool_by_name("Haven Life") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0963")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15415,11 +15415,11 @@ test "generated: Haven Life status" {
 test "generated: Getsafe status" {
   match @ai-pricing-verifier.tool_by_name("Getsafe") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0964")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15447,11 +15447,11 @@ test "generated: YuLife status" {
 test "generated: Alan status" {
   match @ai-pricing-verifier.tool_by_name("Alan") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "CAD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0966")
       assert_eq(t.session, "20261115-AF")
     }
@@ -15527,11 +15527,11 @@ test "generated: ZestyAI status" {
 test "generated: Coinbase status" {
   match @ai-pricing-verifier.tool_by_name("Coinbase") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0971")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15623,11 +15623,11 @@ test "generated: QuickNode status" {
 test "generated: Moralis status" {
   match @ai-pricing-verifier.tool_by_name("Moralis") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0977")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15691,7 +15691,7 @@ test "generated: Chainlink status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0981")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15703,11 +15703,11 @@ test "generated: Chainlink status" {
 test "generated: Uniswap status" {
   match @ai-pricing-verifier.tool_by_name("Uniswap") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0982")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15719,11 +15719,11 @@ test "generated: Uniswap status" {
 test "generated: OpenSea status" {
   match @ai-pricing-verifier.tool_by_name("OpenSea") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0983")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15739,7 +15739,7 @@ test "generated: MoonPay status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0984")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15751,11 +15751,11 @@ test "generated: MoonPay status" {
 test "generated: Transak status" {
   match @ai-pricing-verifier.tool_by_name("Transak") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "EUR")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0985")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15767,11 +15767,11 @@ test "generated: Transak status" {
 test "generated: BitGo status" {
   match @ai-pricing-verifier.tool_by_name("BitGo") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0986")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15879,11 +15879,11 @@ test "generated: CryptoQuant status" {
 test "generated: Kaiko status" {
   match @ai-pricing-verifier.tool_by_name("Kaiko") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0993")
       assert_eq(t.session, "20261115-AG")
     }
@@ -15975,11 +15975,11 @@ test "generated: Blockdaemon status" {
 test "generated: Figment status" {
   match @ai-pricing-verifier.tool_by_name("Figment") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
-      assert_eq(t.currency, "")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
-      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "其他")
+      assert_eq(t.verified_at, "2026-11-16")
       assert_eq(t.key, "APV-0999")
       assert_eq(t.session, "20261115-AG")
     }
