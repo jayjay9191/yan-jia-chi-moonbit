@@ -11,7 +11,7 @@
 
 name = "jayjay9191/ai-pricing-verifier"
 
-version = "0.1.0"
+version = "0.1.1"
 
 readme = "README.mbt.md"
 
