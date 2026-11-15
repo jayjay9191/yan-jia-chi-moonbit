@@ -1,7 +1,9 @@
-# 每次推送与 PR 自动跑 moon test。
+# 每次推送与 PR 自动跑 moon test + Python 测试 + verify。
 # 安装方式按 MoonBit 官方文档（moonbitlang/x 等官方项目同款流程）：
 # 官方安装脚本装 CLI，再 moon update 同步核心库，然后跑测试。
-name: MoonBit test
+# 模式照参赛管家 .github/workflows/moon-test.yml；本仓库原 moon-test.yml
+# 已改名为 ci.yml（内容相同，另补 report 冒烟检查），避免两套 CI 重复跑。
+name: CI
 
 on:
   push:
@@ -35,3 +37,7 @@ jobs:
           moon test
       - name: Run Python script tests
         run: python3 -m unittest discover -s tests_py
+      - name: Smoke test report
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon run cmd/main -- report

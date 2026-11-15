@@ -151,7 +151,7 @@ python3 -m unittest discover -s tests_py
 | 明确标空白 | 是（263/274 无毕业年份等） | 是（469/1000 未核验到，付费价留空；128/1000 部分核验单列一档） | 已超（空白比例更高、口径更严：第三方转述的价一律不采纳） |
 | 验证方法论 | 自述，未见测试 | 14 项检查 + 1066 项 MoonBit 测试 + 13 项 Python 测试，`verify` 0 错，核心库 0 行未覆盖 | 已超 |
 | 公开仓库 | 无 | 本地已 git init、多 commit，未推、未建远程仓库（见下） | 还差（等建仓） |
-| CI | 无 | `.github/workflows/moon-test.yml` 已写好，仓库建好后生效 | 还差（等建仓） |
+| CI | 无 | `.github/workflows/ci.yml` 已写好，仓库建好后生效（跑 moon test + Python 测试 + verify + report 冒烟检查；原 moon-test.yml 已改名为 ci.yml） | 还差（等建仓） |
 | 可运行工具 | 演示链接 403 打不开 | CLI 本地可跑：list / verify / stale / report / check | 已超 |
 | 数字来源 | PDF 自述 | JSON 数据 + 生成器 + 测试三重锁定，全部带分母 | 已超 |
 | 变现 | ¥9.9 深度报告（自述，未见回执） | 不硬做：等价物是可交付的带证据链核验报告本身（本仓库 + `report`/`check` 输出），不编“已跑通支付”的说法 | 追平（都不宣称已验证的支付闭环） |

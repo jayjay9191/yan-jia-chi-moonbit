@@ -51,8 +51,9 @@ J085「周末加个餐」的赢法是验证方法论 + 可复用打包：
   没法验。本项目数据在 `data/pricing.json`，生成器产出 MoonBit 数据模块，
   逐工具断言由生成器从 JSON 产出——数字改了，测试跟着变，不会悄悄过期。
 - **无仓库 → 本地 git + CI 文件**：J006 没有公开仓库，演示链接 403。
-  本项目本地 git init、多 commit，`.github/workflows/moon-test.yml`
-  已写好（仓库建好后生效）。远程仓库、推送、报名表都没做——等用户指令，
+  本项目本地 git init、多 commit，`.github/workflows/ci.yml`
+  已写好（仓库建好后生效；原 moon-test.yml 已改名为 ci.yml，见 2026-11-16
+  提交说明）。远程仓库、推送、报名表都没做——等用户指令，
   不擅自做。
 - **死演示 → 可运行 CLI**：J006 的演示打不开。本项目 `list/verify/stale/
   report/check` 本地全能跑，演示命令在 README 里复制粘贴即跑。
