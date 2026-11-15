@@ -395,3 +395,8 @@ README 对比表里找到出处。
 
 见 §4（三档核验状态、过期检测、货币一致性规则、CSV 缺陷处理、
 计费周期前缀归类），这里不重复。
+
+## 11. 已知问题：生成文件与 moon fmt（2026-11-16）
+
+- `scripts/generate_data.py` 生成的 `pricing_data.mbt` 不是 fmt-clean（history 结构体写单行，`moon fmt` 会展开成多行，约 2115 行 diff）；仓库里提交的是 fmt 后的版本，CI 同步检查（生成 + fmt + diff）以此为准。
+- `tests_py/test_scripts.py` 有个测试会调 `generate_data.main()`，所以**本地跑一遍 Python 测试就会把 `pricing_data.mbt` 写回生成器原始格式**，工作区随即变脏——不是数据丢了，提交前重跑一次 `moon fmt` 即可。根治办法是改生成器直接输出 fmt-clean 格式，待做。
