@@ -1,0 +1,37 @@
+# 每次推送与 PR 自动跑 moon test。
+# 安装方式按 MoonBit 官方文档（moonbitlang/x 等官方项目同款流程）：
+# 官方安装脚本装 CLI，再 moon update 同步核心库，然后跑测试。
+name: MoonBit test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MoonBit
+        run: curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+      - name: Update MoonBit registry
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon update
+      - name: Check generated data is in sync
+        run: |
+          python3 scripts/generate_data.py
+          python3 scripts/generate_tests.py
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon fmt
+          git diff --exit-code -- pricing_data.mbt pricing_generated_test.mbt
+      - name: Validate data
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon run cmd/main -- verify
+      - name: Run tests
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon test
+      - name: Run Python script tests
+        run: python3 -m unittest discover -s tests_py
