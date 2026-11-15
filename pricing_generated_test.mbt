@@ -2722,3 +2722,483 @@ test "generated: Databricks status" {
     None => assert_true(false)
   }
 }
+
+///|
+test "generated: Slack AI status" {
+  match @ai-pricing-verifier.tool_by_name("Slack AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0171")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Zoom AI Companion status" {
+  match @ai-pricing-verifier.tool_by_name("Zoom AI Companion") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0172")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Fellow status" {
+  match @ai-pricing-verifier.tool_by_name("Fellow") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0173")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Read AI status" {
+  match @ai-pricing-verifier.tool_by_name("Read AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0174")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Motion status" {
+  match @ai-pricing-verifier.tool_by_name("Motion") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0175")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Reclaim AI status" {
+  match @ai-pricing-verifier.tool_by_name("Reclaim AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0176")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Mem status" {
+  match @ai-pricing-verifier.tool_by_name("Mem") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0177")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Tana status" {
+  match @ai-pricing-verifier.tool_by_name("Tana") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0178")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Heptabase status" {
+  match @ai-pricing-verifier.tool_by_name("Heptabase") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0179")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Craft status" {
+  match @ai-pricing-verifier.tool_by_name("Craft") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0180")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Todoist AI status" {
+  match @ai-pricing-verifier.tool_by_name("Todoist AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0181")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Sunsama status" {
+  match @ai-pricing-verifier.tool_by_name("Sunsama") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0182")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Dropbox Dash status" {
+  match @ai-pricing-verifier.tool_by_name("Dropbox Dash") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0183")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Box AI status" {
+  match @ai-pricing-verifier.tool_by_name("Box AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0184")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: HubSpot AI status" {
+  match @ai-pricing-verifier.tool_by_name("HubSpot AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0185")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Salesforce Einstein status" {
+  match @ai-pricing-verifier.tool_by_name("Salesforce Einstein") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0186")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Zendesk AI status" {
+  match @ai-pricing-verifier.tool_by_name("Zendesk AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0187")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Intercom Fin status" {
+  match @ai-pricing-verifier.tool_by_name("Intercom Fin") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0188")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Gong status" {
+  match @ai-pricing-verifier.tool_by_name("Gong") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0189")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: You.com status" {
+  match @ai-pricing-verifier.tool_by_name("You.com") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0190")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Genspark status" {
+  match @ai-pricing-verifier.tool_by_name("Genspark") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0191")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Felo status" {
+  match @ai-pricing-verifier.tool_by_name("Felo") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
+      assert_eq(t.currency, "USD")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "月/年")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0192")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: Metaso / 秘塔 AI 搜索 status" {
+  match @ai-pricing-verifier.tool_by_name("Metaso / 秘塔 AI 搜索") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "受限")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0193")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: 天工 AI status" {
+  match @ai-pricing-verifier.tool_by_name("天工 AI") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "受限")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0194")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: 商汤商量 / SenseChat status" {
+  match @ai-pricing-verifier.tool_by_name("商汤商量 / SenseChat") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "受限")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0195")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: 百川智能 / 百小应 status" {
+  match @ai-pricing-verifier.tool_by_name("百川智能 / 百小应") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0196")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: 零一万物 / 万知 status" {
+  match @ai-pricing-verifier.tool_by_name("零一万物 / 万知") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0197")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: 阶跃星辰 / 跃问 status" {
+  match @ai-pricing-verifier.tool_by_name("阶跃星辰 / 跃问") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0198")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: 面壁智能 / 面壁露卡 Luca status" {
+  match @ai-pricing-verifier.tool_by_name("面壁智能 / 面壁露卡 Luca") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "未核验到")
+      assert_eq(t.currency, "")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0199")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "generated: 火山引擎 status" {
+  match @ai-pricing-verifier.tool_by_name("火山引擎") {
+    Some(t) => {
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(t.currency, "CNY")
+      assert_eq(t.reachable, "能打开")
+      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
+      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.key, "APV-0200")
+      assert_eq(t.session, "20261115-F")
+    }
+    None => assert_true(false)
+  }
+}
