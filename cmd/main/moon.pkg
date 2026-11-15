@@ -1,0 +1,6 @@
+import {
+  "jayjay9191/ai-pricing-verifier" @lib,
+  "moonbitlang/core/env",
+}
+
+pkgtype(kind: "executable")
