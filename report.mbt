@@ -24,6 +24,7 @@ pub(all) struct PricingReport {
   billing_monthly_yearly : Int32 // 月/年
   billing_yearly : Int32 // 按年
   billing_empty : Int32
+  billing_other : Int32 // 其他（非订阅计费，如按贷款计息/按次/按笔）
   student_seen : Int32 // 学生优惠有说明的
   student_unseen : Int32 // 学生优惠写“未见”的
   stale_count : Int32 // 过期未复核的（距今超 30 天）
@@ -73,6 +74,7 @@ pub fn build_report(tools : Array[ToolPricing], today : Int32) -> PricingReport 
     billing_monthly_yearly: count_billing_category(tools, "月/年"),
     billing_yearly: count_billing_category(tools, "按年"),
     billing_empty: count_billing_category(tools, ""),
+    billing_other: count_billing_category(tools, "其他"),
     student_seen,
     student_unseen: tools.length() - student_seen,
     stale_count: stale,
@@ -105,7 +107,7 @@ pub fn report_lines(r : PricingReport) -> Array[String] {
     "货币：USD \{r.currency_usd} 个，JPY \{r.currency_jpy} 个，CNY \{r.currency_cny} 个，无货币（未核验到）\{r.currency_empty} 个",
   )
   lines.push(
-    "计费：按量 \{r.billing_pay_as_you_go} 个，按月 \{r.billing_monthly} 个，月/年 \{r.billing_monthly_yearly} 个，按年 \{r.billing_yearly} 个，无（未核验到）\{r.billing_empty} 个",
+    "计费：按量 \{r.billing_pay_as_you_go} 个，按月 \{r.billing_monthly} 个，月/年 \{r.billing_monthly_yearly} 个，按年 \{r.billing_yearly} 个，无（未核验到）\{r.billing_empty} 个，其他（非订阅）\{r.billing_other} 个",
   )
   lines.push(
     "学生/教育优惠有说明：\{r.student_seen}/\{r.total}；写“未见”：\{r.student_unseen}/\{r.total}",

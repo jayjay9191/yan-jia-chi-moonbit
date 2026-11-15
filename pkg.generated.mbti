@@ -107,6 +107,7 @@ pub(all) struct PricingReport {
   billing_monthly_yearly : Int32
   billing_yearly : Int32
   billing_empty : Int32
+  billing_other : Int32
   student_seen : Int32
   student_unseen : Int32
   stale_count : Int32

@@ -96,7 +96,8 @@ test "report counts are internally consistent" {
     r.billing_monthly +
     r.billing_monthly_yearly +
     r.billing_yearly +
-    r.billing_empty,
+    r.billing_empty +
+    r.billing_other,
     total,
   )
   assert_eq(r.student_seen + r.student_unseen, total)
