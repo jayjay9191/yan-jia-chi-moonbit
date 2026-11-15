@@ -203,7 +203,7 @@ test "generated: Copilot / Microsoft status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-08")
+      assert_eq(t.verified_at, "2026-11-15")
       assert_eq(t.key, "APV-0013")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -3223,7 +3223,7 @@ test "generated: Julius AI status" {
 test "generated: Polymer status" {
   match @ai-pricing-verifier.tool_by_name("Polymer") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")
@@ -3335,7 +3335,7 @@ test "generated: Mixpanel status" {
 test "generated: Amplitude status" {
   match @ai-pricing-verifier.tool_by_name("Amplitude") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
@@ -3591,7 +3591,7 @@ test "generated: Equals status" {
 test "generated: Causal status" {
   match @ai-pricing-verifier.tool_by_name("Causal") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按月")

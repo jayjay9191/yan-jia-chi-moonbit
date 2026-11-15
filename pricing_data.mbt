@@ -117,6 +117,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：Pro $17/月（按年）/$20/月（按月）、Max $100/月、Ultra $200/月，与 2026-11-08 记录一致。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $17/月（按年$200 upfront）或$20/月按月；Max $100/月；Ultra $200/月", new_price: "", note: "复核：复核：官网定价页今日显示 Pro $17/月（按年付 $200 upfront）或 $20/月按月，Max $100/月，Ultra $200/月，与记录逐字一致；页面另见 Enterprise $20/席/月+用量，记录未含，不作新档位。" },
       ],
     },
     {
@@ -135,6 +136,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R1", change: "未看到价", old_price: "", new_price: "", note: "复核：Google One 套餐页今日文本无任何价格（仅免费 15GB 显示 0 USD）。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Google AI Plus（2TB）JP¥1,450/月；Google AI Pro（5TB）JP¥2,900/月", new_price: "", note: "复核：复核：one.google.com/about/plans 今日提取文本仅显示免费 15GB（Price: 0 USD），未见 JP¥1,450/¥2,900 两档价；原价与 verified_at 不动。" },
       ],
     },
     {
@@ -232,11 +234,12 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "按年",
       student_discount: "商业定价页未见学生价，页脚有Education入口",
       reachable: "能打开",
-      verified_at: "2026-11-08",
+      verified_at: "2026-11-15",
       note: "本次只核验到商业版定价，未核验个人版",
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：含 Copilot 的 Business Premium $32/用户/月、Business Standard $23.50/用户/月与 2026-11-08 记录一致；附加价 $18/用户/月今日页未见。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "商业版（按年）：含Copilot的Business Premium $32/用户/月；含Copilot的Business Standard $23.50/用户/月；Copilot Business附加 $18/用户/月（原$21，2026年7–12月优惠）", new_price: "", note: "复核：复核：页面显示 Business Premium with Copilot $32.00、Business Standard with Copilot $23.50（user/month, paid yearly），与记录一致；Copilot Business 附加档本次提取文本未显示金额（$18 未见），按 R1 对 Copilot 的先例主价一致仍记无变化。个人版仍未核验到，不升级。" },
       ],
     },
     {
@@ -271,6 +274,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R1", change: "无变化", old_price: "", new_price: "", note: "复核：Basic $10/$8、Standard $30/$24、Pro $60/$48、Mega $120/$96，与 2026-11-08 记录一致。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%", new_price: "", note: "复核：复核：官网定价页今日显示 Basic $10/月按月、$8/月按年，Standard $30/$24，Pro $60/$48，Mega $120/$96，与记录逐字一致。" },
       ],
     },
     {
@@ -321,6 +325,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R1", change: "未看到价", old_price: "", new_price: "", note: "复核：首页今日未见定价，2026-11-08 的“低至 ¥42 每月”按钮未再出现。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "首页左下按钮显示“低至 ¥42 每月”，点击无跳转/无档位表；完整档位未显示，需登录后查看", new_price: "", note: "复核：复核：hailuoai.com 首页今日提取文本无任何价格（¥42 未见），未看到价；原价与 verified_at 不动。" },
       ],
     },
     {
@@ -423,6 +428,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Starter $79/月（年付）；Basic $199/月（年付）；Growth $399/月（年付）；按月付 $99/$249/$499", new_price: "", note: "复核：官方定价页可打开，但档位价格卡片为 JS 渲染，抓取文本中无 Starter/Basic/Growth 的 $79/$199/$399（年付）或 $99/$249/$499（月付）；仅 FAQ 中出现附加用户 $50/月、加购文章 $100/20 篇。记录价一次未见。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Starter $79/月（年付）；Basic $199/月（年付）；Growth $399/月（年付）；按月付 $99/$249/$499", new_price: "", note: "复核：定价页已打开，但价格卡片未提取到文本（JS 渲染）：页面只显示 Monthly/Annual 切换、档位对比表与 FAQ，FAQ 提到 Basic/Growth/Enterprise 与 Starter 15 篇、Basic 25 篇、Growth 50 篇文章额度，全页无任何 $ 金额；记录价（Starter $79、Basic $199、Growth $399 年付）未见。" },
       ],
     },
     {
@@ -477,6 +483,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "Unlimited $9.99/月；年付 $6.99/月", new_price: "", note: "复核：部分核验：页面仅显示 Unlimited 一档，$9.99（划线）与 $6.99 per month billed annually，与记录（Unlimited $9.99/月；年付 $6.99/月）一致；页面未显示其他档位完整价，无可升级内容。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Unlimited $9.99/月；年付 $6.99/月", new_price: "", note: "复核：复核：页面仅显示 Unlimited 一档 $9.99（划线）与 $6.99 per month billed annually，与记录一致；Advanced 档仍未显示，不升级。" },
       ],
     },
     {
@@ -495,6 +502,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "$10/月起，至 $59/月", new_price: "", note: "复核：部分核验：页面元数据明确写 Price: 10 to 59 USD，与记录 $10/月起至 $59/月一致；其余档位明细页内未展开，不改 status。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "$10/月起，至 $59/月", new_price: "", note: "复核：复核：页面附加信息 Price: 10 to 59 USD，与记录（$10/月起至 $59/月）一致；档位明细仍未见，不升级。" },
       ],
     },
     {
@@ -669,6 +677,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "Starter $79/月", new_price: "", note: "复核：部分核验：页面多处确认 Starter $79 per month，与记录（Starter $79/月）一致；Pro/Business 档位价未在提取文本中显示，无新增完整价，不可升级。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter $79/月", new_price: "", note: "复核：复核：页面多处确认 Simplified Starter $79 per month（5 campaigns/月），与记录一致；Pro/Business 档位价仍未显示，不升级。" },
       ],
     },
     {
@@ -687,6 +696,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "预付 $0.50/1000 词；FAQ 提及 $29/月", new_price: "", note: "复核：部分核验：页面 Pricing 区显示 Prepaid $0.5 per 1000 words，FAQ 明确写 $29/month，两处已记录价均与记录一致；Starter/Premium/Premium+ 三档月费页内未显示金额，未见可升级的完整价。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "预付 $0.50/1000 词；FAQ 提及 $29/月", new_price: "", note: "复核：复核：页面显示 Prepaid $0.5 per 1000 words，FAQ 句 $29/month，与记录一致；Starter/Premium/Premium+ 三档订阅价仍只见档名未见金额，不升级。" },
       ],
     },
     {
@@ -759,6 +769,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Standard $27/月起", new_price: "", note: "复核：官方定价页可打开，Standard 与 Business 两档名称可见，但抓取文本中无任何 $ 金额，Standard $27/月起未见；页面无价目表数字。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Standard $27/月起", new_price: "", note: "复核：定价页已打开，Standard 与 Business 两档功能列表可见，但全页无任何价格数字；记录价 Standard $27/月起未见。" },
       ],
     },
     {
@@ -861,6 +872,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "订阅 $24.97/月起", new_price: "", note: "复核：部分核验：Gumroad 产品页显示 $24.97+ a month，与记录（订阅 $24.97/月起）一致。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "订阅 $24.97/月起", new_price: "", note: "复核：复核：Gumroad 产品页显示 $24.97+ a month，与记录一致；年付/终身价仍未见，不升级。" },
       ],
     },
     {
@@ -1589,6 +1601,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Starter $10/席位/月（年付；月付 $20）；Plus $30/席位/月（年付）；Max $75/席位/月（年付）", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter $10/席位/月（年付；月付 $20）；Plus $30/席位/月（年付）；Max $75/席位/月（年付）", new_price: "", note: "复核：页面显示 Starter $10、Plus $30、Max $75 per seat/mo（年付），与记录一致；月付价有文本佐证：页内写 Starter $20 a seat（月付）。" },
       ],
     },
     {
@@ -1623,6 +1636,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "API 按量：Falcon 2.1 $0.01/1000 字符", new_price: "", note: "复核：部分核验：页面明确写 $0.01/1000 characters for Falcon 2.1，与记录 API 按量价一致；订阅档价格页内未展开，不改 status。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "API 按量：Falcon 2.1 $0.01/1000 字符", new_price: "", note: "复核：复核：页面显示 $0.01/1000 characters for Falcon 2.1，与记录一致；Creator/Business 订阅价仍未在页面出现，不升级。" },
       ],
     },
     {
@@ -1641,6 +1655,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Team $350/月（年付 $280/月）；Business $1000/月（年付 $800/月）；Enterprise 定制；另有检测按量价（音频 $0.035/秒起）", new_price: "", note: "复核：browser.open 上游 429 限流，3 次尝试均失败（browser service upstream unavailable, 429），页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Team $350/月（年付 $280/月）；Business $1000/月（年付 $800/月）；Enterprise 定制；另有检测按量价（音频 $0.035/秒起）", new_price: "", note: "复核：页面显示 Flex $0/mo、Team $350/mo（年付 $280/mo）、Business $1,000/mo（年付 $800/mo）、Enterprise 定制，检测按量价音频 $0.035/秒起，与记录一致。" },
       ],
     },
     {
@@ -1659,6 +1674,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Creator $9.99/月（年付 $8.33/月，$99.99/年）；Studio $34.99/月（年付 $29.16/月，$349.90/年）；Scale 定制", new_price: "", note: "复核：browser_open 上游 429 限流（browser service 3 次尝试后失败），本次未打开 playht.co/pricing 页面，未看到任何价格；按指令不重试。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Creator $9.99/月（年付 $8.33/月，$99.99/年）；Studio $34.99/月（年付 $29.16/月，$349.90/年）；Scale 定制", new_price: "", note: "复核：页面显示 Creator $9.99/mo（年付 $8.33/mo，$99.99/年）、Studio $34.99/mo（年付 $29.16/mo，$349.90/年）、Scale 定制，与记录一致。" },
       ],
     },
     {
@@ -1693,6 +1709,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Starter $10/月（年付 $120/年；月付 $19/月）；Pro $33/月（年付 $396/年；月付 $49/月）；Business $160/用户/月（年付 $1,920/年）；Enterprise 定制", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter $10/月（年付 $120/年；月付 $19/月）；Pro $33/月（年付 $396/年；月付 $49/月）；Business $160/用户/月（年付 $1,920/年）；Enterprise 定制", new_price: "", note: "复核：页面显示 Starter $10/mo（年付 $120/年）、月付 $19/mo；Pro $33/mo（年付 $396/年）、月付 $49/mo；Business $160/mo/user（年付 $1,920/年）；Enterprise 定制，与记录一致。" },
       ],
     },
     {
@@ -1745,6 +1762,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $10/席位/月（年付；月付 $18）；Business $19/席位/月（年付；月付 $29）；Enterprise $39/席位/月（仅年付）", new_price: "", note: "复核：browser.open 上游 429 限流，3 次尝试均失败（browser service upstream unavailable, 429），页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $10/席位/月（年付；月付 $18）；Business $19/席位/月（年付；月付 $29）；Enterprise $39/席位/月（仅年付）", new_price: "", note: "复核：页面显示 Pro $10（划线 $18）per seat/month 年付、Business $19（划线 $29）年付、Enterprise $39 仅年付，与记录一致。" },
       ],
     },
     {
@@ -1763,6 +1781,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "人工转录 $1.99/分钟起；Legal Rough Draft $2.25/页；Legal Premium Transcript $2.50/页", new_price: "", note: "复核：browser_open 上游 429 限流（browser service 3 次尝试后失败），本次未打开 rev.com/pricing 页面，未看到任何价格；按指令不重试。部分核验状态不变。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "人工转录 $1.99/分钟起；Legal Rough Draft $2.25/页；Legal Premium Transcript $2.50/页", new_price: "", note: "复核：页面 FAQ 明确写 Human transcription starts at $1.99/min、Legal Rough Draft $2.25/page、Legal Premium Transcript $2.50/page，与记录三项逐字一致；订阅档（Free/Essentials/Pro/Unlimited）价格卡片未在提取文本中显示，记录本身只含上述三项按量价。" },
       ],
     },
     {
@@ -1797,6 +1816,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $29/月（年付 $24/月）；Grow $39/月（年付 $34/月）；Webinar $99/月（年付 $79/月）；Business 定制", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $29/月（年付 $24/月）；Grow $39/月（年付 $34/月）；Webinar $99/月（年付 $79/月）；Business 定制", new_price: "", note: "复核：页面 FAQ 明确写年付 Pro 从 $29 降至 $24/月、Grow 从 $39 降至 $34、Webinar 从 $99 降至 $79，与记录一致；Business 定制。" },
       ],
     },
     {
@@ -1833,6 +1853,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Starter $15/月（仅按月）；Pro $29/月；Business 定制", new_price: "", note: "复核：browser.open 上游 429 限流，3 次尝试均失败（browser service upstream unavailable, 429），页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter $15/月（仅按月）；Pro $29/月；Business 定制", new_price: "", note: "复核：页面对比表显示 Free $0、Starter $15/mo、Pro $29/mo、Business Custom，与记录一致。" },
       ],
     },
     {
@@ -1867,6 +1888,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Starter+ $29/月（按月）；Professional+ $119/月（按月）", new_price: "", note: "复核：browser_open 上游 429 限流（browser service 3 次尝试后失败），本次未打开 wisecut.ai/pricing 页面，未看到任何价格；按指令不重试。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter+ $29/月（按月）；Professional+ $119/月（按月）", new_price: "", note: "复核：页面显示 Starter+ US$29/mo、Professional+ US$119/mo（按月计费），与记录一致。" },
       ],
     },
     {
@@ -1885,6 +1907,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $16/成员/月（年付）；Business $50/成员/月（年付）；Enterprise 定制", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $16/成员/月（年付）；Business $50/成员/月（年付）；Enterprise 定制", new_price: "", note: "复核：页面显示 Pro $16、Business $50（年付口径）、Enterprise 定制，与记录一致。" },
       ],
     },
     {
@@ -1937,6 +1960,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Code Assistant $39/用户/月（年付）；Agentic Platform $59/用户/月（年付）", new_price: "", note: "复核：browser.open 上游 429 限流，3 次尝试均失败（browser service upstream unavailable, 429），页面未打开；按指令不重试。部分核验记录（存档快照价 $39/$59）原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Code Assistant $39/用户/月（年付）；Agentic Platform $59/用户/月（年付）", new_price: "", note: "复核：定价页仍跳转至 Tricentis 联系页，全页无价格；记录价（Code Assistant $39、Agentic Platform $59）仅来自 2026-09-05 官网存档快照，未在实时页确认（与 R2 相同）。" },
       ],
     },
     {
@@ -1955,6 +1979,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $20/月；Max $200/月；Teams $80/月+$40/全职席位/月", new_price: "", note: "复核：browser_open 上游 429 限流（browser service 3 次尝试后失败），本次未打开 devin.ai/pricing 页面，未看到任何价格；按指令不重试。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $20/月；Max $200/月；Teams $80/月+$40/全职席位/月", new_price: "", note: "复核：注意：记录的 pricing_url 是 devin.ai/pricing（Devin 定价页）。页面显示 Pro $20/month、Max $200/month、Teams $80/month + $40/mo per full dev seat，与记录逐字一致。" },
       ],
     },
     {
@@ -1973,6 +1998,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $19/用户/月", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $19/用户/月", new_price: "", note: "复核：主价目表未渲染出数字，但 FAQ 计费示例明确写 $19 Pro plan（$19 per user-month），与记录 Pro $19/用户/月一致。" },
       ],
     },
     {
@@ -1991,6 +2017,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Enterprise $16,000/年起（最低年合同）", new_price: "", note: "复核：官方定价页可打开，但抓取文本只有功能对比表，无任何 $ 金额；记录的 Enterprise $16,000/年起未见。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Enterprise $16,000/年起（最低年合同）", new_price: "", note: "复核：定价页已打开，仅显示功能列表与 FAQ，全页无任何价格；记录价 Enterprise $16,000/年起未见。" },
       ],
     },
     {
@@ -2009,6 +2036,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "AI Pro $10/月（$100/年）；AI Ultimate $30/月（$300/年）", new_price: "", note: "复核：browser.open 上游 429 限流，3 次尝试均失败（browser service upstream unavailable, 429），页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "AI Pro $10/月（$100/年）；AI Ultimate $30/月（$300/年）", new_price: "", note: "复核：jetbrains.com/ai 页面已改为 JetBrains Air 产品页，全页无任何价格，也无 AI Pro/AI Ultimate 档位名，无法确认是下架还是改版；记录价未见。" },
       ],
     },
     {
@@ -2027,6 +2055,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Core $20/月（年付 $18/月）；Pro $100/月（年付 $90/月）", new_price: "", note: "复核：browser_open 上游 429 限流（browser service 3 次尝试后失败），本次未打开 replit.com/pricing 页面，未看到任何价格；按指令不重试。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Core $20/月（年付 $18/月）；Pro $100/月（年付 $90/月）", new_price: "", note: "复核：页面显示 Core $20（年付 $18）/month、Pro $100（年付 $90）/month，与记录一致。" },
       ],
     },
     {
@@ -2045,6 +2074,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Plus $30/用户/月；Business $100/用户/月", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Plus $30/用户/月；Business $100/用户/月", new_price: "", note: "复核：v0.app/pricing 已打开，但页面只显示模型按量价（v0 Mini/Pro/Max 每百万 tokens 价），订阅档 Plus $30/Business $100 未在提取文本中出现；官方文档页 v0.app/docs/pricing 打开时遇浏览器 429 限流，按指令未重试；搜索仅得第三方转述，按口径不采纳。" },
       ],
     },
     {
@@ -2081,6 +2111,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $25/月起（100 credits/月）；Business $50/月起（100 credits/月）", new_price: "", note: "复核：页面打开了，但抓取文本里只有 credits 计费说明与 FAQ，未见任何档位价（Pro $25/月、Business $50/月均未出现），属 JS 渲染无价；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Pro $25/月起（100 credits/月）；Business $50/月起（100 credits/月）", new_price: "", note: "复核：定价页已打开，页面只讲积分规则与 FAQ，无 Pro/Business 订阅价（价格卡片 JS 渲染未提取）；记录价 Pro $25/月起、Business $50/月起未见。" },
       ],
     },
     {
@@ -2117,6 +2148,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro Team $30/月起（2500 credits，约 18 次评审）", new_price: "", note: "复核：页面已改版为按 credit 计费：$0.015/credit，Pro Team 为 credit pack（2,000/4,000/16,000 credits）；原记录价 Pro Team $30/月起（2500 credits，约 18 次评审）未在页面出现，无法逐字比对。注：2500 credits 按 $0.015/credit 换算为 $37.50，此为换算值非页面原文，不作涨价结论。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Pro Team $30/月起（2500 credits，约 18 次评审）", new_price: "", note: "复核：页面已改为按 credit 计费：$0.015/credit，Pro Team 为 credit pack（2,000/4,000/16,000 credits）；原记录价 Pro Team $30/月起未在页面出现，无法逐字比对（与 R2 相同）。" },
       ],
     },
     {
@@ -2153,6 +2185,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "下架", old_price: "ClinePass $9.99/月", new_price: "", note: "复核：部分核验记录。定价页现只剩 Free（个人开发者免费）与 Enterprise Custom 两档，并两次明写 no subscriptions、no vendor lock-in、pay only for AI inference on a usage basis；记录的 ClinePass $9.99/月订阅档已不在官方定价页，判定档位下线。status 维持部分核验（付费价为 2026-11-15 核验时的历史记录）。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "ClinePass $9.99/月", new_price: "", note: "复核：复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
       ],
     },
     {
@@ -2187,6 +2220,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Lite $8/月；Pro $20/月；Pro+ $60/月；Ultra $200/月", new_price: "", note: "复核：官方页 trae.ai/pricing 已打开，但抓取文本仅 2 行，只有“Want know more about Pricing? Contact us”及联系邮箱，价格表 JS 渲染、文本中无任何档位价；记录的 Lite $8/Pro $20/Pro+ $60/Ultra $200 均未在页面文本中出现，无法比对。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Lite $8/月；Pro $20/月；Pro+ $60/月；Ultra $200/月", new_price: "", note: "复核：定价页已打开但仅 2 行文本（联系邮箱与文档链接），无价目表（JS 渲染）；记录的 Lite $8、Pro $20、Pro+ $60、Ultra $200 均未见。" },
       ],
     },
     {
@@ -2253,6 +2287,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "个人 Pro ¥59/月（官网显示价，标价 ¥70/月）；Max ¥199/月", new_price: "", note: "复核：页面无可提取内容（疑似 JS 渲染/拦截），未看到价；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "个人 Pro ¥59/月（官网显示价，标价 ¥70/月）；Max ¥199/月", new_price: "", note: "复核：browser.open 抓取失败（源站未返回）；搜索仅得第三方转述，多家一致称官网仍显示 Pro ¥59/Max ¥199，但按口径第三方价不采纳，仍记未看到价。" },
       ],
     },
     {
@@ -2305,6 +2340,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $450/月（年付）；$540/月（月付）", new_price: "", note: "复核：页面打开了，但 Starter 与 Pro 档位均只显示 $ /mo、金额缺失（JS 渲染无价），Enterprise 为 Contact us；记录的 Pro $450/月（年付）/$540/月（月付）未见；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Pro $450/月（年付）；$540/月（月付）", new_price: "", note: "复核：定价页已打开，Starter 与 Pro 档位名可见，但价格位显示空白“$ /mo”（JS 未渲染出数字）；记录价 Pro $450/月（年付）/$540/月（月付）未见。" },
       ],
     },
     {
@@ -2341,6 +2377,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Starter $8/成员/月（年付，月付 $10）；Business $20/成员/月（年付，月付 $25）", new_price: "", note: "复核：页面已打开但提取文本中不含档位价（Starter/Business 价格卡片未提取到），未看到价；原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Starter $8/成员/月（年付，月付 $10）；Business $20/成员/月（年付，月付 $25）", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试。搜索仅得第三方转述（多家一致称 Starter $8、Business $20），按口径不采纳，仍记未看到价。" },
       ],
     },
     {
@@ -2359,6 +2396,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Basic $10/用户/月（年付，月付 $12）；Business $16/用户/月（年付，月付 $18）", new_price: "", note: "复核：官方定价页可打开，但抓取文本只有功能对比表，价格卡片 JS 渲染无 $ 金额；Basic $10/$12 与 Business $16/$18 均未见。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Basic $10/用户/月（年付，月付 $12）；Business $16/用户/月（年付，月付 $18）", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试。搜索仅得第三方转述（多家一致称 Basic $10、Business $16，年付口径），按口径不采纳，仍记未看到价。" },
       ],
     },
     {
@@ -2431,6 +2469,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Basic $9/席/月（年付，含 1000 AI credits）；Standard $12/席/月；Pro $19/席/月", new_price: "", note: "复核：官方定价页可打开，但抓取文本只有 FAQ，档位价格卡片 JS 渲染无 $ 金额；Basic $9、Standard $12、Pro $19 均未见。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Basic $9/席/月（年付，含 1000 AI credits）；Standard $12/席/月；Pro $19/席/月", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试。搜索仅得第三方转述（多家一致称 Basic $9、Standard $12、Pro $19，年付口径），按口径不采纳，仍记未看到价。" },
       ],
     },
     {
@@ -2553,6 +2592,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "专属推理 H100 80GB $5.49/小时；B200 180GB $8.99/小时（按分钟计费）", new_price: "", note: "复核：部分核验记录。官方文档定价页显示 H100 80GB $5.49/小时、B200 180GB $8.99/小时，并明写按分钟计费（billed by the minute），与记录的已核验部分逐字一致；status 不改。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "专属推理 H100 80GB $5.49/小时；B200 180GB $8.99/小时（按分钟计费）", new_price: "", note: "复核：复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
       ],
     },
     {
@@ -2607,6 +2647,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "模型按原厂商价计费、无加价；充值手续费 Standard 5.5%、Business 8%（免费模型限 50 请求/天，购买 $10 额度后升至 1000/天）", new_price: "", note: "复核：部分核验：页面 FAQ 逐字确认不加价（按原厂商价计费）、充值手续费 Standard 5.5%/Business 8%、免费模型限 50 请求/天、购买 $10 额度后升至 1000/天，与记录一致。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "模型按原厂商价计费、无加价；充值手续费 Standard 5.5%、Business 8%（免费模型限 50 请求/天，购买 $10 额度后升至 1000/天）", new_price: "", note: "复核：复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
       ],
     },
     {
@@ -2659,6 +2700,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "Inference Endpoints 专属推理起步 $0.033/小时；CPU 实例 $0.03/小时起，NVIDIA T4 $0.50/小时", new_price: "", note: "复核：官方页 huggingface.co/pricing 完整显示 Inference Endpoints 价目表：起步 $0.033/小时，CPU 实例 $0.03/小时起，NVIDIA T4 $0.50/小时，与已记录的部分价逐字一致。仍为部分核验：原 note 缺失的 PRO $9/月等订阅价本次页面文本中仍未出现，不可升级为已核验，status 不变。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Inference Endpoints 专属推理起步 $0.033/小时；CPU 实例 $0.03/小时起，NVIDIA T4 $0.50/小时", new_price: "", note: "复核：复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
       ],
     },
     {
@@ -2797,6 +2839,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "elephant-1 $0.035/1M 输入 tokens；mammoth-1 $0.10/1M 输入 tokens（官网公告价）", new_price: "", note: "复核：部分核验：记录的两档价一致，页面显示 mammoth-1 $0.10、elephant-1 $0.035；且页面现显示完整模型价目表（本次未升级：新增价目未逐字记入付费价，维持部分核验）：joey-1 $0.01、Beam $0.40/$0.04/$1.20、Muse Spark Open $1.25/$0.15/$4.25、GLM-5.3 $1.40/$0.14/$4.40、GLM-5.3-Flash $0.15/$0.03/$0.50、Kimi K3 $3.00/$0.30/$15.00、GPT OSS 120B $0.10/—/$0.50（输入/缓存输入/输出，单位 $/1M tokens），另有 GPU 价目（H100 $6.50/小时、B200 $9.98/小时等）。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "elephant-1 $0.035/1M 输入 tokens；mammoth-1 $0.10/1M 输入 tokens（官网公告价）", new_price: "", note: "复核：复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
       ],
     },
     {
@@ -2883,6 +2926,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "GLM-5.3 输入 $1.26/1M tokens（9 折，原价 $1.40）、输出 $3.96/1M tokens；GLM-5.3-Flash 输入 $0.15/1M tokens、输出 $0.50/1M tokens", new_price: "", note: "复核：官方文档页 friendli.ai/docs/guides/model-apis/pricing 已打开，但模型价目表 JS 渲染，抓取文本仅 19 行，只有“Text models are charged by the number of processed tokens”等说明，无任何模型单价；记录的 GLM-5.3 输入 $1.26/输出 $3.96、GLM-5.3-Flash 输入 $0.15/输出 $0.50 均未在页面文本中出现，无法比对。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "GLM-5.3 输入 $1.26/1M tokens（9 折，原价 $1.40）、输出 $3.96/1M tokens；GLM-5.3-Flash 输入 $0.15/1M tokens、输出 $0.50/1M tokens", new_price: "", note: "复核：官方域名搜索片段（friendli.ai/docs/guides/model-apis/pricing，官方文档页）显示 zai-org/GLM-5.3 Input $1.26（原价 $1.4）、Cached Input $0.234（原价 $0.26）、Output $3.96（原价 $4.4），与记录一致；GLM-5.3-Flash $0.15/$0.50 在官方片段中未出现，第三方一致转述相同，按 R1 对 Copilot 的先例，主价一致、次要价未见仍记无变化并附注。" },
       ],
     },
     {
@@ -2901,6 +2945,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "GPT-6.1 Sol Global 输入 $2/1M tokens、输出 $10/1M tokens；GPT-6 Astra Global 输入 $10/1M tokens、输出 $50/1M tokens；GPT-Chat Latest 输入 $5/1M tokens、输出 $30/1M tokens", new_price: "", note: "复核：页面已打开，模型名可见（GPT-6.1 Sol Global、GPT-6 Astra、GPT-Chat Latest），但全部价格单元格显示为 $-（JS 渲染未出价），未看到价；原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "GPT-6.1 Sol Global 输入 $2/1M tokens、输出 $10/1M tokens；GPT-6 Astra Global 输入 $10/1M tokens、输出 $50/1M tokens；GPT-Chat Latest 输入 $5/1M tokens、输出 $30/1M tokens", new_price: "", note: "复核：页面已打开，模型名可见（GPT-6.1 Sol Global、GPT-6 Astra、GPT-Chat Latest），但全部价格单元格显示为 $-（JS 渲染未出价），与 R2 相同。" },
       ],
     },
     {
@@ -2937,6 +2982,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "AI Credit $2.00/个（全球路由）、$2.20/个（区域路由）；Cortex AI 功能按每百万 tokens 的 AI Credit 数计费", new_price: "", note: "复核：部分核验记录。官方文档定价页显示 AI Credit 全球路由 $2.00/个、区域路由 $2.20/个，Cortex AI 功能按每百万 tokens 的 AI Credit 数计费，与记录逐字一致；status 不改。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "AI Credit $2.00/个（全球路由）、$2.20/个（区域路由）；Cortex AI 功能按每百万 tokens 的 AI Credit 数计费", new_price: "", note: "复核：复核：官方文档定价页显示 AI Credit 全球路由 $2.00、区域路由 $2.20，与记录一致；各模型每百万 tokens 的 AI Credit 数仍在消费表 Table 6 中、本页未全列，不升级。" },
       ],
     },
     {
@@ -2955,6 +3001,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "Azure Databricks 按量：Jobs Compute $0.30/DBU-小时，SQL Compute $0.22/DBU-小时，All-Purpose Compute $0.55/DBU-小时，Serverless SQL $0.70/DBU-小时", new_price: "", note: "复核：Azure 官方页 azure.microsoft.com/en-ca/pricing/details/databricks 价目表显示 Jobs Compute $0.30/DBU-hour、SQL Compute $0.22/DBU-hour、All-Purpose Compute $0.55/DBU-hour、Serverless SQL $0.70/DBU-hour，与已记录的四档价逐字一致。仍为部分核验：原 note 缺失的模型服务 $0.07/DBU 本次仍未见（页内仅见 Serverless Real-Time Inference $0.082/DBU-hour 与 Model Serving for Anthropic $0.105/DBU-hour，属不同项目），不可升级为已核验，status 不变。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Azure Databricks 按量：Jobs Compute $0.30/DBU-小时，SQL Compute $0.22/DBU-小时，All-Purpose Compute $0.55/DBU-小时，Serverless SQL $0.70/DBU-小时", new_price: "", note: "复核：复核：Azure Databricks 定价页显示 Jobs Compute $0.30/DBU-hour、SQL Compute $0.22/DBU-hour、All-Purpose Compute $0.55/DBU-hour、Serverless SQL $0.70/DBU-hour，与记录一致；模型服务 $0.07/DBU 未在此页核验（本页仅见 Model Serving for Anthropic $0.105/DBU-hour），不升级。" },
       ],
     },
     {
@@ -3045,6 +3092,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro AI $19/席/月（团队年付）；Business AI $29/席/月（团队年付）", new_price: "", note: "复核：浏览器服务 429 限流，页面未打开；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro AI $19/席/月（团队年付）；Business AI $29/席/月（团队年付）", new_price: "", note: "复核：页面显示 Pro AI $19/seat/mo、Business AI $29/seat/mo，与记录（团队年付）一致；注：两档旁均标“This plan is not available”，价格本身未变。" },
       ],
     },
     {
@@ -3063,6 +3111,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Starter $10/席/月（年付）；Business $15/席/月（年付）；Enterprise $22/席/月（年付，仅年付）", new_price: "", note: "复核：官方定价页可打开（859 行），但全文只有功能对比表，价格卡片 JS 渲染；页内搜索 $10、$15、per seat 均无命中，Starter $10、Business $15、Enterprise $22 均未见。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Starter $10/席/月（年付）；Business $15/席/月（年付）；Enterprise $22/席/月（年付，仅年付）", new_price: "", note: "复核：定价页已打开，功能对照表完整，但全页无任何 $ 价格（页内查找 $10、$15 均无结果），价格卡片 JS 渲染未提取；记录价 Starter $10、Business $15、Enterprise $22 均未见。" },
       ],
     },
     {
@@ -3081,6 +3130,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "Mem Pro $29/月", new_price: "", note: "复核：部分核验记录。产品页显示 Mem Pro $29/month，与记录逐字一致；页面其余档位需点 Compare every plan 链接查看，本次未见，status 不改。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Mem Pro $29/月", new_price: "", note: "复核：复核：产品页显示 Mem Pro $29/month，与记录一致；年付价与其他档位仍未见，不升级。" },
       ],
     },
     {
@@ -3089,7 +3139,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       name: "Tana",
       pricing_url: "https://tana.inc/pricing",
       free_tier: "Free $0，永久免费",
-      paid_price: "Pro $19/用户/月（按月计费）",
+      paid_price: "Pro $15/用户/月（按月计费）",
       currency: "USD",
       billing: "按月",
       student_discount: "未见",
@@ -3099,6 +3149,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Pro $19/用户/月（按月计费）", new_price: "", note: "复核：官方页 tana.inc/pricing 已打开，显示 Pro $15/成员/月，但未注明计费周期（对比表仅写 Billing: Yearly or monthly）；记录的 Pro $19/用户/月（按月计费）未在页面文本中出现。原 note 已指出 $15 疑似年付价、与 $19 按月价不一致，今日页面仍是同一显示，无法确认是降价还是年付价，故记未看到价，不改价、不改 status。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "降价", old_price: "Pro $19/用户/月（按月计费）", new_price: "Pro $15/用户/月（按月计费）", note: "复核：页面显示 Pro $15 per member per month（原记录 $19/用户/月），Free $0、Business 定制；对比表计费栏写 Yearly or monthly。" },
       ],
     },
     {
@@ -3205,6 +3256,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "起价 $5/用户/月；Enterprise Advanced $70/用户/月起（仅年付，至少 3 用户）", new_price: "", note: "复核：部分核验：起价 $5/用户/月已确认（页面标题 From $5 Per User/Month）；Enterprise Advanced $70/用户/月起未在本次提取中显示，价格卡片只显示 Starting at *per user/month* 未渲染出数字（页内查找 $70 无结果）。按 R1 对 Copilot 的先例，主价一致、次要价未见仍记无变化并附注。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "起价 $5/用户/月；Enterprise Advanced $70/用户/月起（仅年付，至少 3 用户）", new_price: "", note: "复核：复核：页面标题 From $5 Per User/Month，起价 $5 已确认；Enterprise Advanced 价仍显示 Starting at *per user/month* 未渲染出数字（$70 未见），按 R1 对 Copilot 的先例主价一致仍记无变化；中间档仍未见，不升级。" },
       ],
     },
     {
@@ -3223,6 +3275,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Sales Hub Starter $9/席/月（年付）；$15/席/月（月付）；Professional $90/席/月（年付）；$100/席/月（月付）；Enterprise $150/席/月", new_price: "", note: "复核：部分核验：本次打开的 pricing 页为 Marketing Hub 定价页，抓取文本中无任何 Sales Hub 档位金额（页内搜索 $90 无命中）；记录的 Sales Hub Starter $9/$15、Professional $90/$100、Enterprise $150 均未见。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Sales Hub Starter $9/席/月（年付）；$15/席/月（月付）；Professional $90/席/月（年付）；$100/席/月（月付）；Enterprise $150/席/月", new_price: "", note: "复核：打开的是 Marketing Hub 定价页，提取文本为功能对照表与 HubSpot Credits，无 Sales Hub 席位价；记录价 Sales Hub Starter $9、Professional $90、Enterprise $150 均未见。" },
       ],
     },
     {
@@ -3311,6 +3364,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "无变化", old_price: "Answer API $5/1,000 次调用（按量）；Research API $12–$1,200/1,000 次调用（按量）", new_price: "", note: "复核：部分核验：页面确认 Web Search API $5/1k calls（即记录 Answer API $5/1,000 次调用），Research 各档 Lite $12、Standard $50、Deep $100、Exhaustive $450、Frontier $1,200/1k calls，区间 $12–$1,200 与记录一致。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Answer API $5/1,000 次调用（按量）；Research API $12–$1,200/1,000 次调用（按量）", new_price: "", note: "复核：复核：页面显示 Web Search API Standard $5/1k calls，Research API Lite $12、Standard $50、Deep $100、Exhaustive $450、Frontier $1,200/1k calls，与记录（Answer API $5、Research API $12–$1,200/1,000 次调用）一致；消费端 Pro/Max 仍未见，不升级。" },
       ],
     },
     {
@@ -3477,6 +3531,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::VerifiedPartial,
       history: [
         { date: "2026-11-15", session: "20261115-R2", change: "未看到价", old_price: "Doubao-Seed-2.0-mini 推理输入 ¥0.2/百万 tokens，输出 ¥2/百万 tokens；Doubao-Seed-2.1-Pro 输入 ¥6/百万 tokens，输出 ¥30/百万 tokens", new_price: "", note: "复核：页面无可提取内容（疑似 JS 渲染/登录墙），未看到价；按指令不重试，原价与 verified_at 不动。" },
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Doubao-Seed-2.0-mini 推理输入 ¥0.2/百万 tokens，输出 ¥2/百万 tokens；Doubao-Seed-2.1-Pro 输入 ¥6/百万 tokens，输出 ¥30/百万 tokens", new_price: "", note: "复核：模型详情页仅标题与导航，无内容（JS 渲染/疑似登录墙）；记录价 Doubao-Seed-2.0-mini 输入 ¥0.2、输出 ¥2，Doubao-Seed-2.1-Pro 输入 ¥6、输出 ¥30 均未见（与 R2 相同）。" },
       ],
     },
     {
@@ -3508,8 +3563,10 @@ pub fn all_tools() -> Array[ToolPricing] {
       reachable: "能打开",
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；价格取自官方域名 polymersearch.com 定价页搜索返回片段：Starter $20/月按月付、$10/月按年付，另见 $40/月档位与企业版定制价；定价页本身多套价格并存、表述混乱，故降级为部分核验。14 天免费试用，未见免费版。",
-      status: PriceStatus::VerifiedPartial,
-      history: [],
+      status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter $20/月（按月付）、$10/月（按年付）；页面另见 $40/月档位；企业版定制价", new_price: "", note: "复核：复核：官网定价页今日完整显示按月付 Starter $20、Pro $40、Group/Enterprise Custom Pricing，按年付 Starter $10、Pro $20、Group/Enterprise Custom Pricing，与记录逐字一致；原先“多套价格并存、表述混乱”的原因已不存在，升级为已核验。" },
+      ],
     },
     {
       key: "APV-0203",
@@ -3525,7 +3582,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；当前定价页（akkio.com/pricing）搜索返回片段只显示企业版 AI 分析平台定制价，无自助档价格；$49/月 Starter 来自 akkio.com 官网博客页，故部分核验。官网提及免费试用（无需信用卡），未见免费版。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Starter $49/月（官网博客页；当前定价页仅企业版定制价）", new_price: "", note: "复核：复核：akkio.com/pricing 今日已打开，页面仅显示 Enterprise AI Analytics Platform 定制价，未见 Starter $49；原价与 verified_at 不动。" },
+      ],
     },
     {
       key: "APV-0204",
@@ -3557,7 +3616,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；价格取自官方域名 tableau.com 定价页搜索返回片段：Standard 起 $15/用户/月，Creator $75、Explorer $42、Viewer $15；Enterprise Creator $115、Explorer $70、Viewer $35；Tableau Next $40/用户/月起，均按年付。另有 Tableau Desktop 免费版与 Tableau Public 免费。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Standard Viewer $15/用户/月、Explorer $42、Creator $75；Enterprise Viewer $35、Explorer $70、Creator $115；Tableau Next $40/用户/月起（均按年付）", new_price: "", note: "复核：复核：官网定价页今日已改版为版本制，Tableau Standard 起价 $15/用户/月（年付）、Tableau Enterprise 起价 $35，Cloud+ 与 Tableau+ Bundle 询价；记录的 Viewer $15、Explorer $42、Creator $75（及 Enterprise Viewer $35、Explorer $70）中，起价 $15/$35 与记录的 Viewer 价一致，但 Explorer/Creator 的角色价未在页内出现；按 R1/R2 对 Copilot/Box 的先例，主价一致、次要价未见仍记无变化。" },
+      ],
     },
     {
       key: "APV-0206",
@@ -3573,7 +3634,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；价格取自官方域名 microsoft.com 定价页搜索返回片段：Pro $14/用户/月、Premium Per User $24/用户/月，均按年付。Power BI Free 与 Desktop 免费，仅限个人使用、不可共享报表。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $14/用户/月、Premium Per User $24/用户/月（均按年付）", new_price: "", note: "复核：复核：官网定价页今日显示 Pro $14.00/用户/月（年付）、Premium Per User $24.00/用户/月（年付），与记录逐字一致。" },
+      ],
     },
     {
       key: "APV-0207",
@@ -3620,8 +3683,10 @@ pub fn all_tools() -> Array[ToolPricing] {
       reachable: "能打开",
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；官方定价页（amplitude.com/pricing）搜索返回片段：Free 每月 200 万事件免费；Plus $0起、按事件量计费，无固定月费数字；Growth、Enterprise 定制价。只核验到定价结构，未核验到固定付费金额，故部分核验。初创企业首年免费 Growth（非学生优惠）。",
-      status: PriceStatus::VerifiedPartial,
-      history: [],
+      status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Plus $0起（按事件量计费，无固定月费）；Growth、Enterprise 定制价", new_price: "", note: "复核：复核：官网定价页今日完整显示 Free（2M Events/月）、Plus Starts at $0、Growth Custom、Enterprise Custom 四档，与记录逐字一致；Plus 本就无固定月费，$0起即完整价，原先“只核验到结构”的原因已不存在，升级为已核验。" },
+      ],
     },
     {
       key: "APV-0210",
@@ -3685,7 +3750,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；未找到 ThoughtSpot 主产品独立定价页；价格取自 thoughtspot.com 官网博客页：Essentials $25/用户/月起、Pro $50/用户/月起、Enterprise 定制价。AgentSpot 是另一产品（Free $0/Fleet $1,650/月），不混用。未见免费版。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Essentials $25/用户/月起、Pro $50/用户/月起（官网博客页；未找到独立定价页）；Enterprise 定制价", new_price: "", note: "复核：复核：thoughtspot.com 官网博客页显示 Essentials starting at $25 per user per month、Pro starts at $50 per user per month、Enterprise custom pricing，与记录一致；仍未找到主产品独立定价页，不升级。" },
+      ],
     },
     {
       key: "APV-0214",
@@ -3733,7 +3800,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；价格取自 qlik.com 官网社区帖：Qlik Sense Business $15/用户/月（按年付）、$18/用户/月（按月付）；企业版无公开价，须联系销售。该价格来自官网社区旧帖，现价可能已变，故部分核验。Qlik Sense Desktop 免费，另有 30 天试用。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Qlik Sense Business $15/用户/月（按年付；按月付 $18/用户/月）；企业版无公开价", new_price: "", note: "复核：复核：qlik.com/us/pricing 今日已打开，但定价模型已改为按容量计费：Starter $300/mo（10用户）、Standard $825/mo（25GB）、Premium $2,750/mo（50GB）、Enterprise 询价；记录的按用户价 Qlik Sense Business $15/$18 未在页内出现，无法按同一口径比对，未看到价；原价与 verified_at 不动。" },
+      ],
     },
     {
       key: "APV-0217",
@@ -3781,7 +3850,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；官方定价页（hex.tech/pricing）搜索返回片段只见算力档价格表（Large $0.32/小时等，按分钟计费）与 Free/Professional/Team/Enterprise 四档名称，未见席位订阅价，故部分核验：只核验到算力附加价。Team 版有 14 天免费试用。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "高级算力按用量计费：Large $0.32/小时、Extra Large $0.65/小时等（按分钟计费）；席位订阅价未见", new_price: "", note: "复核：复核：hex.tech/pricing 今日显示算力档 Large $0.32/hr、Extra Large $0.65/hr（另有 2XL $1.29、4XL $2.58 等，按分钟计费），与记录一致；席位订阅价仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0220",
@@ -3876,8 +3947,10 @@ pub fn all_tools() -> Array[ToolPricing] {
       reachable: "能打开",
       verified_at: "2026-11-15",
       note: "browser.open 当日限流未直接打开；causal.app 官网站内搜索未返回独立定价页；价格取自 Causal 官方 Notion 定价页：Free $0、Pro $50/用户/月（年付 8 折）、Business 灵活定价，14 天试用。同名歧义：causal.so 是另一款 AI 画布产品（Pro £8/月）、Causal Map 是另一款因果图工具，均非本条；causal.app 的 Causal 2024 年被 LucaNet 收购。",
-      status: PriceStatus::VerifiedPartial,
-      history: [],
+      status: PriceStatus::Verified,
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pro $50/用户/月（官网 Notion 定价页；年付 8 折）；Business 灵活定价", new_price: "", note: "复核：复核：Causal 官方 Notion 定价页今日完整显示 Free $0、Pro $50/mo per user、Business flexible pricing，并注明按月计费价、年付 8 折，与记录逐字一致；该 Notion 页即官方定价页，三档齐全，升级为已核验。" },
+      ],
     },
     {
       key: "APV-0226",
@@ -4037,7 +4110,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "价格取自 ramp.com 官方定价页搜索片段（browser.open 当时限流 429 未直接打开）；Plus 的平台费金额未在定价页公布，需销售报价；注意不要与 ramp.app（另一家欧元定价的 AI 企业平台）混淆。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Free $0/用户/月；Plus $15/用户/月（另加按团队规模计的平台费，年付 8 折）；Enterprise 定制价（年付）", new_price: "", note: "复核：复核：官网定价页今日显示 Free $0/用户/月，Plus $15/用户/月（另加按团队规模计的平台费，年付 8 折），Enterprise 定制（年付），与记录逐字一致。" },
+      ],
     },
     {
       key: "APV-0236",
@@ -4069,7 +4144,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网定价页已直接打开，但 Plus/Pro 各档价 JS 渲染、抓取文本未显示；只核验到基础 $0/月、两项附加费与年付 85 折；Plus/Pro 各档价（第三方转述 Plus $35/月、Pro $350/月，年付 $29.90/$299）未采信；Plus 有 30 天免费试用；Treasury 需 $250K 余额解锁。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "基础银行服务 $0/月；附加：Mercury Books $35/月（2026-12-31 前免收）、Payroll $100/月 + $50/人/月（2026-12-31 前免收）；付费档起价 $35/月（官网首页文案）", new_price: "", note: "复核：复核：页面显示 Banking services $0/mo，附加费 $35/mo（waived until Dec 31, 2026）、$100/mo + $50/per person paid/mo（waived until Dec 31, 2026），与记录一致；Plus/Pro 各档价仍 JS 渲染未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0238",
@@ -4101,7 +4178,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网定价页已直接打开核验；只核验到 Core/Complete 两档软件价与 Expert Reviewed 服务价；Starter 与 Scale 两档价未在抓取文本中显示（第三方转述 Starter $30、Scale $360，未采信）；附加服务：补账 $300/账期月起、报税 $1,250/年起、R&D 研究为合格支出 1.5%。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Core $72/月；Complete $120/月（最受欢迎）；Core + Expert Reviewed $171/月（月支出 ≤$10K，含软件+服务）", new_price: "", note: "复核：复核：页面显示 Core $72/Mo、Complete $120/Mo、Core + Expert Reviewed $171/mo（Up to $10K/mo 支出），与记录一致；Starter/Scale 两档价仍未显示（Scale 仅在 FAQ 提及名称），不升级。" },
+      ],
     },
     {
       key: "APV-0240",
@@ -4181,7 +4260,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网定价页已直接打开核验；只核验到起价 $89（官网 JSON-LD 结构化数据）与 Sidekick/数据附加费；四档完整价目（第三方转述 Standard $89/Premium $149/Enhanced $197/Advanced $349 按月，年付 $54/$91/$122/$214）未在官网抓取文本中显示，未采信；当前黑五促销价未采信。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "起价 $89/月（官网结构化数据）；Sidekick AI 附加：免费 25 条/月，付费 $49/$129/$349/月；实时期货数据 $7.50/月（非专业）", new_price: "", note: "复核：复核：页面 JSON-LD 结构化数据 Price 89 USD，Sidekick 付费档 $49/$129/$349/月（免费 25 条/月），实时期货数据 $7.50/month（非专业），与记录一致；四档完整价目仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0245",
@@ -4213,7 +4294,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "价格取自 kavout.com 官方定价页搜索片段（browser.open 当时限流 429 未直接打开）；只核验到 Free/Pro/Premium 三档年付价；页面标题提及的 Max 档价格未见；Pro 按月 $20/月见官网对比表，Premium 按月 $49/月仅见第三方转述，未采信。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Free $0；Pro $16/月（年付 $192/年）；Premium $39/月（年付 $468/年）", new_price: "", note: "复核：复核：官网定价页显示 Free $0/month、Pro $16/month（Billed as $192 every 12 months）、Premium $39/month（Billed as $468 every 12 months），与记录一致；Max 档价格仍未见（标题提及 Max，页内无价），不升级。" },
+      ],
     },
     {
       key: "APV-0247",
@@ -4261,7 +4344,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "Klarna 官网无美国商家价目表；5.99% + $0.30 来自 Klarna 托管的 2023-09 定价条款文档的第三方转述（Stripe 同期公布的 Klarna 费率亦为 5.99% + $0.30），未在官网当前页面直接读到，故降级为部分核验；长期融资商户费率 3.29% + $0.30、争议费 $15 亦仅见第三方转述，未采信。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "商户费率 5.99% + $0.30/笔（Pay in 4 / Pay in 30，美国）", new_price: "", note: "复核：复核：klarna.com 首页今日仅为国家/地区选择页，无商户费率（5.99% + $0.30 未见）；原价与 verified_at 不动。" },
+      ],
     },
     {
       key: "APV-0250",
@@ -4293,7 +4378,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网定价页已直接打开核验；另有按笔交易费（ACH $0.59、支票 $1.99、刷卡 2.9%、国际美元电汇 $19.99），与订阅费无关；页面未注明年付/按月计费方式；BILL 前身为 Bill.com，2022 年更名。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Essentials $49/用户/月；Team $65/用户/月；Corporate $89/用户/月（最受欢迎）；Enterprise 定制价；Spend & Expense $0/用户/月", new_price: "", note: "复核：复核：官网定价页今日显示 Essentials $49、Team $65、Corporate $89/用户/月，Enterprise 定制，Spend & Expense $0/用户/月，与记录逐字一致。" },
+      ],
     },
     {
       key: "APV-0252",
@@ -4421,7 +4508,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网定价页已直接打开核验；只核验到 Hire employees 卡片两档；Contractors $49、Contractor of Record $325、Global Payroll $29、Deel HR $5 等其他标签页价格未在本次抓取文本中显示，仅见第三方转述，未采信；PEO 促销：2026-07-15–12-31 签约 2 年可免 3 个月平台费。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "EOR 起价 $599/员工/月；美国 PEO 起价 $125/员工/月", new_price: "", note: "复核：复核：页面显示 Starting at $599 per EOR employee per month、$125 per US PEO employee per month，与记录一致；Contractors 等其他标签页价格仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0260",
@@ -4453,7 +4542,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "定价页已打开，主档位（SEO/Starter/Pro+/Advanced）价格卡 JS 渲染未见金额；仅附加功能价可见，第三方转述的主档价未采纳",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "附加功能：Additional Users $45/月起，Lead Generation $90/月，Base Report $10/月，Pro Report $20/月", new_price: "", note: "复核：复核：页面附加功能区显示 Additional Users Starting at $45/mo、Lead Generation $90/mo、Base Report $10/mo、Pro Report $20/mo，与记录一致；主档位（SEO/Starter/Pro+/Advanced）金额仍 JS 渲染未见，不升级。" },
+      ],
     },
     {
       key: "APV-0262",
@@ -4469,7 +4560,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "定价页已打开，主档位（Lite/Standard/Advanced）价格卡未在抓取文本中显示，仅附加功能价可见；页面明确称从不打折",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "附加功能：Brand Radar Basic $50/月、Growth $100/月、Scale $250/月；Traffic Analytics $99/月、Traffic & Market $299/月；Content Kit $99/月起；Report Builder $99/月；Project Boost Pro $20/月/项目、Max $200/月/项目", new_price: "", note: "复核：复核：页面显示 Brand Radar Basic $50/mo、Growth $100/mo、Scale $250/mo，Traffic Analytics $99/mo、Traffic & Market $299/mo，Content Kit From $99/mo，与记录一致；主档位（Lite/Standard/Advanced）金额仍未在文本中显示，不升级。Report Builder $99/月与 Project Boost Pro $20/月/项目、Max $200/月/项目本次提取文本未见。" },
+      ],
     },
     {
       key: "APV-0263",
@@ -4565,7 +4658,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "定价页已打开，价格卡金额未渲染，但页面 FAQ 同页明确写出三档年付价 $99/$199/$399/用户/月",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Standard $99/用户/月；Professional $199/用户/月；Advanced $399/用户/月（年付价）；Enterprise 定制", new_price: "", note: "复核：复核：官网定价页今日价格卡片金额未渲染，但 FAQ 明确写明 Standard $99、Professional $199、Advanced $399/用户/月（年付价），与记录逐字一致；Enterprise 定制。" },
+      ],
     },
     {
       key: "APV-0269",
@@ -4597,7 +4692,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "定价页已打开，主档位（Essentials/Standard/Professional/Advanced）价格卡未显示金额，仅 Trellis Plus 附加价可见；主档价未采纳第三方转述",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Trellis Plus 附加功能 $28/席/月（年付）、$35/席/月（月付）", new_price: "", note: "复核：复核：页面显示 Trellis Plus $28 per seat/month、$35 per seat/month billed monthly，与记录一致；主档位（Essentials/Standard/Professional/Advanced）金额仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0271",
@@ -4709,7 +4806,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网 /pricing 返回 404，定价页需登录后查看；起步价 $37.70/月见官网域名对比页；Basic/Premium/Agency 各档价未核验到，官方帮助中心称价格因国家而异",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "起步价 $37.70/月起", new_price: "", note: "复核：复核：官网对比页显示 Mangools Affordable pricings From $37.70/month，与记录一致；Basic/Premium/Agency 各档价仍未见（定价页需登录），不升级。" },
+      ],
     },
     {
       key: "APV-0278",
@@ -4773,7 +4872,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "定价页已打开，四档价均显示",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter $9/月（月付）/$8.08/月（年付）；Standard $18/月（月付）/$16.17/月（年付）；Professional $499/月（月付）/$449.08/月（年付）；Enterprise $2,499/月起", new_price: "", note: "复核：复核：官网定价页今日显示 Starter $9/月（月付）/$8.08/月（年付），Standard $18/$16.17，Professional $499/$449.08，Enterprise $2,499/月起，与记录逐字一致。" },
+      ],
     },
     {
       key: "APV-0282",
@@ -4965,7 +5066,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "本次 browser.open 遇限流未成功，价格读自搜索引擎对官方定价页的抓取文本（抓取于 1-2 小时内）：Free 5 用户；Standard $25、Plus $45、Pro $75/用户/月；Envoy AI $0.75/次解决。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Standard $25、Plus $45、Pro $75/用户/月；Envoy AI $0.75/次解决", new_price: "", note: "复核：复核：官网定价页今日显示 Standard $25、Plus $45、Pro $75/用户/月，Envoy AI $0.75/次解决，与记录逐字一致；另见免费版 5 用户。" },
+      ],
     },
     {
       key: "APV-0294",
@@ -5077,7 +5180,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "价格读自搜索引擎返回的官方定价页爬取文本：Free $0；Plus $150、Team $750/月（年付）；超量 $65/100 次（Plus）、$50/100 次（Team）；2026-05-14 起执行新定价。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Plus $150/月（年付，$189 按月，250 对话/月）；Team $750/月（年付，$939 按月，1,500 对话/月）；Enterprise 定制；超量 $65/100 次（Plus）、$50/100 次（Team）", new_price: "", note: "复核：复核：官网定价页今日显示 Plus $150/月（年付，250 对话/月）、Team $750/月（年付，1,500 对话/月），Enterprise 定制，超量 $65/100 次（Plus）、$50/100 次（Team），与记录逐字一致；月付价 $189/$939 本次提取文本未见，按主价一致记无变化。" },
+      ],
     },
     {
       key: "APV-0301",
@@ -5173,7 +5278,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "2026-11-15 打开官网：客服套餐档位价已核验；Lyro AI 独立插件价本页未见（第三方称 $32.50/月起，未采纳）。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Starter $24.17/月（100 个计费对话）；Growth $49.17/月起（250 个起）；Plus $300/月起+用量；Premium 按需报价（均为年付月均价）", new_price: "", note: "复核：复核：页面显示 Starter $24.17/mo（100 Billable conversations）、Growth Starts at $49.17/mo（From 250 Billable conversations）、Plus Starts at $300/mo + 用量、Premium Contact for pricing，与记录一致；Lyro AI 独立插件价仍未见，不升级。" },
+      ],
     },
     {
       key: "APV-0307",
@@ -5189,7 +5296,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "2026-11-15 打开官网：档位价卡片 JS 渲染未见，只核验到 AI Agent 单价与 FAQ；第三方档位价（Starter $10/Basic $50/Pro $300/Advanced $750 等）未采纳；Helpdesk 50-5,000 工单/月。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "AI Agent $0.90/次（年付）或 $1.00/次（按月）；页面 JSON-LD 标价区间 $10-$750", new_price: "", note: "复核：复核：页面 FAQ 明确 AI Agent interactions are priced at $0.90 each on annual plans or $1.00 on monthly plans，与记录一致；Helpdesk 主档价仍 JS 渲染未见，不升级。" },
+      ],
     },
     {
       key: "APV-0308",
@@ -5205,7 +5314,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "2026-11-15 打开官网：档位价卡片 JS 渲染未见（页内查找 $14 无结果），只核验到超额联系人单价；第三方档位价（年付 $14/$29/$69/$139）未采纳。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "超额联系人单价：按月 $0.10/$0.05/$0.025/$0.004/个，年付 $0.082/$0.038/$0.018/$0.0028/个（按联系人量阶梯）", new_price: "", note: "复核：复核：页面显示超额联系人单价按月 $0.10/$0.05/$0.025/$0.004、按年 $0.082/$0.038/$0.018/$0.0028，与记录一致；主档位金额仍 JS 渲染未见，不升级。" },
+      ],
     },
     {
       key: "APV-0309",
@@ -5221,7 +5332,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "2026-11-15 打开官网：档位价卡片 JS 渲染未见，只核验到 Captain AI 计价；第三方档位价（Hacker $0、Startups $19、Business $39、Enterprise $99/人/月）未采纳；自托管 Community 版 $0（MIT）未在本页核验到。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Captain AI 超量 $20/1,000 积分；付费档每月赠送 Captain AI 积分：Startups 300、Business 500、Enterprise 800", new_price: "", note: "复核：复核：页面显示 Captain AI 超量 $20/1,000 credits，每月赠送积分 Startups 300、Business 500、Enterprise 800，与记录一致；主档位金额仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0310",
@@ -5669,7 +5782,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网定价页直接读到。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "消息治疗 $69/周；视频+消息 $99/周；视频+消息+工作坊 $109/周；精神科初评 $299、复诊 $175；AI 向导 Tee $19.99/月（7 天试用后）", new_price: "", note: "复核：复核：官网定价页今日显示消息治疗 $69/周，视频+消息 $99/周，视频+消息+工作坊 $109/周，精神科初评 $299、复诊 $175，AI 向导 Tee $19.99/月（7 天试用后），与记录逐字一致。" },
+      ],
     },
     {
       key: "APV-0338",
@@ -5701,7 +5816,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网首页直接读到减重会员价；Hims 按产品分别标价，心理健康（第三方称 $49/月起）、ED、脱发等其他产品线价格未在首页显示，记部分核验。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "减重会员：首月 $39，之后 $149/月（自动续费；不含药物费用）", new_price: "", note: "复核：复核：官网首页显示 Weight Loss Membership $39 for the first month, auto-renews at $149/month thereafter，与记录一致；心理健康、ED、脱发等其他产品线价格仍未在首页显示，不升级。" },
+      ],
     },
     {
       key: "APV-0340",
@@ -5717,7 +5834,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网首页直接读到减重药价；无统一会员价目，ED/脱发/护肤等其他产品线价格未在首页显示，记部分核验。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "减重 GLP-1：$149/月起（Wegovy 口服，标价 $1,349）、$199/月起（标价 $1,349）、$299/月起（标价 $499）", new_price: "", note: "复核：复核：官网首页显示 $149/mo（标价 $1,349，Wegovy 口服）、$199/mo（标价 $1,349）、$299/mo（标价 $499），与记录一致；另见一档 $149/mo（标价 $649）未标注药品名，未作新档位；ED/脱发/护肤等其他产品线价格仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0341",
@@ -5749,7 +5868,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网 Premium 页直接读到年费 $79.99/年（“67% savings over the Monthly Plan”）与 7 天试用；月费金额抓取文本未显示，记部分核验。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Premium 年费 $79.99/年（月费金额在抓取文本中未显示）", new_price: "", note: "复核：复核：页面显示 Annual Plan $79.99/year billed annually（67% savings over the Monthly Plan），与记录一致；月费金额仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0343",
@@ -5765,7 +5886,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网 Gold 页直接读到。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Gold $4.99/月（年付 $59.99）或 $10.99/月（月付）", new_price: "", note: "复核：复核：官网 Gold 页今日显示 $4.99/月（年付 $59.99）与 $10.99/月（月付），与记录逐字一致。" },
+      ],
     },
     {
       key: "APV-0344",
@@ -5781,7 +5904,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网会员页直接读到 $5.99/月与首月免费；年费 $69.99 未在抓取文本中显示，记部分核验。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "会员 $5.99/月（年费 $69.99 未在抓取文本中显示）", new_price: "", note: "复核：复核：会员页显示 $5.99 USD/month、首月免费，与记录一致；年费 $69.99 仍未在抓取文本中显示，不升级。" },
+      ],
     },
     {
       key: "APV-0345",
@@ -5813,7 +5938,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网首页直接读到 Pod 6 硬件价 $1,999 起；Autopilot 会员价在 /autopilot 页，本次抓取触发限流（429）未打开，第三方转述的 Standard $199/年等未采信，记部分核验。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Pod 6 单人尺寸 $1,999 起（黑五预售最高减 $400）；Autopilot 会员价未在首页显示", new_price: "", note: "复核：复核：官网首页显示 Solo sizes starting at $1,999、Pre-Black Friday up to $400 off，与记录一致；Autopilot 会员价仍未在首页显示，不升级。" },
+      ],
     },
     {
       key: "APV-0347",
@@ -6037,7 +6164,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官方定价页四档价齐全：Startup $157/月（年付，月付 $189）、Growth $273/月（年付，月付 $329）、Business $439/月（年付，月付 $529）、Custom Pro 按报价；各档均不限用户数与在招职位数；Breezy Intelligence AI 积分 $30/100,000 起。",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Startup $157/月（年付），Growth $273/月（年付），Business $439/月（年付），Custom Pro 按报价；月付价 $189/$329/$529", new_price: "", note: "复核：复核：官网定价页 FAQ 今日明确写明 Startup $157/月（年付）/$189（月付），Growth $273/$329，Business $439/$529，Custom Pro 按报价，与记录逐字一致。" },
+      ],
     },
     {
       key: "APV-0361",
@@ -6101,7 +6230,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官方定价页已打开，但主套餐 Simple/Plus/Premium 的价格卡片在抓取到的文本中未出现（JS 渲染）；只见到两项附加价：Priority Support $30/月+$3/人/月、健康保险经纪人管理 $6/月/人。主套餐价未核验到，只核验到附加项价。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "附加项：Priority Support $30/月+$3/人/月，健康保险经纪人管理 $6/月/人；主套餐 Simple/Plus/Premium 价未见", new_price: "", note: "复核：复核：页面 FAQ 显示 Priority Support add-on $30/mo + $3/mo per person，健康保险经纪人管理 $6/month per eligible employee，与记录一致；主套餐 Simple/Plus/Premium 价格仍未显示，不升级。" },
+      ],
     },
     {
       key: "APV-0365",
@@ -6181,7 +6312,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官方定价页只见到 Foundations 档价：≤100 员工 $400/月，年付 9 折，另有新兴市场价；Plus（101–1000 员工）与 Enterprise（1000+ 员工）只写“按公司规模、用量与承诺定价”，无金额；Ashby Analytics 按用量定价。只核验到 Foundations 一档。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Foundations（≤100 员工）$400/月；Plus（101–1000 员工）与 Enterprise（1000+ 员工）未见价，须询价；年付 9 折", new_price: "", note: "复核：复核：页面显示 All-In-One Foundations Plan Total $400/Month（Up to 100 employees，10% discount for annual commitments），与记录一致；Plus/Enterprise 仍按公司规模定价、无金额，不升级。" },
+      ],
     },
     {
       key: "APV-0370",
@@ -6213,7 +6346,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官方定价页明确见到两档年价：Hero $1,000/年、Pro $5,508/年；功能比较表处另见 $3,480/年一档，按三档顺序应为 Plus，但该处未标注档名，未采信为定论。只核验到两档，第三档未确认。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Hero $1,000/年，Pro $5,508/年；比较表另见 $3,480/年一档（按顺序应为 Plus，但该处未标注档名，未采信）", new_price: "", note: "复核：复核：页面显示 Hero $1,000/yr、Pro $5,508/yr，与记录一致；比较表处 $3,480/yr 仍未标注档名，不升级。" },
+      ],
     },
     {
       key: "APV-0372",
@@ -6277,7 +6412,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官方定价页 FAQ 原文：“套餐起步价 $8/员工/月，另收月度基础费”，但基础费金额与各产品具体价均未见，须询价。只核验到起步价。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "起步价 $8/员工/月起，另收月度基础费（金额未见）；各产品具体价须询价", new_price: "", note: "复核：复核：页面 FAQ 原文 Rippling plans start at $8 per employee per month, with a monthly base fee，与记录一致；基础费金额与各产品具体价仍未见，不升级。" },
+      ],
     },
     {
       key: "APV-0376",
@@ -6325,7 +6462,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官方定价页已打开，但 Payroll/PEO Basic/PEO Plus 三档主价卡片在抓取到的文本中未出现（JS 渲染）；只见到一项附加价 $25/月/参保员工。主套餐价未核验到，只核验到附加项价。",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "附加项 $25/月/参保员工；Payroll/PEO Basic/PEO Plus 三档主价未见", new_price: "", note: "复核：复核：页面附加项区显示 $25/month per enrolled employee（Payroll、PEO Basic、PEO Plus 可用），与记录一致；三档主价仍未在提取文本中出现，不升级。" },
+      ],
     },
     {
       key: "APV-0379",
@@ -6405,7 +6544,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网升级页直接打开核实（页面副本日期 2026-06-10，与 2026 年 9–11 月多家转述一致）；月付价本页未见，第三方称 $7.99/$9.99 未采信",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Plus $2.99/月（按年付 $35.99/年）；Plus Unlimited $3.75/月（按年付 $44.99/年）；Family $6.99/月（按年付 $83.99/年）", new_price: "", note: "复核：复核：官网升级页返回的副本（抓取于 2026-06-10）显示 Plus $2.99/月（按年付 $35.99/年），Plus Unlimited $3.75/月（$44.99/年），Family $6.99/月（$83.99/年），与记录逐字一致；本次返回的为缓存副本、非当日新抓取，特此注明。" },
+      ],
     },
     {
       key: "APV-0384",
@@ -6549,7 +6690,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网价格页直接打开核实：仅见 12 个月与终身两档；1/3/6 个月档本页未见，第三方转述 1 个月 $17.95 未采信",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "12 个月 $8.95/月（一次付 $107.40）；终身 $299.99 一次性", new_price: "", note: "复核：复核：页面显示 12 months $8.95/mo（current price $107.40）、Lifetime $299.99 one-time payment，与记录一致；1/3/6 个月档仍未见，不升级。" },
+      ],
     },
     {
       key: "APV-0393",
@@ -6565,7 +6708,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网首页已打开，无价；定价页 /en/pricing 返回 404，价格在注册后显示；官网博客片段只列 Premium Plus 区间价 $5.74–$13.99/月与三档结构，Premium 固定价未见；第三方转述 Premium $12.49/月、$72.99/年未采信",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "未看到价", old_price: "Premium Plus $5.74–$13.99/月（官网博客所列区间价，未见固定档位价）", new_price: "", note: "复核：复核：busuu.com 首页今日提取文本无任何价格（$5.74–$13.99 未见），未看到价；原价与 verified_at 不动。" },
+      ],
     },
     {
       key: "APV-0394",
@@ -6629,7 +6774,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网 Plus 页直接打开核实：年付价 $239（原价 $399）；月付档存在（FAQ 称月付有 7 天试用）但月付金额本页未见，第三方称 $59/月未采信",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Plus 年付 $239/年（原价 $399/年，限时优惠）", new_price: "", note: "复核：复核：页面显示 Coursera Plus ~~$399~~ $239/year，与记录一致；月付金额本页仍未见（FAQ 仅称月付有 7 天试用），不升级。" },
+      ],
     },
     {
       key: "APV-0398",
@@ -6661,7 +6808,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网定价页直接打开核实：Premium 特价 $11/月按年付，页面同时标原价 $28/月按年付与年付省 $288；Basic 免费",
       status: PriceStatus::Verified,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "Premium 特价 $11/月，按年付（原价 $28/月，按年付；按月付 $35/月）", new_price: "", note: "复核：复核：官网定价页今日显示 Premium 特价 $11/月（按年付），原价 $28，与记录逐字一致；按月付 $35 本次提取文本未见，按主价一致记无变化。" },
+      ],
     },
     {
       key: "APV-0400",
@@ -6773,7 +6922,9 @@ pub fn all_tools() -> Array[ToolPricing] {
       verified_at: "2026-11-15",
       note: "官网博客只给 VIP 区间价约 $5–$10/月，未见固定档位价；官网不公布价格，App Store 转述 $12.99/月、$79.99/年未采信",
       status: PriceStatus::VerifiedPartial,
-      history: [],
+      history: [
+        { date: "2026-11-15", session: "20261115-R3", change: "无变化", old_price: "VIP 约 $5–$10/月（官网博客所列区间价，年付更低）", new_price: "", note: "复核：复核：官网博客页多处写 VIP roughly $5-10/mo（年付更低），与记录一致；仍为区间价、未见固定档位价，不升级。" },
+      ],
     },
     {
       key: "APV-0407",
