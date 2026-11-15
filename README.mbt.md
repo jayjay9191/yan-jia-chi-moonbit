@@ -120,6 +120,11 @@ python3 -m unittest discover -s tests_py
 
 注意：工具名只接受全名，`check 黎明`这种简称查不到（和参赛管家一样）。
 
+提交前检查：仓库配了 `.githooks/pre-commit`（提交前自动跑 `moon test`，
+失败则阻止提交）。启用一次即可：`bash scripts/setup-hooks.sh`
+（即 `git config core.hooksPath .githooks`）；不用时
+`git config --unset core.hooksPath` 即可恢复。
+
 ## 数据说明
 
 - 唯一事实源是 `data/pricing.json`，改数据只改 JSON，改完跑

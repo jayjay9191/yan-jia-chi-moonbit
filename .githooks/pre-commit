@@ -1,0 +1,8 @@
+#!/bin/sh
+# 提交前跑 MoonBit 测试，失败则阻止提交。
+# 启用方法：bash scripts/setup-hooks.sh（只需一次），或见 README。
+export PATH="$HOME/.moon/bin:$PATH"
+if ! moon test; then
+  echo "pre-commit: moon test 未通过，已阻止提交。请先修好测试再提交。" >&2
+  exit 1
+fi
