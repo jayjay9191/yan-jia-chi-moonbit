@@ -84,13 +84,19 @@ def mbt_str(s: str) -> str:
 
 
 def emit_history(history: list) -> str:
-    """history 数组：空为 []，否则每条一行 HistoryEntry 字面量。"""
+    """history 数组：空为 []，否则每条一个多行展开的 HistoryEntry 字面量。
+
+    格式与 `moon fmt` 的输出逐字一致（字段各占一行、末尾带逗号），
+    否则生成器一跑就会把 fmt-clean 的文件写回单行格式，工作区变脏。
+    """
     if not history:
         return "      history: [],"
     lines = ["      history: ["]
     for h in history:
-        parts = ", ".join(f"{f}: {mbt_str(h[f])}" for f in HISTORY_FIELDS)
-        lines.append(f"        {{ {parts} }},")
+        lines.append("        {")
+        for f in HISTORY_FIELDS:
+            lines.append(f"          {f}: {mbt_str(h[f])},")
+        lines.append("        },")
     lines.append("      ],")
     return "\n".join(lines)
 

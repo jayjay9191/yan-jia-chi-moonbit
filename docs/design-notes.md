@@ -396,7 +396,17 @@ README 对比表里找到出处。
 见 §4（三档核验状态、过期检测、货币一致性规则、CSV 缺陷处理、
 计费周期前缀归类），这里不重复。
 
-## 11. 已知问题：生成文件与 moon fmt（2026-11-16）
+## 11. 已解决：生成文件与 moon fmt（2026-11-16）
 
-- `scripts/generate_data.py` 生成的 `pricing_data.mbt` 不是 fmt-clean（history 结构体写单行，`moon fmt` 会展开成多行，约 2115 行 diff）；仓库里提交的是 fmt 后的版本，CI 同步检查（生成 + fmt + diff）以此为准。
-- `tests_py/test_scripts.py` 有个测试会调 `generate_data.main()`，所以**本地跑一遍 Python 测试就会把 `pricing_data.mbt` 写回生成器原始格式**，工作区随即变脏——不是数据丢了，提交前重跑一次 `moon fmt` 即可。根治办法是改生成器直接输出 fmt-clean 格式，待做。
+**问题**：`scripts/generate_data.py` 生成的 `pricing_data.mbt` 不是 fmt-clean——history 结构体写单行，`moon fmt` 会展开成多行（约 2115 行 diff）；仓库里提交的是 fmt 后的版本。`tests_py/test_scripts.py` 有个测试会调 `generate_data.main()`，所以本地跑一遍 Python 测试就会把 `pricing_data.mbt` 写回生成器原始格式，工作区随即变脏。
+
+**改法**：只改 `scripts/generate_data.py` 的 `emit_history`，让它直接输出与 `moon fmt` 一致的多行格式——每条 HistoryEntry 的 `{` 独占一行，6 个字段各占一行（10 空格缩进、末尾带逗号），`},` 收尾。只改空白/布局，不改任何数据内容：重新生成的 `pricing_data.mbt` 与之前提交的 fmt-clean 版本字节一致。
+
+**为什么无条件多行**：用独立 `.mbtx` 探针确认过——即使 note 很短的 6 字段结构体，`moon fmt` 也展开成多行（不是按行宽折叠）；现有最短的单行 history 条目也有 211 字符。所以多行输出对未来新增的 history 条目也成立。
+
+**验证（2026-11-16，5 项全过）**：
+1. `python3 scripts/generate_data.py` → `moon fmt` → `git diff --exit-code -- pricing_data.mbt`，0 diff；且生成文件与原 fmt-clean 版本字节一致。
+2. `python3 -m unittest discover -s tests_py`，13 项全过；跑完后 `git status` 里 `pricing_data.mbt` 干净，不再变脏。
+3. `moon test`：1066/1066 通过。
+4. `moon run cmd/main verify`：0 个问题。
+5. `report` 数字不变：1000 条、已核验 403 / 部分核验 128 / 未核验到 469。
