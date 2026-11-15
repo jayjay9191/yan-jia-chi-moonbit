@@ -132,7 +132,7 @@ python3 -m unittest discover -s tests_py
 - 逐工具断言由 `python3 scripts/generate_tests.py` 从 JSON 生成，
   JSON 一变测试跟着变。
 - CSV 导入是一次性的：`python3 scripts/csv_to_json.py`（源 CSV 在
-  `~/workspace/goals/internradar/files/ai-pricing-verification/pricing.csv`）。
+  `data/seed-pricing-2026-11-08.csv`，即 Lexmount 那 20 条种子数据，已随仓库提交）。
   注意源 CSV 有个小毛病——ChatGPT、Gemini 两行的千分位价格（JP¥1,400、
   JP¥1,450）没加引号，直接用 csv 模块会切错字段；导入脚本按首尾字段
   定位 + 计费周期查表重组，并对 reachable、计费周期做交叉校验。

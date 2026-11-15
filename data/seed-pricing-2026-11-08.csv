@@ -1,0 +1,21 @@
+工具,官网定价页URL,免费版,付费版价格（页面实测货币）,月/年,学生/教育优惠,能否打开,备注
+Qwen / 通义千问,https://qwen.ai/home,免费使用，对所有人开放，未标具体额度,未显示消费版付费价；API页只写“联系销售”，无价格,—,未见,能打开首页，定价页无,无独立消费版定价页
+DeepSeek,https://api-docs.deepseek.com/quick_start/pricing,API定价页未给消费版免费额度,API按量：deepseek-flash 输入缓存命中 $0.003/1M tokens（低谷）/$0.006（高峰），缓存未命中 $0.15/$0.30，输出 $0.6/$1.2；deepseek-v4-pro 输入缓存命中 $0.022/$0.044，未命中 $0.66/$1.32，输出 $1.98/$3.96；Search/Fetch $0.75/1000次请求,按量，无月/年订阅,未见,能打开,只有API定价，无订阅制
+豆包,https://www.doubao.com/chat/,页面未标额度/付费价,未显示,—,未见,初开聊天页，随后跳转地区限制页,地区限制，价格未核验到
+Kimi / Moonshot AI,https://www.kimi.com/,消费版首页未标额度/价格,API：kimi-k3.1-pro 输入 $2/MTok、输出 $10/MTok；高速版 $4/$20；kimi-k3 $3/$15,按量,未见,能打开,消费版无定价页，只有API定价
+ChatGPT / OpenAI,https://chatgpt.com/zh-Hans-CN/pricing/,Free JP¥0/月，可用旗舰模型、图片/语音,Go JP¥1,400/月；Plus JP¥3,000/月；Pro 起 JP¥16,800/月（页面按日元显示，非美元）,按月,定价页未见通用学生折扣；ChatGPT for Teachers 美国K-12教师免费至2027年6月，另有Edu版面向高校,能打开,价格为本次页面实际显示的日元价，未换算
+Claude / Anthropic,https://claude.com/pricing,Free $0，Claude Sonnet 5 高峰5小时/周，其余模型其余时段，基础版,Pro $17/月（按年$200 upfront）或$20/月按月；Max $100/月；Ultra $200/月,月/年均有,定价页只见Campus项目链接，未明示折扣金额,能打开,—
+Gemini / Google,https://one.google.com/about/plans,未标免费版具体次数（AI Plus为“未订阅限额2倍”，Pro为4倍）,Google AI Plus（2TB）JP¥1,450/月；Google AI Pro（5TB）JP¥2,900/月,按月，年付最高省16%,未见,gemini.google/pricing 404；Google One页能打开,价格为本次页面实际显示的日元价
+Grok / xAI,https://x.ai/pricing,Free $0，有限次数/速率限制,Plus $8/月；Premium $30/月；Super $100/月；Ultra $200/月；Team $30+/用户/月；企业版自定义,按月,未见,能打开,—
+文心一言 / 百度,https://yiyan.baidu.com/,需登录，未标免费额度,未显示价格，无定价页入口,—,未见,能打开聊天页，需登录,价格只可能在登录/App后，未核验到
+讯飞星火,https://xinghuo.xfyun.cn/,未见,未见,—,未见,打不开：白屏，刷新一次仍白屏,未核验到价格
+智谱清言 / GLM,https://docs.bigmodel.cn/cn/guide/start/pricing,chatglm.cn未显示内容；API页未给免费额度,API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥3.5、输出 ¥12.5；GLM-5.1-Flash 输入 ¥0.8、输出 ¥2.8,按量,未见,chatglm.cn白屏；文档定价页能打开,只有API定价，无消费订阅价
+腾讯元宝 / 混元,https://yuanbao.tencent.com/,未标额度,未显示价格，无定价页入口,—,未见,能打开但只显示加载骨架/聊天界面,未核验到价格
+Copilot / Microsoft,https://www.microsoft.com/en-us/copilot/pricing/business,可免费试用Copilot Chat，未标具体次数,商业版（按年）：含Copilot的Business Premium $32/用户/月；含Copilot的Business Standard $23.50/用户/月；Copilot Business附加 $18/用户/月（原$21，2026年7–12月优惠）,按年,商业定价页未见学生价，页脚有Education入口,能打开,本次只核验到商业版定价，未核验个人版
+Perplexity,https://www.perplexity.ai/pricing,未见,未见,—,未见,打不开：/pricing 404提示后白屏，首页亦白屏，重试一次仍白屏,未核验到价格，不用旧价格代替
+Midjourney,https://www.midjourney.com/pricing,定价页未列免费版,Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%,月/年,未见,能打开,无免费档
+夸克 AI,https://www.quark.cn/,未标额度,未显示价格，无定价页入口,—,未见,能打开首页海报页,未核验到价格
+纳米 AI / 360,https://www.n.cn/,未见,未见,—,未见,打不开：跳转后白屏，无内容,未核验到价格
+海螺 AI / MiniMax,https://hailuoai.com/,新用户免费积分弹窗：本次弹出“80点积分”,首页左下按钮显示“低至 ¥42 每月”，点击无跳转/无档位表；完整档位未显示，需登录后查看,按月（仅见“每月”）,未见,能打开首页,除¥42起外，其他档位未核验到，不编造
+通义灵码,https://lingma.aliyun.com/,个人免费使用、企业版免费开放，未标额度,未显示付费价，无定价页,—,未见,能打开,无付费定价
+Cursor,https://cursor.com/pricing,Free $0，有限AI使用量,Plus $8/月；高级版 $30/月（4倍用量）；Super $100/月；Ultra $200/月；Team $30+/用户/月,按月,定价页未明示折扣金额，页脚有“学生”链接,能打开,该页同时出现Cursor Agent与Grok/X Premium功能描述，价格按页面实测记录

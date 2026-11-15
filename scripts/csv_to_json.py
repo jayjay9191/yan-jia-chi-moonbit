@@ -29,9 +29,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CSV_PATH = Path(
-    "/home/hatch/workspace/goals/internradar/files/ai-pricing-verification/pricing.csv"
-)
+CSV_PATH = ROOT / "data" / "seed-pricing-2026-11-08.csv"
 JSON_PATH = ROOT / "data" / "pricing.json"
 
 VERIFIED_AT = "2026-11-08"

@@ -6,8 +6,7 @@
 ## 1. 怎么挑工具
 
 - 种子：用户 Lexmount 第二份作品的 20 条记录（2026-11-08，云端浏览器
-  实际打开各官网逐页核验），见 `~/workspace/goals/internradar/files/
-  ai-pricing-verification/pricing.csv`。
+  实际打开各官网逐页核验），见 `data/seed-pricing-2026-11-08.csv`。
 - 扩量：十三批、每批 30 个，按类别分——
   A 写作/文案/语法、B 图像/设计、C 视频/音频/语音、D 编程/开发、
   E LLM API/云基础设施、F 办公生产力/AI 搜索/其他、
