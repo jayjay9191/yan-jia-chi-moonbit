@@ -9,7 +9,9 @@
 ///    部分核验也必须有价格）
 /// 4. 货币一致：已核验/部分核验 → 货币必须是 USD/JPY/CNY；未核验到 →
 ///    货币必须为空（没有价格就不编货币）
-/// 5. 货币符号一致：USD 的价格里必须有 "$"，JPY/CNY 的价格里必须有 "¥"
+/// 5. 货币符号一致：USD 的价格里必须有 "$"，JPY/CNY 的价格里必须有 "¥"；
+///    例外：纯费率价（只有百分比、没有固定金额，如 Patreon 平台费为收入的
+///    10%）没有货币符号可查，货币按官网市场记 USD，符号检查不适用
 /// 6. 计费周期：已核验/部分核验 → 非空；未核验到 → 必须为空
 /// 7. verified_at 符合 YYYY-MM-DD
 /// 8. reachable 只能是“能打开”/“打不开”/“受限”
@@ -20,6 +22,17 @@
 /// 13. history 条目合法：日期格式正确；变动类型在 6 种以内
 ///     （无变化/涨价/降价/下架/新档位/未看到价）；会话非空；
 ///     涨价/降价必须新旧价俱全且不同（空着或相同都是假轨迹）
+
+///|
+/// 纯费率价：价格只有百分比、没有固定金额（如 Patreon 平台费为收入的
+/// 10%，官网定价页只给这个费率、无固定月费）。这种价格没有货币符号
+/// 可查，货币符号检查不适用；货币仍按官网所在市场记（USD；先例：
+/// Klarna 5.99% + $0.30/笔、Wise 0.24% 起均记 USD）。
+fn is_rate_only_price(paid_price : String) -> Bool {
+  paid_price.contains("%") &&
+  !paid_price.contains("$") &&
+  !paid_price.contains("¥")
+}
 
 ///|
 pub fn validate_tools(tools : Array[ToolPricing]) -> Array[String] {
@@ -108,10 +121,13 @@ pub fn validate_tools(tools : Array[ToolPricing]) -> Array[String] {
         issues.push(
           tag + "货币必须是 USD/JPY/CNY，现在是：" + t.currency,
         )
-      } else if t.currency == "USD" && !t.paid_price.contains("$") {
+      } else if t.currency == "USD" &&
+        !t.paid_price.contains("$") &&
+        !is_rate_only_price(t.paid_price) {
         issues.push(tag + "货币是 USD，但付费价里没有 $ 符号")
       } else if (t.currency == "JPY" || t.currency == "CNY") &&
-        !t.paid_price.contains("¥") {
+        !t.paid_price.contains("¥") &&
+        !is_rate_only_price(t.paid_price) {
         issues.push(
           tag + "货币是 " + t.currency + "，但付费价里没有 ¥ 符号",
         )

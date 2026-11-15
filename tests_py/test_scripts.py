@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import csv_to_json  # noqa: E402
 import generate_data  # noqa: E402
 import generate_tests  # noqa: E402
+import merge_batches  # noqa: E402
 
 
 class TestMbtEmit(unittest.TestCase):
@@ -146,6 +147,45 @@ class TestGenerateTests(unittest.TestCase):
         self.assertEqual(generate_tests.billing_category("按月，年付最高省16%"), "按月")
         self.assertEqual(generate_tests.billing_category("月/年均有"), "月/年")
         self.assertEqual(generate_tests.billing_category(""), "")
+
+
+class TestMirrorValidate(unittest.TestCase):
+    """镜像校验与 MoonBit validate.mbt 同步：纯费率价例外（Patreon 10%）。"""
+
+    def _tool(self, **over):
+        t = {
+            "key": "APV-9999",
+            "session": "20261115-T",
+            "name": "测试工具",
+            "pricing_url": "https://example.com/pricing",
+            "free_tier": "Free $0",
+            "paid_price": "Plus $8/月",
+            "currency": "USD",
+            "billing": "按月",
+            "student_discount": "未见",
+            "reachable": "能打开",
+            "verified_at": "2026-11-15",
+            "status": "verified",
+            "history": [],
+        }
+        t.update(over)
+        return t
+
+    def test_rate_only_price_ok(self):
+        t = self._tool(
+            name="Patreon",
+            status="partial",
+            paid_price="平台费为收入的 10%（另加支付处理等费用），无固定月费",
+            currency="USD",
+            billing="其他",
+        )
+        self.assertEqual(merge_batches.mirror_validate([t]), [])
+
+    def test_usd_price_without_dollar_still_issue(self):
+        t = self._tool(paid_price="Plus 8/月")
+        issues = merge_batches.mirror_validate([t])
+        self.assertEqual(len(issues), 1)
+        self.assertIn("没有 $", issues[0])
 
 
 if __name__ == "__main__":

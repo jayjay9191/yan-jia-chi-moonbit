@@ -337,6 +337,26 @@ test "usd price without dollar sign is an issue" {
 }
 
 ///|
+/// 纯费率价例外（2026-11-15：Patreon 平台费为收入的 10%，官网定价页
+/// 只给这个费率、无固定金额）：没有货币符号可查，不报“没有 $ 符号”。
+test "rate-only price without currency symbol is ok" {
+  let t = tool_with(
+    PriceStatus::VerifiedPartial,
+    "平台费为收入的 10%（另加支付处理等费用），无固定月费",
+    "USD",
+    "其他",
+    "能打开",
+    "https://www.patreon.com/pricing",
+    "2026-11-15",
+    "未见",
+    "免费开始，开始赚钱才付费",
+    "Patreon",
+  )
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 0)
+}
+
+///|
 test "jpy price without yen sign is an issue" {
   let t = tool_with(
     PriceStatus::Verified,

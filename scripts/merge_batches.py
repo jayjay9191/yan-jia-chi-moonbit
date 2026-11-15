@@ -253,6 +253,12 @@ def valid_date(s: str) -> bool:
     return d <= days[m - 1]
 
 
+def is_rate_only(price: str) -> bool:
+    """纯费率价：只有百分比、没有固定金额（如 Patreon 平台费为收入的 10%）。
+    货币符号检查不适用；货币按官网市场记 USD（先例：Klarna、Wise）。"""
+    return "%" in price and "$" not in price and "¥" not in price
+
+
 def mirror_validate(tools: list) -> list:
     """Python 镜像 validate.mbt 的全部 14 项检查，返回问题列表。"""
     issues = []
@@ -289,9 +295,9 @@ def mirror_validate(tools: list) -> list:
         else:
             if t["currency"] not in ("USD", "JPY", "CNY"):
                 issues.append(tag + "货币不在 USD/JPY/CNY 内：" + t["currency"])
-            elif t["currency"] == "USD" and "$" not in t["paid_price"]:
+            elif t["currency"] == "USD" and "$" not in t["paid_price"] and not is_rate_only(t["paid_price"]):
                 issues.append(tag + "USD 价格里没有 $")
-            elif t["currency"] in ("JPY", "CNY") and "¥" not in t["paid_price"]:
+            elif t["currency"] in ("JPY", "CNY") and "¥" not in t["paid_price"] and not is_rate_only(t["paid_price"]):
                 issues.append(tag + "JPY/CNY 价格里没有 ¥")
             if t["billing"] == "":
                 issues.append(tag + "已核验/部分核验但计费为空")
