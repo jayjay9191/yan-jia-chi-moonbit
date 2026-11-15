@@ -689,6 +689,21 @@ test "history price up with same price is an issue" {
 }
 
 ///|
+test "history with empty session is an issue" {
+  let h : HistoryEntry = {
+    date: "2026-11-15",
+    session: "",
+    change: "无变化",
+    old_price: "",
+    new_price: "",
+    note: "测试",
+  }
+  let t = with_history(valid_tool(), [h])
+  let issues = validate_tools([t])
+  assert_eq(issues.length(), 1)
+}
+
+///|
 test "history change counts" {
   let tools = [
     with_history(valid_tool(), [recheck_entry()]),

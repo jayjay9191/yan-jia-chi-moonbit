@@ -162,6 +162,34 @@ test "evidence chain for unverified tool shows no price" {
 }
 
 ///|
+test "evidence chain for price-up tool shows old and new price" {
+  // 智谱 GLM-5.1：2026-11-15 第一次复核发现的真实涨价
+  match @ai-pricing-verifier.tool_by_name("智谱清言 / GLM") {
+    Some(t) => {
+      let lines = @ai-pricing-verifier.evidence_lines(t)
+      assert_true(lines_contain(lines, "涨价"))
+      assert_true(lines_contain(lines, "¥3.5"))
+      assert_true(lines_contain(lines, "20261115-R1"))
+      assert_true(lines_contain(lines, "APV-0011"))
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
+test "evidence chain for rechecked tool shows no-change entry" {
+  // DeepSeek：2026-11-15 复核确认无变动
+  match @ai-pricing-verifier.tool_by_name("DeepSeek") {
+    Some(t) => {
+      let lines = @ai-pricing-verifier.evidence_lines(t)
+      assert_true(lines_contain(lines, "无变化"))
+      assert_true(lines_contain(lines, "20261115-R1"))
+    }
+    None => assert_true(false)
+  }
+}
+
+///|
 test "lookup needs full name" {
   assert_true(@ai-pricing-verifier.tool_by_name("Cursor") is Some(_))
   // 简称查不到：只接受全名
