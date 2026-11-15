@@ -1,0 +1,115 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "jayjay9191/ai-pricing-verifier"
+
+// Values
+pub const STALE_DAYS : Int32 = 30
+
+pub fn all_tools() -> Array[ToolPricing]
+
+pub fn billing_category(String) -> String
+
+pub fn build_report(Array[ToolPricing], Int32) -> PricingReport
+
+pub fn count_billing_category(Array[ToolPricing], String) -> Int32
+
+pub fn count_currency(Array[ToolPricing], String) -> Int32
+
+pub fn count_reachable(Array[ToolPricing], String) -> Int32
+
+pub fn count_status(Array[ToolPricing], PriceStatus) -> Int32
+
+pub fn date_to_days(String) -> Int32
+
+pub fn days_since_verified(String, Int32) -> Int32
+
+pub fn days_to_date(Int32) -> String
+
+pub fn evidence_lines(ToolPricing) -> Array[String]
+
+pub fn is_stale(String, Int32) -> Bool
+
+pub fn is_valid_date(String) -> Bool
+
+pub fn join_strings(Array[String], String) -> String
+
+pub fn names_partial(Array[ToolPricing]) -> Array[String]
+
+pub fn names_unverified(Array[ToolPricing]) -> Array[String]
+
+pub fn names_verified(Array[ToolPricing]) -> Array[String]
+
+pub fn names_with_status(Array[ToolPricing], PriceStatus) -> Array[String]
+
+pub fn partial_count(Array[ToolPricing]) -> Int32
+
+pub fn report_lines(PricingReport) -> Array[String]
+
+pub fn status_eq(PriceStatus, PriceStatus) -> Bool
+
+pub fn status_text(PriceStatus) -> String
+
+pub fn today_days(UInt64) -> Int32
+
+pub fn today_string(UInt64) -> String
+
+pub fn tool_by_name(String) -> ToolPricing?
+
+pub fn tool_names() -> Array[String]
+
+pub fn unverified_count(Array[ToolPricing]) -> Int32
+
+pub fn validate_tools(Array[ToolPricing]) -> Array[String]
+
+pub fn verified_count(Array[ToolPricing]) -> Int32
+
+// Errors
+
+// Types and methods
+pub enum PriceStatus {
+  Verified
+  VerifiedPartial
+  Unverified
+}
+
+pub(all) struct PricingReport {
+  total : Int32
+  verified : Int32
+  partial : Int32
+  unverified : Int32
+  has_price : Int32
+  no_price : Int32
+  reachable_ok : Int32
+  reachable_blocked : Int32
+  reachable_limited : Int32
+  currency_usd : Int32
+  currency_jpy : Int32
+  currency_cny : Int32
+  currency_empty : Int32
+  billing_pay_as_you_go : Int32
+  billing_monthly : Int32
+  billing_monthly_yearly : Int32
+  billing_yearly : Int32
+  billing_empty : Int32
+  student_seen : Int32
+  student_unseen : Int32
+  stale_count : Int32
+  today : String
+}
+
+pub(all) struct ToolPricing {
+  name : String
+  pricing_url : String
+  free_tier : String
+  paid_price : String
+  currency : String
+  billing : String
+  student_discount : String
+  reachable : String
+  verified_at : String
+  note : String
+  status : PriceStatus
+}
+
+// Type aliases
+
+// Traits
