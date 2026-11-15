@@ -104,11 +104,33 @@ test "report counts are internally consistent" {
   // 2026-11-15 当天：11-08 与 11-15 两批都在 30 天内，无过期
   assert_eq(r.stale_count, 0)
   assert_eq(r.today, "2026-11-15")
-  // 变动轨迹：2026-11-15 第一次复核只复核了原始 20 条带价的 11 条
-  assert_eq(r.history_entries, 11)
-  assert_eq(r.rechecked_tools, 11)
-  assert_eq(r.price_up, 1)
-  assert_eq(r.unobserved, 4)
+  // 变动轨迹：自洽断言，不写死条数（R1 时写死 11/11/1/4，R2 一到就崩；
+  // 见设计手记 §6 的教训）。R1 的事实仍可查：会话 20261115-R1 共 11 条、
+  // 涨价 1 条、未看到价 4 条；R2（20261115-R2）新增 121 条。
+  assert_eq(
+    r.history_entries,
+    @ai-pricing-verifier.history_entries_count(tools),
+  )
+  assert_eq(
+    r.rechecked_tools,
+    @ai-pricing-verifier.rechecked_tools_count(tools),
+  )
+  assert_eq(
+    r.price_up,
+    @ai-pricing-verifier.count_history_change(tools, "涨价"),
+  )
+  assert_eq(
+    r.price_down,
+    @ai-pricing-verifier.count_history_change(tools, "降价"),
+  )
+  assert_eq(
+    r.delisted,
+    @ai-pricing-verifier.count_history_change(tools, "下架"),
+  )
+  assert_eq(
+    r.unobserved,
+    @ai-pricing-verifier.count_history_change(tools, "未看到价"),
+  )
 }
 
 ///|

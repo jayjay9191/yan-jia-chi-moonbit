@@ -2423,7 +2423,7 @@ test "generated: Replicate status" {
 test "generated: DeepInfra status" {
   match @ai-pricing-verifier.tool_by_name("DeepInfra") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按量")
@@ -2967,7 +2967,7 @@ test "generated: HubSpot AI status" {
 test "generated: Salesforce Einstein status" {
   match @ai-pricing-verifier.tool_by_name("Salesforce Einstein") {
     Some(t) => {
-      assert_eq(@ai-pricing-verifier.status_text(t.status), "部分核验")
+      assert_eq(@ai-pricing-verifier.status_text(t.status), "已核验")
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@ai-pricing-verifier.billing_category(t.billing), "按年")

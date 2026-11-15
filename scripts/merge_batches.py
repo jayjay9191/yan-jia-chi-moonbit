@@ -2,7 +2,7 @@
 """合并扩量批次 + 第一次复核结果到 data/pricing.json。
 
 用法（项目根目录）：
-    python3 scripts/merge_batches.py [--reverify-only] [--only <批次字母>]
+    python3 scripts/merge_batches.py [--reverify-only] [--recheck2-only] [--only <批次字母>]
 
 步骤：
 1. 读 data/pricing.json（唯一事实源）。
@@ -98,6 +98,69 @@ REVERIFY = {
         "note": "复核：首页今日未见定价，2026-11-08 的“低至 ¥42 每月”按钮未再出现。",
     },
 }
+
+# 2026-11-15 第二次复核（会话 20261115-R2）：复核 R1 未覆盖的 121 条
+# 已核验/部分核验记录（94 条已核验 + 27 条部分核验），逐个重开官方页比对。
+# 结论来自 /tmp/recheck_R2_part{1..4}_result.json（4 个复核组实测），应用时幂等。
+# bump 规则与 R1 一致：确认无变动/价格变动/下架 → verified_at 更新到复核日；
+# 未看到价 → 原价与 verified_at 都不动。
+RECHECK2_SESSION = "20261115-R2"
+RECHECK2_DATE = "2026-11-15"
+RECHECK2_FILES = [
+    "/tmp/recheck_R2_part1_result.json",
+    "/tmp/recheck_R2_part2_result.json",
+    "/tmp/recheck_R2_part3_result.json",
+    "/tmp/recheck_R2_part4_result.json",
+]
+
+# R2 复核确认记录价与官网完整价目表逐字一致、原先“部分核验”的原因已不存在，
+# 状态升级为已核验（价格本身不变，只改 status；Baseten 不在此列——它页面的
+# 新增价目在 note 里语义不完整，无法逐字写进 paid_price，维持部分核验）。
+STATUS_UPGRADES = {"DeepInfra", "Salesforce Einstein"}
+
+
+def apply_recheck2(tools: list) -> int:
+    """应用第二次复核结论，返回新增轨迹条数。幂等：同一会话只记一次。"""
+    by_key = {t["key"]: t for t in tools}
+    applied = 0
+    for path in RECHECK2_FILES:
+        p = Path(path)
+        if not p.exists():
+            print(f"跳过 {path}（不存在）")
+            continue
+        results = json.loads(p.read_text(encoding="utf-8"))["results"]
+        for r in results:
+            t = by_key.get(r["key"])
+            if t is None:
+                print(f"跳过未知记录键：{r['key']}（{r['name']}）")
+                continue
+            if t["name"] != r["name"]:
+                print(f"跳过名字不符：{r['key']} 表里是 {t['name']}，复核写的是 {r['name']}")
+                continue
+            if any(h.get("session") == RECHECK2_SESSION for h in t.get("history", [])):
+                continue
+            entry = {
+                "date": RECHECK2_DATE,
+                "session": RECHECK2_SESSION,
+                "change": r["change"],
+                "old_price": r.get("old_price", ""),
+                "new_price": r.get("new_price", ""),
+                "note": "复核：" + r.get("note", ""),
+            }
+            if r["change"] in ("涨价", "降价"):
+                entry["old_price"] = t["paid_price"]
+                entry["new_price"] = r["new_price"]
+                t["paid_price"] = r["new_price"]
+            t.setdefault("history", []).append(entry)
+            if r.get("bump"):
+                t["verified_at"] = RECHECK2_DATE
+            if t["name"] in STATUS_UPGRADES and r["change"] == "无变化":
+                t["status"] = "verified"
+                print(f"升级：{t['name']} 部分核验 → 已核验（复核确认记录价与官网完整价目表逐字一致）")
+            applied += 1
+        print(f"应用 {path}：累计新增轨迹 {applied} 条")
+    return applied
+
 
 # 批次合并时已确认的修正（key = 工具名）。
 BATCH_FIXES = {
@@ -265,6 +328,7 @@ def merge_batches(tools: list, only: str | None = None) -> int:
 
 def main() -> int:
     reverify_only = "--reverify-only" in sys.argv
+    recheck2_only = "--recheck2-only" in sys.argv
     only = None
     if "--only" in sys.argv:
         only = sys.argv[sys.argv.index("--only") + 1].upper()
@@ -275,8 +339,9 @@ def main() -> int:
         if not t.get("key"):
             t["key"] = f"APV-{i + 1:04d}"
     apply_reverify(tools)
+    applied2 = apply_recheck2(tools)
     added = 0
-    if not reverify_only:
+    if not reverify_only and not recheck2_only:
         added = merge_batches(tools, only=only)
     issues = mirror_validate(tools)
     if issues:
@@ -290,7 +355,7 @@ def main() -> int:
     )
     from collections import Counter
 
-    print(f"写盘完成：共 {len(tools)} 条（新增 {added} 条）")
+    print(f"写盘完成：共 {len(tools)} 条（新增 {added} 条，R2 复核轨迹 {applied2} 条）")
     print(f"状态：{dict(Counter(t['status'] for t in tools))}")
     print(f"history 总条数：{sum(len(t.get('history', [])) for t in tools)}")
     print("下一步：python3 scripts/generate_data.py && python3 scripts/generate_tests.py")
