@@ -21,4 +21,4 @@ keywords = [ ]
 
 preferred_target = "native"
 
-description = "AI 工具定价核验：410 个 AI 工具官网定价的数据资产 + 5 步证据链 + 验证规则（MoonBit 实现）"
+description = "AI 工具定价核验：1000 个 AI 工具官网定价的数据资产 + 5 步证据链 + 验证规则（MoonBit 实现）"
