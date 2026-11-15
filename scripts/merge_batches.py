@@ -32,7 +32,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PRICING_JSON = ROOT / "data" / "pricing.json"
 BATCH_DIR = Path("/tmp")
-BATCH_LETTERS = ["A", "B", "C", "D", "E", "F"]
+BATCH_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"]
 
 RECHECK_DATE = "2026-11-15"
 RECHECK_SESSION = "20261115-R1"
