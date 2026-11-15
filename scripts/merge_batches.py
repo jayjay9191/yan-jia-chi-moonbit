@@ -2,7 +2,7 @@
 """合并扩量批次 + 第一次复核结果到 data/pricing.json。
 
 用法（项目根目录）：
-    python3 scripts/merge_batches.py [--reverify-only]
+    python3 scripts/merge_batches.py [--reverify-only] [--only <批次字母>]
 
 步骤：
 1. 读 data/pricing.json（唯一事实源）。
@@ -229,12 +229,14 @@ def apply_reverify(tools: list) -> None:
                 t["verified_at"] = RECHECK_DATE
 
 
-def merge_batches(tools: list) -> int:
-    """合并 /tmp/batch_*.json，返回新增条数。"""
+def merge_batches(tools: list, only: str | None = None) -> int:
+    """合并 /tmp/batch_*.json，返回新增条数。
+    only 指定单个批次字母（如 "A"）时只合并该批。"""
     existing = {t["name"] for t in tools}
     added = 0
     next_key = len(tools) + 1
-    for letter in BATCH_LETTERS:
+    letters = [only] if only else BATCH_LETTERS
+    for letter in letters:
         path = BATCH_DIR / f"batch_{letter}.json"
         if not path.exists():
             print(f"跳过 {path}（不存在）")
@@ -263,6 +265,9 @@ def merge_batches(tools: list) -> int:
 
 def main() -> int:
     reverify_only = "--reverify-only" in sys.argv
+    only = None
+    if "--only" in sys.argv:
+        only = sys.argv[sys.argv.index("--only") + 1].upper()
     data = json.loads(PRICING_JSON.read_text(encoding="utf-8"))
     tools = data["tools"]
     # 先给原始 20 条分配 key（按当前 JSON 顺序）
@@ -272,7 +277,7 @@ def main() -> int:
     apply_reverify(tools)
     added = 0
     if not reverify_only:
-        added = merge_batches(tools)
+        added = merge_batches(tools, only=only)
     issues = mirror_validate(tools)
     if issues:
         print(f"镜像校验发现 {len(issues)} 个问题，不写盘：")
