@@ -1,4 +1,8 @@
-# AI 工具定价核验 · MoonBit 版
+# 验价尺 · MoonBit 版
+
+量一量 AI 工具的真实定价。
+
+曾用名：AI 工具定价核验。
 
 1000 个常用 AI 工具官网定价的数据资产 + 5 步证据链 + 验证规则（MoonBit 实现）。
 
@@ -23,13 +27,13 @@ Cline 复核确认、Qlik Sense、Fuzzy、Whistle），轨迹总数 832 条，
 
 ## 采用（自用）
 
-本项目由参赛管家管理参赛：已登记为参赛管家台账里的第 4 件作品
+本项目由赛簿管理参赛：已登记为赛簿台账里的第 4 件作品
 （2026-11-16），冲突检测与投稿包生成均已覆盖；实测 3 个冲突——
 魔搭 P0（首次发布）、知乎 S3 P1（须新做）、造化 P1（须新做）；
 软件创新大赛无冲突（原创条款只看是否投过其他比赛，本项目未投过
 任何比赛）。
 
-诚实标注：这是作者自用——参赛管家与本项目是同一作者的两个
+诚实标注：这是作者自用——赛簿与本项目是同一作者的两个
 MoonBit 参赛作品，目前没有外部用户。MoonBit 报名表尚未填。
 
 ## 实测数据（2026-11-16 当场跑出，带分母）
@@ -113,7 +117,7 @@ Tana 的判定过程见设计手记 §9：R2 时页面 $15 未注明计费周期
 
 ```sh
 export PATH="$HOME/.moon/bin:$PATH"
-cd ai-pricing-verifier
+cd yan-jia-chi-moonbit
 
 # 汇总报告（带分母）
 moon run cmd/main report
@@ -138,7 +142,7 @@ moon test
 python3 -m unittest discover -s tests_py
 ```
 
-注意：工具名只接受全名，`check 黎明`这种简称查不到（和参赛管家一样）。
+注意：工具名只接受全名，`check 黎明`这种简称查不到（和赛簿一样）。
 
 提交前检查：仓库配了 `.githooks/pre-commit`（提交前自动跑 `moon test`，
 失败则阻止提交）。启用一次即可：`bash scripts/setup-hooks.sh`
@@ -175,18 +179,18 @@ python3 -m unittest discover -s tests_py
 | 过程文档 | 8 页介绍 + 7 页过程文档 | `docs/verification-process.md`，只写真实做过的步骤（挑工具、开官网、读价、标空白、复核） | 追平 |
 | 明确标空白 | 是（263/274 无毕业年份等） | 是（309/1000 未核验到，付费价留空；221/1000 部分核验单列一档） | 已超（空白比例更高；口径：第三方转述的价只给部分核验、永不升已核验） |
 | 验证方法论 | 自述，未见测试 | 14 项检查 + 1070 项 MoonBit 测试 + 15 项 Python 测试，`verify` 0 错，核心库 0 行未覆盖 | 已超 |
-| 公开仓库 | 无 | 公开仓库 https://github.com/jayjay9191/ai-pricing-verifier（2026-11-16 已推，CI 跑绿） | 已超（J006 无公开仓库） |
-| CI | 无 | `.github/workflows/ci.yml`（跑 moon test + Python 测试 + verify + report 冒烟检查；CI 跑绿）+ Mooncakes v0.1.0 已发（https://mooncakes.io/docs/jayjay9191/ai-pricing-verifier） | 已超 |
+| 公开仓库 | 无 | 公开仓库 https://github.com/jayjay9191/yan-jia-chi-moonbit（2026-11-16 已推，CI 跑绿） | 已超（J006 无公开仓库） |
+| CI | 无 | `.github/workflows/ci.yml`（跑 moon test + Python 测试 + verify + report 冒烟检查；CI 跑绿）+ Mooncakes v0.1.0 已发（https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit） | 已超 |
 | 可运行工具 | 演示链接 403 打不开 | CLI 本地可跑：list / verify / stale / report / check | 已超 |
 | 数字来源 | PDF 自述 | JSON 数据 + 生成器 + 测试三重锁定，全部带分母 | 已超 |
 | 变现 | ¥9.9 深度报告（自述，未见回执） | 不硬做：等价物是可交付的带证据链核验报告本身（本仓库 + `report`/`check` 输出），不编“已跑通支付”的说法 | 追平（都不宣称已验证的支付闭环） |
 
 ## 范围与未完成事项（诚实写清）
 
-- **公开仓库已建**：https://github.com/jayjay9191/ai-pricing-verifier
+- **公开仓库已建**：https://github.com/jayjay9191/yan-jia-chi-moonbit
   （公开，2026-11-16 已推，CI 跑绿）；Mooncakes v0.1.0 已发
-  （https://mooncakes.io/docs/jayjay9191/ai-pricing-verifier）。
-- **没填 MoonBit 报名表**：第二份报名表（本项目）尚未填，见参赛管家
+  （https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit）。
+- **没填 MoonBit 报名表**：第二份报名表（本项目）尚未填，见赛簿
   的报名材料；MoonBit 报名表由用户本人提交。
 - **静态快照，不是实时核验**：数据是 2026-11-08、2026-11-15 与
   2026-11-16 三次核验，不联网、不重新打开官网；价格过期靠 `stale`
@@ -200,4 +204,4 @@ python3 -m unittest discover -s tests_py
 - **学生优惠只记“页面上有没有”**：942/1000 写“未见”不等于没有优惠，
   只说明定价页上没看到。
 - **CLI 入口 28 行未覆盖**：moon test 不跑可执行入口（工具链限制，
-  参赛管家也一样）；已用演示命令逐条实测通过。
+  赛簿也一样）；已用演示命令逐条实测通过。

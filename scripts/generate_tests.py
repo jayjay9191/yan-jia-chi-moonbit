@@ -72,10 +72,10 @@ def main() -> int:
         name = t["name"]
         parts.append("///|")
         parts.append(f"test \"generated: {name} status\" {{")
-        parts.append("  match @ai-pricing-verifier.tool_by_name(" + mbt_str(name) + ") {")
+        parts.append("  match @yan-jia-chi-moonbit.tool_by_name(" + mbt_str(name) + ") {")
         parts.append("    Some(t) => {")
         parts.append(
-            "      assert_eq(@ai-pricing-verifier.status_text(t.status), "
+            "      assert_eq(@yan-jia-chi-moonbit.status_text(t.status), "
             + mbt_str(STATUS_TEXT[t["status"]])
             + ")"
         )
@@ -86,7 +86,7 @@ def main() -> int:
             "      assert_eq(t.reachable, " + mbt_str(t["reachable"]) + ")"
         )
         parts.append(
-            "      assert_eq(@ai-pricing-verifier.billing_category(t.billing), "
+            "      assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "
             + mbt_str(billing_category(t["billing"]))
             + ")"
         )

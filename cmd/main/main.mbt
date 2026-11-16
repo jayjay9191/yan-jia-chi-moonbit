@@ -73,7 +73,7 @@ fn print_tool_names() -> Unit {
 ///|
 fn cmd_list() -> Unit {
   let tools = @lib.all_tools()
-  println("-- AI 工具定价核验（\{tools.length()} 个）--")
+  println("-- 验价尺（\{tools.length()} 个）--")
   for i in 0..<tools.length() {
     let t = tools[i]
     let price = if t.paid_price == "" { "未核验到" } else { t.paid_price }
@@ -142,7 +142,7 @@ fn cmd_report() -> Unit {
   let tools = @lib.all_tools()
   let today = @lib.today_days_cst(@env.now())
   let r = @lib.build_report(tools, today)
-  println("== AI 工具定价核验 · 汇总 ==")
+  println("== 验价尺 · 汇总 ==")
   for line in @lib.report_lines(r) {
     println(line)
   }
