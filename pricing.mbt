@@ -60,7 +60,7 @@ pub fn status_eq(a : PriceStatus, b : PriceStatus) -> Bool {
 ///|
 pub(all) struct ToolPricing {
   key : String // 唯一记录键，如 "APV-0001"，按 JSON 顺序分配，追加不重排
-  session : String // 首次核验会话，如 "20261108-LXM"（Lexmount 原始批）、"20261115-A"（扩量 A 批）
+  session : String // 首次核验会话，如 "20261108-LXM"（2026-11-08 原始批）、"20261115-A"（扩量 A 批）
   name : String
   pricing_url : String
   free_tier : String
@@ -219,7 +219,7 @@ pub fn count_billing_category(
 }
 
 ///|
-/// 变动轨迹统计（学 J006 的生命周期追踪：197 停招 + 130 重开）。
+/// 变动轨迹统计（生命周期追踪：197 停招 + 130 重开）。
 /// history 里每一条都是真实发生过的复核事件。
 
 ///|
@@ -262,7 +262,7 @@ pub fn count_history_change(
 }
 
 ///|
-/// 单条证据链：5 步可追溯（学 J006 的 5 步证据链：
+/// 单条证据链：5 步可追溯（5 步证据链：
 /// 来源 URL → 原始记录 → 记录键 → 复核 → 实时页面）。
 /// 第 1 步 来源 URL：第 2 步 记录键：第 3 步 原始记录（免费版/付费价/
 /// 货币/计费/学生优惠/可达性）：第 4 步 复核（最后核验日期 + 首次核验

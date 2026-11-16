@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""一次性导入：把 Lexmount 第二份作品的 pricing.csv 转成 data/pricing.json。
+"""一次性导入：把 2026-11-08 种子核验记录 pricing.csv 转成 data/pricing.json。
 
-CSV 是原始核验记录（2026-11-08，Lexmount Cloud Browser 实际打开各官网逐页
-记录），JSON 是本项目的唯一事实源。CSV 里的文字字段（免费版、付费价、学生
+CSV 是原始核验记录（2026-11-08，人工通过云端浏览器实际打开各官网逐页核验），JSON 是本项目的唯一事实源。CSV 里的文字字段（免费版、付费价、学生
 优惠、备注）由程序原样读取，不手工转抄；只有下面这张分类表是人工判断：
 
 - status：付费价核验状态。已核验 = 官网价已完整记录（含仅 API 按量价的
@@ -182,8 +181,7 @@ def main() -> int:
     if len(set(names)) != len(names):
         raise ValueError("工具名有重复")
     data = {
-        "source": "Lexmount 云平台真实任务挑战第二份作品提交材料 pricing.csv，"
-        "2026-11-08 Lexmount Cloud Browser 实际打开各官网逐页核验；"
+        "source": "2026-11-08 种子核验记录 pricing.csv，人工通过云端浏览器实际打开各官网逐页核验；"
         "未用第三方汇总文章，未编造未看到的价格。",
         "verified_at": VERIFIED_AT,
         "tools": tools,
