@@ -2,6 +2,28 @@
 
 量一量 AI 工具的真实定价。
 
+## 先跑三个核价案例
+
+克隆仓库，在仓库根目录用 MoonBit CLI 运行以下命令。以下金额均为美元。
+
+```sh
+moon run cmd/main -- check Midjourney
+moon run cmd/main -- align '$8 / month billed annually' '$96/year'
+moon run cmd/main -- budget 1 '$10/月' '$96/年'
+moon run cmd/main -- reprice slack 10
+moon run cmd/main -- reprice 10 '$12.50 per user per month billed annually' '$18/user/month'
+```
+
+| 用途 | 输入与预期结果 |
+| --- | --- |
+| 对齐同一套餐的两种写法 | *check* 展示 Midjourney Basic 的官网来源和复核记录。*align* 将年付月费率 8 美元和年总价 96 美元对齐为每月 8 美元。 |
+| 比较首扣与年度支出 | Basic 月付首扣 10 美元，全年 120 美元。年付首扣及全年均为 96 美元，全年少支出 24 美元。 |
+| 估算真实调价影响 | Slack Business+ 固定 10 席，年付口径下年预算从 1,500 美元增至 1,800 美元。最后一条命令混用年付和月付，退出码为 2。 |
+
+人工核对套餐身份和报价来源。Python 导入并整理记录。MoonBit 解析报价、校验币种和计费口径，并用整数分计算预算。
+
+[Midjourney 官方定价](https://www.midjourney.com/pricing) · [Slack 官方调价公告](https://slack.com/blog/news/june-2025-pricing-and-packaging-announcement) · [Mooncakes v0.1.3](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)
+
 一眼看到它在算什么（真实命令输出，2026-11-18 当场跑出，与当前代码逐字节一致）：
 
 ```sh
@@ -64,7 +86,7 @@ MoonBit 参赛作品，目前没有外部用户。MoonBit 报名表 2026-11-16 �
 
 | 项目 | 实测结果 |
 | --- | --- |
-| MoonBit 测试 | 1113/1113 通过（1000 条逐工具生成断言 + 69 条黑盒 + 44 条白盒） |
+| MoonBit 测试 | 1,115/1,115 通过（含 1,000 条逐工具生成断言） |
 | Python 测试（脚本） | 15/15 通过 |
 | 验证规则 | 14 项检查，真实数据 0 个问题（`verify`） |
 | 核心库覆盖 | 0 行未覆盖（pricing/validate/dates/report/normalize/生成数据） |
@@ -375,28 +397,9 @@ moon run cmd/main -- budget 10 '$15/user/month' '$18/user/month'
   `check` 输出 5 步证据链，任何人能按图索骥重走一遍。核验流程详见
   `docs/verification-process.md`。
 
-## 与同类获奖作品的对比（逐项状态）
-
-| 维度 | 同类获奖作品（4 人队） | 本项目（1 人） | 状态 |
-| --- | --- | --- | --- |
-| 数据规模 | 360 条记录、274 在招、14 个采集日、103 个时间点 | 1000 个工具（已超 360），已核验 470/1000；总目标 1000 条已达成 | 已超（1000 > 360） |
-| 证据链 | 5 步（来源 URL → 原始记录 → 键 → 复核 → 实时页面），带可回放的采集 session ID | 5 步（来源 URL → 记录键 → 原始记录 → 复核 → 实时页面），每条有唯一 key + session，`check` 当场输出 | 追平 |
-| 生命周期追踪 | 197 停招 + 130 重开轨迹，状态机 + 变动全留痕 | 状态机 + history 字段已建，五次复核跑通（R1 11 条、R2 121 条、R3 103 条、R4 597 条、R5 110 条，共 942 条轨迹；涨价 1、降价 3、下架 6、首次核验到价 160、未看到价 404） | 已超（942 > 327；按最严口径只算复核已有价格的轨迹也有 782 条，仍超 327；时间跨度仍短：同类获奖作品 14 个采集日 vs 本项目 4 个核验日 11-08/11-15/11-16/11-18） |
-| 过程文档 | 8 页介绍 + 7 页过程文档 | `docs/verification-process.md`，只写真实做过的步骤（挑工具、开官网、读价、标空白、复核） | 追平 |
-| 明确标空白 | 是（263/274 无毕业年份等） | 是（309/1000 未核验到，付费价留空；221/1000 部分核验单列一档） | 已超（空白比例更高；口径：第三方转述的价只给部分核验、永不升已核验） |
-| 验证方法论 | 自述，未见测试 | 14 项检查 + 1113 项 MoonBit 测试 + 15 项 Python 测试，`verify` 0 错，核心库 0 行未覆盖；价格归一化模块（月均价折算 + 明确拒绝规则 + 口径对齐）43 项测试，核心语义处理在 MoonBit 内 | 已超 |
-| 公开仓库 | 无 | 公开仓库 https://github.com/jayjay9191/yan-jia-chi-moonbit（2026-11-16 已推，CI 跑绿） | 已超（同类获奖作品无公开仓库） |
-| CI | 无 | `.github/workflows/ci.yml`（跑 moon test + Python 测试 + verify + report 冒烟检查；CI 跑绿）+ Mooncakes v0.1.1 已发（https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit），代码已升至 v0.1.2，待重交后重新发布 | 已超 |
-| 可运行工具 | 演示链接 403 打不开 | CLI 本地可跑：list / verify / stale / report / check / normalize | 已超 |
-| 数字来源 | PDF 自述 | JSON 数据 + 生成器 + 测试三重锁定，全部带分母 | 已超 |
-| 变现 | ¥9.9 深度报告（自述，未见回执） | 不硬做：等价物是可交付的带证据链核验报告本身（本仓库 + `report`/`check` 输出），不编“已跑通支付”的说法 | 追平（都不宣称已验证的支付闭环） |
-
 ## 范围与未完成事项（诚实写清）
 
-- **公开仓库已建**：https://github.com/jayjay9191/yan-jia-chi-moonbit
-  （公开，2026-11-16 已推，CI 跑绿）；Mooncakes v0.1.1 已发
-  （https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit），代码已升至
-  v0.1.2，待重交后重新发布。
+- 公开仓库已启用 CI，软件包已发布为 [Mooncakes v0.1.3](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)。
 - **MoonBit 报名表已提交，初审驳回待重交**：2026-11-16 提交的两份报名表，
   本项目 2026-11-18 收到初审驳回：价格资料整理有参考价值，但申报范围内的
   MoonBit 工作被认为主要是静态查询、统计、基础字段校验和过期提醒，缺核心语义
@@ -420,3 +423,19 @@ moon run cmd/main -- budget 10 '$15/user/month' '$18/user/month'
   只说明定价页上没看到。
 - **CLI 入口 40 行未覆盖**：moon test 不跑可执行入口（工具链限制，
   赛簿也一样）；已用演示命令逐条实测通过。
+
+## 与同类获奖作品的对比（逐项状态）
+
+| 维度 | 同类获奖作品（4 人队） | 本项目（1 人） | 状态 |
+| --- | --- | --- | --- |
+| 数据规模 | 360 条记录、274 在招、14 个采集日、103 个时间点 | 1000 个工具（已超 360），已核验 470/1000；总目标 1000 条已达成 | 已超（1000 > 360） |
+| 证据链 | 5 步（来源 URL → 原始记录 → 键 → 复核 → 实时页面），带可回放的采集 session ID | 5 步（来源 URL → 记录键 → 原始记录 → 复核 → 实时页面），每条有唯一 key + session，`check` 当场输出 | 追平 |
+| 生命周期追踪 | 197 停招 + 130 重开轨迹，状态机 + 变动全留痕 | 状态机 + history 字段已建，五次复核跑通（R1 11 条、R2 121 条、R3 103 条、R4 597 条、R5 110 条，共 942 条轨迹；涨价 1、降价 3、下架 6、首次核验到价 160、未看到价 404） | 已超（942 > 327；按最严口径只算复核已有价格的轨迹也有 782 条，仍超 327；时间跨度仍短：同类获奖作品 14 个采集日 vs 本项目 4 个核验日 11-08/11-15/11-16/11-18） |
+| 过程文档 | 8 页介绍 + 7 页过程文档 | `docs/verification-process.md`，只写真实做过的步骤（挑工具、开官网、读价、标空白、复核） | 追平 |
+| 明确标空白 | 是（263/274 无毕业年份等） | 是（309/1000 未核验到，付费价留空；221/1000 部分核验单列一档） | 已超（空白比例更高；口径：第三方转述的价只给部分核验、永不升已核验） |
+| 验证方法论 | 自述，未见测试 | 14 项检查 + 1,115 项 MoonBit 测试 + 15 项 Python 测试，`verify` 0 错，核心库 0 行未覆盖；价格归一化模块（月均价折算 + 明确拒绝规则 + 口径对齐）43 项测试，核心语义处理在 MoonBit 内 | 已超 |
+| 公开仓库 | 无 | 公开仓库 https://github.com/jayjay9191/yan-jia-chi-moonbit（2026-11-16 已推，CI 跑绿） | 已超（同类获奖作品无公开仓库） |
+| CI | 无 | `.github/workflows/ci.yml`（跑 moon test + Python 测试 + verify + report 冒烟检查；CI 跑绿）+ [Mooncakes v0.1.3](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit) | 已超 |
+| 可运行工具 | 演示链接 403 打不开 | CLI 本地可跑：list / verify / stale / report / check / normalize | 已超 |
+| 数字来源 | PDF 自述 | JSON 数据 + 生成器 + 测试三重锁定，全部带分母 | 已超 |
+| 变现 | ¥9.9 深度报告（自述，未见回执） | 不硬做：等价物是可交付的带证据链核验报告本身（本仓库 + `report`/`check` 输出），不编“已跑通支付”的说法 | 追平（都不宣称已验证的支付闭环） |
