@@ -42,7 +42,6 @@ fn currency_eq(a : Currency, b : Currency) -> Bool {
     (Currency::GBP, Currency::GBP) => true
     (Currency::JPY, Currency::JPY) => true
     (Currency::INR, Currency::INR) => true
-    (Currency::Other, Currency::Other) => true
     _ => false
   }
 }
@@ -213,11 +212,16 @@ pub fn annual_saving_pct(
   monthly_cents : Int32,
   annual_monthly_cents : Int32,
 ) -> Int32 {
-  if monthly_cents <= 0 {
+  if monthly_cents <= 0 ||
+    annual_monthly_cents < 0 ||
+    annual_monthly_cents >= monthly_cents {
     0
   } else {
-    ((monthly_cents - annual_monthly_cents) * 100 + monthly_cents / 2) /
-    monthly_cents
+    ((
+      (monthly_cents - annual_monthly_cents).to_int64() * 100 +
+      monthly_cents.to_int64() / 2
+    ) /
+    monthly_cents.to_int64()).to_int()
   }
 }
 
@@ -228,7 +232,7 @@ pub fn cheaper_monthly(
   a : NormalizedPrice,
   b : NormalizedPrice,
 ) -> NormalizedPrice? {
-  if !currency_eq(a.currency, b.currency) {
+  if !currency_eq(a.currency, b.currency) || a.per_seat != b.per_seat {
     None
   } else if a.monthly_cents <= b.monthly_cents {
     Some(a)
@@ -238,7 +242,7 @@ pub fn cheaper_monthly(
 }
 
 ///|
-/// 口径对齐结论：Same = 同一套餐；Different = 不同套餐（reason 说明
+/// 口径对齐结论：Same = 价格口径一致；Different = 价格口径不同（reason 说明
 /// 哪项不同）；CannotAlign = 无法判定（reason 说明哪一侧被拒绝，绝不猜）。
 /// 判定标准：两侧都能归一化成功，且货币相同、月均价（整数分）相同、
 /// 计费口径（按席/按用户/按人 vs 不按人头）相同。按年付与否不参与判定——
@@ -272,7 +276,7 @@ pub fn align_reason(r : AlignResult) -> String {
 }
 
 ///|
-/// 对齐两个价格字符串：是否为同一套餐。任一侧无法归一化时直接拒绝
+/// 对齐两个价格字符串：比较价格口径，不证明套餐身份。任一侧无法归一化时直接拒绝
 /// 判定并说明是哪一侧、为什么，绝不猜。
 pub fn align_prices(a : String, b : String) -> AlignResult {
   match (normalize_price(a), normalize_price(b)) {
@@ -282,7 +286,9 @@ pub fn align_prices(a : String, b : String) -> AlignResult {
     (NormalizeResult::Normalized(_), NormalizeResult::Free) =>
       AlignResult::Different("一侧免费、一侧付费")
     (NormalizeResult::Normalized(pa), NormalizeResult::Normalized(pb)) =>
-      if !currency_eq(pa.currency, pb.currency) {
+      if pa.currency is Currency::Other || pb.currency is Currency::Other {
+        AlignResult::CannotAlign("至少一侧币种未明确，无法比较")
+      } else if !currency_eq(pa.currency, pb.currency) {
         AlignResult::Different(
           "货币不同：\{currency_code(pa.currency)} 与 \{currency_code(pb.currency)}，不做汇率换算",
         )
@@ -391,7 +397,7 @@ fn currency_from_code(code : String) -> Currency {
 }
 
 ///|
-/// 核心解析（precheck 已通过、货币已知）：取第一个金额数字，
+/// 核心解析（precheck 已通过、货币已知）：校验单一金额，
 /// 按计费周期折算月均价。金额为 0 即免费。
 /// 周期判定：含 "/月"/"每月"/"按月"/"月付"/"/mo" 等按月标记 → 金额即月费；
 /// 否则含 "/年"/"每年"/"按年"/"年付" 等按年标记 → 年总价 / 12；
@@ -401,7 +407,9 @@ fn currency_from_code(code : String) -> Currency {
 fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
   let cents = parse_amount_cents(s.to_array())
   if cents < 0 {
-    return CannotNormalize("无金额数字：无法归一化")
+    return CannotNormalize(
+      "无金额数字或无法确认单一有效金额：请仅保留该档的明确价格",
+    )
   }
   if cents == 0 {
     return Free
@@ -412,7 +420,7 @@ fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
   if monthly {
     monthly_cents = cents
   } else if yearly {
-    monthly_cents = (cents + 6) / 12
+    monthly_cents = cents / 12 + (if cents % 12 >= 6 { 1 } else { 0 })
   } else {
     return CannotNormalize(
       "未注明计费周期：无法判断是按月还是按年",
@@ -423,7 +431,10 @@ fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
     s.contains("seat") ||
     s.contains("Seat") ||
     s.contains("/人") ||
-    s.contains("per user")
+    s.contains("per user") ||
+    s.contains("/user") ||
+    s.contains("per member") ||
+    s.contains("/member")
   Normalized(NormalizedPrice::{
     currency: cur,
     monthly_cents,
@@ -440,7 +451,7 @@ fn is_monthly_period(s : String) -> Bool {
   s.contains("按月") ||
   s.contains("月付") ||
   s.contains("/mo") ||
-  s.contains("/month") ||
+  s.contains("/ month") ||
   s.contains("per month") ||
   s.contains("monthly")
 }
@@ -470,56 +481,70 @@ fn has_digit(chars : Array[Char]) -> Bool {
 }
 
 ///|
-/// 取字符串里第一个金额数字，折算成分（Int），四舍五入到分：
-/// 小数第 3 位 ≥ 5 进 1。千分位逗号跳过；小数点后无数字时不认作小数点。
-/// 没有数字返回 -1。整数部分用 Int 累加（价格量级远小于 Int 上限）。
+/// 仅接受一个数字片段；额外数字可能是另一档价格、试用期或优惠。
+// ponytail: 有多个数字的文本请先提取单档原价，避免猜测哪个数字是金额。
 fn parse_amount_cents(chars : Array[Char]) -> Int32 {
   let n = chars.length()
   let mut i = 0
   while i < n && !chars[i].is_ascii_digit() {
     i = i + 1
   }
-  if i >= n {
+  if i == n || (i > 0 && (chars[i - 1] == '-' || chars[i - 1] == '.')) {
     return -1
   }
-  let mut int_part = 0
-  let mut frac2 = 0
-  let mut frac2_digits = 0
-  let mut third_digit = -1
-  let mut seen_dot = false
+  let mut whole = 0
+  let mut group = 0
+  let mut grouped = false
   while i < n {
-    let c = chars[i]
-    if c.is_ascii_digit() {
-      if !seen_dot {
-        int_part = int_part * 10 + digit_value(c)
-      } else if frac2_digits < 2 {
-        frac2 = frac2 * 10 + digit_value(c)
-        frac2_digits = frac2_digits + 1
-      } else if third_digit < 0 {
-        third_digit = digit_value(c)
+    let ch = chars[i]
+    if ch.is_ascii_digit() {
+      whole = whole * 10 + digit_value(ch)
+      if whole > 21474836 {
+        return -1
       }
-      i = i + 1
-    } else if c == ',' && !seen_dot {
-      i = i + 1
-    } else if c == '.' && !seen_dot {
-      if i + 1 < n && chars[i + 1].is_ascii_digit() {
-        seen_dot = true
-        i = i + 1
-      } else {
-        break
+      group = group + 1
+    } else if ch == ',' && i + 1 < n && chars[i + 1].is_ascii_digit() {
+      if (grouped && group != 3) || (!grouped && (group < 1 || group > 3)) {
+        return -1
       }
+      grouped = true
+      group = 0
     } else {
       break
     }
+    i = i + 1
   }
-  let mut cents = int_part * 100
-  if frac2_digits == 1 {
-    cents = cents + frac2 * 10
-  } else if frac2_digits == 2 {
-    cents = cents + frac2
+  if grouped && group != 3 {
+    return -1
   }
-  if third_digit >= 5 {
-    cents = cents + 1
+  let mut fraction = 0
+  if i + 1 < n && chars[i] == '.' && chars[i + 1].is_ascii_digit() {
+    i = i + 1
+    fraction = digit_value(chars[i]) * 10
+    i = i + 1
+    if i < n && chars[i].is_ascii_digit() {
+      fraction = fraction + digit_value(chars[i])
+      i = i + 1
+    }
+    if i < n && chars[i].is_ascii_digit() {
+      if digit_value(chars[i]) >= 5 {
+        fraction = fraction + 1
+      }
+      while i < n && chars[i].is_ascii_digit() {
+        i = i + 1
+      }
+    }
   }
-  cents
+  while i < n {
+    if chars[i].is_ascii_digit() {
+      return -1
+    }
+    i = i + 1
+  }
+  let cents = whole * 100
+  if fraction > 2147483647 - cents {
+    -1
+  } else {
+    cents + fraction
+  }
 }

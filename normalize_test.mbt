@@ -469,7 +469,7 @@ test "cheaper monthly same currency pairs" {
   // Other 货币之间也可比（同为 Other，不换算）
   assert_eq(
     @yan-jia-chi-moonbit.cheaper_monthly_cents("C$20/月", "C$16/月"),
-    1600,
+    -1,
   )
 }
 
@@ -601,4 +601,56 @@ test "align free cases" {
 test "align rounds to same cents" {
   // AllTrails+ $35.99/年：(3599+6)/12=300 分，与 $3/月同价
   assert_eq(align_kind_of("$35.99/年", "$3/月"), "same")
+}
+
+///|
+test "ambiguous amounts and unsupported currencies cannot align" {
+  assert_eq(norm_kind("14-day trial, then $15/month"), "cannot_normalize")
+  assert_eq(norm_kind("$49/month(annual)or$69/month"), "cannot_normalize")
+  assert_eq(norm_kind("$-15/month"), "cannot_normalize")
+  assert_eq(norm_kind("$9,00/month"), "cannot_normalize")
+  assert_eq(norm_kind("$12,34,567/month"), "cannot_normalize")
+  assert_eq(norm_kind("$21474836.48/month"), "cannot_normalize")
+  assert_eq(norm_kind("$4294967297/month"), "cannot_normalize")
+  assert_eq(align_kind_of("C$15/month", "A$15/month"), "cannot_align")
+  assert_eq(
+    @yan-jia-chi-moonbit.cheaper_monthly_cents("C$15/month", "A$12/month"),
+    -1,
+  )
+}
+
+///|
+test "official member rates preserve unit and annual billing" {
+  let rate = @yan-jia-chi-moonbit.normalize_price(
+    "$15 per member per month Billed yearly",
+  )
+  assert_eq(@yan-jia-chi-moonbit.normalized_monthly_cents(rate), 1500)
+  assert_true(@yan-jia-chi-moonbit.normalized_per_seat(rate))
+  assert_true(@yan-jia-chi-moonbit.normalized_billed_annually(rate))
+  assert_eq(align_kind_of("$15/user/month", "$15 per member per month"), "same")
+  assert_eq(
+    @yan-jia-chi-moonbit.cheaper_monthly_cents("$15/user/month", "$12/month"),
+    -1,
+  )
+}
+
+///|
+test "Midjourney Basic annual replay retains two recorded observations" {
+  match @yan-jia-chi-moonbit.tool_by_name("Midjourney") {
+    Some(tool) => {
+      assert_eq(tool.key, "APV-0015")
+      let r1 = tool.history.filter(h => h.session == "20261115-R1")[0]
+      let r5 = tool.history.filter(h => h.session == "20261118-R5")[0]
+      assert_true(r1.note.contains("Basic $10/$8"))
+      assert_true(r5.new_price.contains("Basic $10/月按月、$8/月按年"))
+      assert_eq(
+        align_kind_of("$8/月按年", "$8 / month billed annually"),
+        "same",
+      )
+      assert_eq(align_kind_of("$8 / month billed annually", "$96/year"), "same")
+      assert_eq(norm_cents("$96/year"), 800)
+      assert_eq(@yan-jia-chi-moonbit.annual_saving_pct(1000, 800), 20)
+    }
+    None => assert_true(false)
+  }
 }

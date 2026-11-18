@@ -7,7 +7,7 @@
 ///   check <工具名>                单条证据链：5 步可追溯（来源 URL → 记录键 → 原始记录 → 复核 → 实时页面）
 ///   normalize "<单档价格>"       把单档价格折算成月均价（核心语义处理；
 ///                                多档/按量/定制/免费混写会明确拒绝并说明原因）
-///   align "<价格A>" "<价格B>"    口径对齐：两个价格写法是否为同一套餐
+///   align "<价格A>" "<价格B>"    口径对齐：两个价格写法是否具有相同价格口径
 ///                                （货币、月均价、计费口径三项都相同才算同；
 ///                                任一侧无法归一化时拒绝判定，不猜）
 ///   help                          显示本帮助
@@ -69,7 +69,7 @@ fn print_usage() -> Unit {
     "normalize \"<单档价格>\"：折算月均价，如 normalize \"$8/月按年\"；多档/按量/定制会明确拒绝",
   )
   println(
-    "align \"<价格A>\" \"<价格B>\"：口径对齐，如 align \"$8/月按年\" \"$96/年\"；三项（货币、月均价、计费口径）都相同才算同一套餐",
+    "align \"<价格A>\" \"<价格B>\"：口径对齐，如 align \"$8/月按年\" \"$96/年\"；三项（货币、月均价、计费口径）都相同才算价格口径一致",
   )
   println("help：显示本帮助")
   println("工具名只接受全名，例如：moon run cmd/main check Cursor")
@@ -201,7 +201,7 @@ fn cmd_normalize(args : Array[String]) -> Unit {
 }
 
 ///|
-/// 口径对齐：两个价格写法是否为同一套餐。
+/// 口径对齐：两个价格写法是否具有相同价格口径。
 /// 用法：align "<价格A>" "<价格B>"，如 align "$8/月按年" "$96/年"
 fn cmd_align(args : Array[String]) -> Unit {
   if args.length() < 3 {
@@ -217,14 +217,14 @@ fn cmd_align(args : Array[String]) -> Unit {
     "same" => {
       let fa = @lib.format_monthly_of(a)
       if fa == "" {
-        println("\"\{a}\" 与 \"\{b}\" → 同一套餐：均为免费")
+        println("\"\{a}\" 与 \"\{b}\" → 价格口径一致：均为免费")
       } else {
-        println("\"\{a}\" 与 \"\{b}\" → 同一套餐：均为 \{fa}")
+        println("\"\{a}\" 与 \"\{b}\" → 价格口径一致：均为 \{fa}")
       }
     }
     "different" =>
       println(
-        "\"\{a}\" 与 \"\{b}\" → 不同套餐：\{@lib.align_reason(r)}",
+        "\"\{a}\" 与 \"\{b}\" → 价格口径不同：\{@lib.align_reason(r)}",
       )
     _ =>
       println(
