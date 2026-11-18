@@ -488,3 +488,14 @@ consistent”把 today 写死为 2026-11-16，R5 的 94 条 11-18 日期在该
 “今天”之后被算过期（94 != 0）。按既有惯例（注释原话：today 必须跟
 到最新复核日）把 today 移到 2026-11-18（第 20775 天），测试恢复全过。
 “report lines carry denominators”那处仍用 20773，不依赖日期值，未动。
+
+## 15. 上届对照 P0 建议落地（2026-11-18）
+
+上届对照调研（OSC2026，报告见 `workspace/goals/goal/files/shang-jie-can-sai-zi-liao/shang-jie-can-sai-zi-liao.md`）第五节的 P0 建议 3、4、5 与 P1 建议 6 的本项目部分，本轮全部落地。逐项写清每处改动对应驳回邮件的哪一句话：
+
+- **建议 3 归一化前后对照表 → 驳回句 1**（“申报范围内的 MoonBit 工作主要是静态查询、统计、基础字段校验和过期提醒，尚未建立足够的核心语义处理贡献”）：README“价格归一化”一节新增对照表——8 条成功归一化（月均价以分为单位）+ 10 类明确拒绝（按 `normalize.mbt` 实际的拒绝分类）。全部价格来自 `data/pricing.json` 的真实记录，`normalize` 子命令 2026-11-18 当场跑出；Midjourney 四档年付节省率 20% 由 `annual_saving_pct` 算出（测试覆盖，`normalize_test.mbt:224–233`）。
+- **建议 4 分工表 → 驳回句 2**（“请用同一套餐两次复核的案例，明确人工、Python 与 MoonBit 的职责，以及 MoonBit 如何形成可用的核价结果”）：README 与申报书新增人工 / Python / MoonBit 分工表（采集 / 清洗 / 归一化 / 判定 / 复核 × 三列，每格一句话），与 `docs/verification-process.md` 的实际流程一致；表后贴 Midjourney 三次复核的真实输出对照（`check` 证据链全文 + `normalize` 对照 + 年付节省率计算），并注明 Oura APV-0344 跨日对照案例。
+- **建议 5 覆盖率进申报书显眼处 → 两份驳回共同质疑“实质能力”**（“开发与验证”维度的硬证据）：申报书项目简介新增“MoonBit 测试 1099 个，核心库 0 行未覆盖”。数字为 2026-11-18 实测：`moon test` 1099/1099、`moon coverage analyze` 未覆盖 33 行全在 CLI 入口 `cmd/main/main.mbt`（工具链不跑可执行入口，已用演示命令逐条实测）。
+- **建议 6 README 顶部真实输出 → 两份驳回的共同短板“看起来像静态工具”**：README 顶部贴 `normalize` 真实命令输出（`$8/月按年`、`$49/年`、`定制定价` 三段），与当前代码逐字节一致（当场跑出再粘贴）。
+- **借鉴来源**：tokenizers 的能力矩阵 + MoonFrame 的 comparison 文档（对照表形式）、FrontierLab 的 README 贴真实输出。只借鉴思路与做法，不抄代码。
+- **诚实标注**：1000 条中无单档裸 ¥ 记录、无纯定制记录，裸 ¥ 与定制两类拒绝以 `normalize_test.mbt` 的测试用例为准，已在对照表中注明；旧版 README 的 `¥990/年` 例子是测试用例字符串（`normalize_test.mbt:74`）、不是某条记录的原文，本次在表中写明；拒绝判定顺序（多档先于定制、定制先于按量、按量先于免费）写进表中，数据中定制均与多档合写时 CLI 先报多档。
