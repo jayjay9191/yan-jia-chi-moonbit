@@ -687,3 +687,27 @@ test "team budget preserves exact yearly cents and actual first charge" {
     @yan-jia-chi-moonbit.compare_budget("$3/month", "$36/year", 5) is Err(_),
   )
 }
+
+///|
+test "Slack Business Plus announced repricing preserves billing basis" {
+  let old_annual = "$12.50 per user per month billed annually"
+  let new_annual = "$15 per user per month billed annually"
+  assert_eq(align_kind_of(old_annual, new_annual), "different")
+  match @yan-jia-chi-moonbit.compare_budget(old_annual, new_annual, 10) {
+    Ok(b) => {
+      assert_eq(b.currency, "USD")
+      assert_eq(b.year_a, 150000L)
+      assert_eq(b.year_b, 180000L)
+      assert_eq(b.first_charge_b - b.first_charge_a, 30000L)
+    }
+    Err(_) => assert_true(false)
+  }
+  match
+    @yan-jia-chi-moonbit.compare_budget("$15/user/month", "$18/user/month", 10) {
+    Ok(b) => {
+      assert_eq(b.year_a, 180000L)
+      assert_eq(b.year_b, 216000L)
+    }
+    Err(_) => assert_true(false)
+  }
+}

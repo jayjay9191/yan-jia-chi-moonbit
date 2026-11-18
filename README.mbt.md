@@ -64,7 +64,7 @@ MoonBit 参赛作品，目前没有外部用户。MoonBit 报名表 2026-11-16 �
 
 | 项目 | 实测结果 |
 | --- | --- |
-| MoonBit 测试 | 1112/1112 通过（1000 条逐工具生成断言 + 68 条黑盒 + 44 条白盒） |
+| MoonBit 测试 | 1113/1113 通过（1000 条逐工具生成断言 + 69 条黑盒 + 44 条白盒） |
 | Python 测试（脚本） | 15/15 通过 |
 | 验证规则 | 14 项检查，真实数据 0 个问题（`verify`） |
 | 核心库覆盖 | 0 行未覆盖（pricing/validate/dates/report/normalize/生成数据） |
@@ -329,6 +329,23 @@ moon run cmd/main -- budget 5 '$3/user/month' '$35.99 per user per year'
 
 第二条为合成回归案例。5 席全年 USD 180.00 对 USD 179.95，差 USD 0.05；月均四舍五入后都为 USD 3.00/席，直接用月均乘 12 会丢掉差异。预算按报价金额和付款周期计算，额外税费、促销和未来调价另计。
 
+
+### 真实调价 · Slack Business+
+
+Slack 于 2025 年 6 月 17 日发布 Business+ 调价公告。统一使用美元标准价、每位用户和相同付款周期比较。公告同步增加了功能，该案例衡量同名档位的账单变化。
+
+| 计费周期 | 原价 → 新价（每用户每月） | 10 个计费席位一年的预算 |
+| --- | --- | --- |
+| 按年付 | USD 12.50 → 15.00 | USD 1,500 → 1,800，增加 300（20%） |
+| 按月付 | USD 15.00 → 18.00 | USD 1,800 → 2,160，增加 360（20%） |
+
+```sh
+moon run cmd/main -- budget 10 '$12.50 per user per month billed annually' '$15 per user per month billed annually'
+moon run cmd/main -- budget 10 '$15/user/month' '$18/user/month'
+```
+
+取证优先使用 [Slack 调价原公告](https://slack.com/blog/news/june-2025-pricing-and-packaging-announcement)及其付款周期脚注，现价交叉核对 [Slack Business+ 定价](https://slack.com/pricing/businessplus)。预算是固定 10 个计费席位、无额外优惠或税费的估算，不代表具体客户的实际生效日。案例单列保存，历史公告保留原日期，数据集当前快照不追加虚构历史。
+
 ## 数据说明
 
 - 唯一事实源是 `data/pricing.json`，改数据只改 JSON，改完跑
@@ -358,7 +375,7 @@ moon run cmd/main -- budget 5 '$3/user/month' '$35.99 per user per year'
 | 生命周期追踪 | 197 停招 + 130 重开轨迹，状态机 + 变动全留痕 | 状态机 + history 字段已建，五次复核跑通（R1 11 条、R2 121 条、R3 103 条、R4 597 条、R5 110 条，共 942 条轨迹；涨价 1、降价 3、下架 6、首次核验到价 160、未看到价 404） | 已超（942 > 327；按最严口径只算复核已有价格的轨迹也有 782 条，仍超 327；时间跨度仍短：同类获奖作品 14 个采集日 vs 本项目 4 个核验日 11-08/11-15/11-16/11-18） |
 | 过程文档 | 8 页介绍 + 7 页过程文档 | `docs/verification-process.md`，只写真实做过的步骤（挑工具、开官网、读价、标空白、复核） | 追平 |
 | 明确标空白 | 是（263/274 无毕业年份等） | 是（309/1000 未核验到，付费价留空；221/1000 部分核验单列一档） | 已超（空白比例更高；口径：第三方转述的价只给部分核验、永不升已核验） |
-| 验证方法论 | 自述，未见测试 | 14 项检查 + 1112 项 MoonBit 测试 + 15 项 Python 测试，`verify` 0 错，核心库 0 行未覆盖；价格归一化模块（月均价折算 + 明确拒绝规则 + 口径对齐）42 项测试，核心语义处理在 MoonBit 内 | 已超 |
+| 验证方法论 | 自述，未见测试 | 14 项检查 + 1113 项 MoonBit 测试 + 15 项 Python 测试，`verify` 0 错，核心库 0 行未覆盖；价格归一化模块（月均价折算 + 明确拒绝规则 + 口径对齐）43 项测试，核心语义处理在 MoonBit 内 | 已超 |
 | 公开仓库 | 无 | 公开仓库 https://github.com/jayjay9191/yan-jia-chi-moonbit（2026-11-16 已推，CI 跑绿） | 已超（同类获奖作品无公开仓库） |
 | CI | 无 | `.github/workflows/ci.yml`（跑 moon test + Python 测试 + verify + report 冒烟检查；CI 跑绿）+ Mooncakes v0.1.1 已发（https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit），代码已升至 v0.1.2，待重交后重新发布 | 已超 |
 | 可运行工具 | 演示链接 403 打不开 | CLI 本地可跑：list / verify / stale / report / check / normalize | 已超 |
@@ -376,7 +393,7 @@ moon run cmd/main -- budget 5 '$3/user/month' '$35.99 per user per year'
   MoonBit 工作被认为主要是静态查询、统计、基础字段校验和过期提醒，缺核心语义
   处理贡献；要求用同一套餐两次复核的案例明确人工、Python 与 MoonBit 的职责
   分工及 MoonBit 如何形成可用核价结果。11-30 前可修改报名表重交。本次回应：
-  新增 `normalize.mbt` 价格归一化模块（月均价折算 + 明确拒绝规则 + 口径对齐，42 项测试，
+  新增 `normalize.mbt` 价格归一化模块（月均价折算 + 明确拒绝规则 + 口径对齐，43 项测试，
   核心库 0 未覆盖行）与重写申报书（Midjourney 同一套餐三次复核案例 + 分工表）。
   第二轮加固（2026-11-18）：补了顿号 `、`与英文 `or` 的多档拒绝（真实记录
   36 条只用顿号分隔多档、2 条用 or，旧版会只取第一档静默通过）与 NT$/HK$/R$
