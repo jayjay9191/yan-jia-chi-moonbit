@@ -654,3 +654,36 @@ test "Midjourney Basic annual replay retains two recorded observations" {
     None => assert_true(false)
   }
 }
+
+///|
+test "team budget preserves exact yearly cents and actual first charge" {
+  match
+    @yan-jia-chi-moonbit.compare_budget(
+      "$3/user/month", "$35.99 per user per year", 5,
+    ) {
+    Ok(b) => {
+      assert_eq(b.currency, "USD")
+      assert_eq(b.first_charge_a, 1500L)
+      assert_eq(b.first_charge_b, 17995L)
+      assert_eq(b.year_a, 18000L)
+      assert_eq(b.year_b, 17995L)
+    }
+    Err(_) => assert_true(false)
+  }
+  assert_true(
+    @yan-jia-chi-moonbit.compare_budget("$3/user/month", "$35.99/year", 5)
+    is Err(_),
+  )
+  assert_true(
+    @yan-jia-chi-moonbit.compare_budget(
+      "C$3/user/month", "A$35.99 per user per year", 5,
+    )
+    is Err(_),
+  )
+  assert_true(
+    @yan-jia-chi-moonbit.compare_budget("$3/month", "$36/year", 0) is Err(_),
+  )
+  assert_true(
+    @yan-jia-chi-moonbit.compare_budget("$3/month", "$36/year", 5) is Err(_),
+  )
+}

@@ -29,6 +29,7 @@ fn main {
     "check" => cmd_check(args)
     "normalize" => cmd_normalize(args)
     "align" => cmd_align(args)
+    "budget" => cmd_budget(args)
     "help" | "-h" | "--help" => print_usage()
     other => {
       println("未知子命令：\{other}")
@@ -70,6 +71,9 @@ fn print_usage() -> Unit {
   )
   println(
     "align \"<价格A>\" \"<价格B>\"：口径对齐，如 align \"$8/月按年\" \"$96/年\"；三项（货币、月均价、计费口径）都相同才算价格口径一致",
+  )
+  println(
+    "budget <席位数> <报价A> <报价B>：比较首次扣款、12 个月成本与差额",
   )
   println("help：显示本帮助")
   println("工具名只接受全名，例如：moon run cmd/main check Cursor")
@@ -251,5 +255,46 @@ fn cmd_check(args : Array[String]) -> Unit {
       println("未找到工具：\{args[1]}")
       print_tool_names()
     }
+  }
+}
+
+///|
+fn budget_money(cents : Int64) -> String {
+  let whole = (cents / 100L).to_string()
+  let fraction = (cents % 100L).to_string().pad_start(2, '0')
+  whole + "." + fraction
+}
+
+///|
+fn cmd_budget(args : Array[String]) -> Unit {
+  if args.length() != 4 {
+    println("用法：budget <席位数> <报价A> <报价B>")
+    return
+  }
+  let seats = @string.parse_int(args[1]) catch { _ => 0 }
+  match @lib.compare_budget(args[2], args[3], seats) {
+    Ok(b) => {
+      println(
+        "币种 \{b.currency}，计费份数 \{b.seats}（同价连续使用 12 个月，未计额外税费）",
+      )
+      println(
+        "报价 A 首次扣款 \{budget_money(b.first_charge_a)}，12 个月 \{budget_money(b.year_a)}",
+      )
+      println(
+        "报价 B 首次扣款 \{budget_money(b.first_charge_b)}，12 个月 \{budget_money(b.year_b)}",
+      )
+      if b.year_a == b.year_b {
+        println("12 个月成本相同")
+      } else if b.year_a > b.year_b {
+        println(
+          "报价 B 的 12 个月成本低 \{budget_money(b.year_a - b.year_b)}",
+        )
+      } else {
+        println(
+          "报价 A 的 12 个月成本低 \{budget_money(b.year_b - b.year_a)}",
+        )
+      }
+    }
+    Err(reason) => println("无法比较预算：" + reason)
   }
 }

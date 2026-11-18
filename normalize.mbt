@@ -548,3 +548,66 @@ fn parse_amount_cents(chars : Array[Char]) -> Int32 {
     cents + fraction
   }
 }
+
+///|
+pub(all) struct BudgetComparison {
+  currency : String
+  seats : Int32
+  first_charge_a : Int64
+  first_charge_b : Int64
+  year_a : Int64
+  year_b : Int64
+}
+
+///|
+/// 两个明确订阅报价的预算。先用同一解析器验证币种和计费单位，
+/// 年总价直接用原始金额，不从四舍五入的月均反推。
+pub fn compare_budget(
+  a : String,
+  b : String,
+  seats : Int32,
+) -> Result[BudgetComparison, String] {
+  if seats <= 0 || seats > 10000 {
+    return Err("席位数须为 1 至 10000")
+  }
+  match (normalize_price(a), normalize_price(b)) {
+    (Normalized(pa), Normalized(pb)) => {
+      if !currency_eq(pa.currency, pb.currency) {
+        return Err("币种不同或未明确，无法计算预算差")
+      }
+      if pa.per_seat != pb.per_seat {
+        return Err("计费单位不同，无法计算预算差")
+      }
+      if !pa.per_seat && seats != 1 {
+        return Err(
+          "两项均为整包价格，席位数请填 1；无法从报价推断整包人数上限",
+        )
+      }
+      let (first_charge_a, year_a) = subscription_cost(pa, seats)
+      let (first_charge_b, year_b) = subscription_cost(pb, seats)
+      Ok({
+        currency: currency_code(pa.currency),
+        seats,
+        first_charge_a,
+        first_charge_b,
+        year_a,
+        year_b,
+      })
+    }
+    (CannotNormalize(reason), _) => Err("报价 A：" + reason)
+    (_, CannotNormalize(reason)) => Err("报价 B：" + reason)
+    _ => Err("预算对比仅适用于两项明确的付费订阅")
+  }
+}
+
+///|
+fn subscription_cost(price : NormalizedPrice, seats : Int32) -> (Int64, Int64) {
+  let amount = parse_amount_cents(price.original.to_array()).to_int64() *
+    seats.to_int64()
+  let year = if is_monthly_period(price.original) {
+    amount * 12L
+  } else {
+    amount
+  }
+  (if price.billed_annually { year } else { amount }, year)
+}

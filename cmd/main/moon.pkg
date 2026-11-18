@@ -1,4 +1,5 @@
 import {
+  "moonbitlang/core/string",
   "jayjay9191/yan-jia-chi-moonbit" @lib,
   "moonbitlang/core/env",
 }
