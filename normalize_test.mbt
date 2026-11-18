@@ -153,6 +153,30 @@ test "normalize rejects multi-tier string" {
 }
 
 ///|
+test "normalize rejects ideographic comma multi-tier" {
+  // 、是中文顿号，分隔档位：真实记录里 36 条只用它分隔多档
+  //（Power BI APV-0206、Shadow APV-0437），旧版会只取第一档静默通过
+  let s = "Pro $14/用户/月、Premium Per User $24/用户/月"
+  assert_eq(norm_kind(s), "cannot_normalize")
+  assert_true(norm_reason(s).contains("多档套餐"))
+  assert_eq(
+    norm_kind("Neo Pro $44.99/月、Power Pro $59.99/月"),
+    "cannot_normalize",
+  )
+}
+
+///|
+test "normalize rejects english or multi-tier" {
+  // or 并列两种价：Nansen（APV-0978）$49/月按年或 $69/月按月、
+  // Messari（APV-0990）$4,500/年或 $1,350/季，只取其一会丢掉另一种
+  assert_eq(
+    norm_kind("$49/month (annual) or $69/month (monthly)"),
+    "cannot_normalize",
+  )
+  assert_eq(norm_kind("$4,500/year or $1,350/quarter"), "cannot_normalize")
+}
+
+///|
 test "normalize rejects custom and pay-as-you-go" {
   assert_eq(norm_kind("定制定价"), "cannot_normalize")
   assert_true(norm_reason("定制定价").contains("定制定价"))
@@ -264,6 +288,17 @@ test "normalize tool price refuses unverified and multi-tier records" {
     }
     None => assert_true(false)
   }
+  // Power BI（APV-0206）：paid_price 用顿号分隔两档，拒绝而非只取第一档
+  match @yan-jia-chi-moonbit.tool_by_name("Power BI") {
+    Some(t) => {
+      let r = @yan-jia-chi-moonbit.normalize_tool_price(t)
+      assert_eq(@yan-jia-chi-moonbit.normalize_kind(r), "cannot_normalize")
+      assert_true(
+        @yan-jia-chi-moonbit.normalize_reason(r).contains("多档套餐"),
+      )
+    }
+    None => assert_true(false)
+  }
 }
 
 ///|
@@ -331,6 +366,33 @@ test "detect currency from codes and symbols" {
   )
   assert_eq(norm_cents("A$20/月"), 2000)
   assert_eq(norm_cents("SAR 50/月"), 5000)
+}
+
+///|
+test "normalize other dollar variants are not usd" {
+  // NT$/HK$/R$ 不是美元：不猜成 USD，记 Other，金额照算
+  //（与 C$/A$/SAR 同口径：只认金额，不编货币、不换算）
+  assert_eq(norm_cents("NT$20/月"), 2000)
+  assert_eq(
+    @yan-jia-chi-moonbit.normalized_currency_code(
+      @yan-jia-chi-moonbit.normalize_price("NT$20/月"),
+    ),
+    "OTHER",
+  )
+  assert_eq(norm_cents("HK$20/月"), 2000)
+  assert_eq(
+    @yan-jia-chi-moonbit.normalized_currency_code(
+      @yan-jia-chi-moonbit.normalize_price("HK$20/月"),
+    ),
+    "OTHER",
+  )
+  assert_eq(norm_cents("R$20/月"), 2000)
+  assert_eq(
+    @yan-jia-chi-moonbit.normalized_currency_code(
+      @yan-jia-chi-moonbit.normalize_price("R$20/月"),
+    ),
+    "OTHER",
+  )
 }
 
 ///|

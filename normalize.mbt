@@ -244,7 +244,13 @@ pub fn cheaper_monthly(
 fn precheck(s : String) -> NormalizeResult? {
   if s == "" {
     Some(CannotNormalize("空价格：无价格可归一化"))
-  } else if s.contains("；") || s.contains(";") {
+  } else if s.contains("；") ||
+    s.contains(";") ||
+    s.contains("、") ||
+    s.contains(" or ") {
+    // 顿号 、 与英文 or 也是档位分隔符：真实记录里 36 条用 、分隔多档
+    //（如 Power BI APV-0206）、2 条用 or（如 Nansen APV-0978），
+    // 只取第一档会静默丢掉其余档位，必须拒绝。
     Some(CannotNormalize("多档套餐：请先指定档位再归一化"))
   } else if s.contains("定制") ||
     s.contains("联系销售") ||
@@ -267,12 +273,15 @@ fn precheck(s : String) -> NormalizeResult? {
 }
 
 ///|
-/// 从符号或代码识别货币：先认代码（C$/CAD、A$/AUD、CNY、USD、EUR、
-/// GBP、JPY、INR、SAR），再认符号（$、€、£、₹）；都不认返回 None。
+/// 从符号或代码识别货币：先认代码（C$/CAD、A$/AUD、NT$/HK$/R$、
+/// CNY、USD、EUR、GBP、JPY、INR、SAR），再认符号（$、€、£、₹）；
+/// NT$/HK$/R$ 不是美元，记 Other 不猜成 USD；都不认返回 None。
 fn detect_currency(s : String) -> Currency? {
   if s.contains("C$") || s.contains("CAD") {
     Some(Currency::Other)
   } else if s.contains("A$") || s.contains("AUD") {
+    Some(Currency::Other)
+  } else if s.contains("NT$") || s.contains("HK$") || s.contains("R$") {
     Some(Currency::Other)
   } else if s.contains("CNY") {
     Some(Currency::CNY)
