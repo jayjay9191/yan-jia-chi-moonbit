@@ -605,6 +605,21 @@ fn compare_subscription(
   if seats <= 0 || seats > 10000 {
     return Err("席位数须为 1 至 10000")
   }
+  for quote in [a, b] {
+    let text = quote.trim().to_owned().to_lower()
+    if text.has_suffix("起") ||
+      [
+        "起价", "起步", "起（", "起(", "起/月", "起/年", "starting at",
+        "starts at", "from ", " and up", "at least",
+      ]
+      .iter()
+      .any(flag => text.contains(flag)) {
+      return Err("报价只给出下限，无法核算固定订阅成本")
+    }
+    if text.contains("或") || text.contains(" or ") {
+      return Err("报价列有备选金额或付款条件，请先选定一种")
+    }
+  }
   match (normalize_price(a), normalize_price(b)) {
     (Normalized(pa), Normalized(pb)) => {
       if !currency_eq(pa.currency, pb.currency) {

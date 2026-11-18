@@ -736,3 +736,27 @@ test "repricing compares paid standard quotes on the same renewal cycle" {
     is Err(_),
   )
 }
+
+///|
+test "budget and repricing reject starting prices and mixed payment labels" {
+  let standard = "$20/user/month"
+  for
+    quote in [
+      "$15/user/month起", "Starting at $15/user/month", "$15/user/month and up",
+    ] {
+    assert_true(
+      @yan-jia-chi-moonbit.compare_budget(quote, standard, 10) is Err(_),
+    )
+    assert_true(
+      @yan-jia-chi-moonbit.compare_repricing(standard, quote, 10) is Err(_),
+    )
+  }
+  for
+    quote in [
+      "$15/user/month 年付或月付", "$15/user/month billed monthly or annually",
+    ] {
+    assert_true(
+      @yan-jia-chi-moonbit.compare_budget(quote, standard, 10) is Err(_),
+    )
+  }
+}
