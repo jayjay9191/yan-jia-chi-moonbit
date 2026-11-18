@@ -27,7 +27,7 @@ test "generated: DeepSeek status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0002")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -91,7 +91,7 @@ test "generated: Claude / Anthropic status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0006")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -123,7 +123,7 @@ test "generated: Grok / xAI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0008")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -171,7 +171,7 @@ test "generated: 智谱清言 / GLM status" {
       assert_eq(t.currency, "CNY")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0011")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -235,7 +235,7 @@ test "generated: Midjourney status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0015")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -315,7 +315,7 @@ test "generated: Cursor status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0020")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -347,7 +347,7 @@ test "generated: Jasper status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0022")
       assert_eq(t.session, "20261115-A")
     }
@@ -395,7 +395,7 @@ test "generated: Grammarly status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0025")
       assert_eq(t.session, "20261115-A")
     }
@@ -411,7 +411,7 @@ test "generated: QuillBot status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0026")
       assert_eq(t.session, "20261115-A")
     }
@@ -459,7 +459,7 @@ test "generated: Rytr status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0029")
       assert_eq(t.session, "20261115-A")
     }
@@ -491,7 +491,7 @@ test "generated: Frase status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0031")
       assert_eq(t.session, "20261115-A")
     }
@@ -507,7 +507,7 @@ test "generated: Scalenut status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0032")
       assert_eq(t.session, "20261115-A")
     }
@@ -523,7 +523,7 @@ test "generated: TextCortex status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0033")
       assert_eq(t.session, "20261115-A")
     }
@@ -539,7 +539,7 @@ test "generated: AI Cohesive status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0034")
       assert_eq(t.session, "20261115-A")
     }
@@ -587,7 +587,7 @@ test "generated: Writecream status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0037")
       assert_eq(t.session, "20261115-A")
     }
@@ -635,7 +635,7 @@ test "generated: WordHero status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0040")
       assert_eq(t.session, "20261115-A")
     }
@@ -651,7 +651,7 @@ test "generated: Nichesss status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0041")
       assert_eq(t.session, "20261115-A")
     }
@@ -667,7 +667,7 @@ test "generated: ClosersCopy status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0042")
       assert_eq(t.session, "20261115-A")
     }
@@ -699,7 +699,7 @@ test "generated: Kafkai status" {
       assert_eq(t.currency, "JPY")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0044")
       assert_eq(t.session, "20261115-A")
     }
@@ -763,7 +763,7 @@ test "generated: Berq status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0048")
       assert_eq(t.session, "20261115-A")
     }
@@ -827,7 +827,7 @@ test "generated: Ideogram status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0052")
       assert_eq(t.session, "20261115-B")
     }
@@ -843,7 +843,7 @@ test "generated: Stability AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0053")
       assert_eq(t.session, "20261115-B")
     }
@@ -859,7 +859,7 @@ test "generated: Playground AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0054")
       assert_eq(t.session, "20261115-B")
     }
@@ -875,7 +875,7 @@ test "generated: Krea AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0055")
       assert_eq(t.session, "20261115-B")
     }
@@ -891,7 +891,7 @@ test "generated: Freepik AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0056")
       assert_eq(t.session, "20261115-B")
     }
@@ -1035,7 +1035,7 @@ test "generated: GetIMG status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0065")
       assert_eq(t.session, "20261115-B")
     }
@@ -1099,7 +1099,7 @@ test "generated: Topaz AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0069")
       assert_eq(t.session, "20261115-B")
     }
@@ -1115,7 +1115,7 @@ test "generated: Magnific AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0070")
       assert_eq(t.session, "20261115-B")
     }
@@ -1163,7 +1163,7 @@ test "generated: LogoAI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0073")
       assert_eq(t.session, "20261115-B")
     }
@@ -1227,7 +1227,7 @@ test "generated: Durable status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0077")
       assert_eq(t.session, "20261115-B")
     }
@@ -1259,7 +1259,7 @@ test "generated: Artbreeder status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0079")
       assert_eq(t.session, "20261115-B")
     }
@@ -1275,7 +1275,7 @@ test "generated: DeepAI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0080")
       assert_eq(t.session, "20261115-B")
     }
@@ -1291,7 +1291,7 @@ test "generated: Runway status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0081")
       assert_eq(t.session, "20261115-C")
     }
@@ -1307,7 +1307,7 @@ test "generated: Pika status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0082")
       assert_eq(t.session, "20261115-C")
     }
@@ -1371,7 +1371,7 @@ test "generated: Udio status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0086")
       assert_eq(t.session, "20261115-C")
     }
@@ -1419,7 +1419,7 @@ test "generated: HeyGen status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0089")
       assert_eq(t.session, "20261115-C")
     }
@@ -1435,7 +1435,7 @@ test "generated: Synthesia status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0090")
       assert_eq(t.session, "20261115-C")
     }
@@ -1451,7 +1451,7 @@ test "generated: Pictory status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0091")
       assert_eq(t.session, "20261115-C")
     }
@@ -1467,7 +1467,7 @@ test "generated: InVideo status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0092")
       assert_eq(t.session, "20261115-C")
     }
@@ -1515,7 +1515,7 @@ test "generated: Resemble AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0095")
       assert_eq(t.session, "20261115-C")
     }
@@ -1531,7 +1531,7 @@ test "generated: Play.ht status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0096")
       assert_eq(t.session, "20261115-C")
     }
@@ -1579,7 +1579,7 @@ test "generated: Speechify status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0099")
       assert_eq(t.session, "20261115-C")
     }
@@ -1611,7 +1611,7 @@ test "generated: Fireflies.ai status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0101")
       assert_eq(t.session, "20261115-C")
     }
@@ -1659,7 +1659,7 @@ test "generated: Riverside status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0104")
       assert_eq(t.session, "20261115-C")
     }
@@ -1675,7 +1675,7 @@ test "generated: CapCut status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0105")
       assert_eq(t.session, "20261115-C")
     }
@@ -1691,7 +1691,7 @@ test "generated: OpusClip status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0106")
       assert_eq(t.session, "20261115-C")
     }
@@ -1723,7 +1723,7 @@ test "generated: Wisecut status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0108")
       assert_eq(t.session, "20261115-C")
     }
@@ -1739,7 +1739,7 @@ test "generated: Kapwing status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0109")
       assert_eq(t.session, "20261115-C")
     }
@@ -1771,7 +1771,7 @@ test "generated: GitHub Copilot status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0111")
       assert_eq(t.session, "20261115-D")
     }
@@ -1803,7 +1803,7 @@ test "generated: Windsurf status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0113")
       assert_eq(t.session, "20261115-D")
     }
@@ -1819,7 +1819,7 @@ test "generated: Amazon Q Developer status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0114")
       assert_eq(t.session, "20261115-D")
     }
@@ -1867,7 +1867,7 @@ test "generated: Replit Agent status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0117")
       assert_eq(t.session, "20261115-D")
     }
@@ -1899,7 +1899,7 @@ test "generated: Bolt.new status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0119")
       assert_eq(t.session, "20261115-D")
     }
@@ -1931,7 +1931,7 @@ test "generated: Augment Code status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0121")
       assert_eq(t.session, "20261115-D")
     }
@@ -1947,7 +1947,7 @@ test "generated: Qodo status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0122")
       assert_eq(t.session, "20261115-D")
     }
@@ -1963,7 +1963,7 @@ test "generated: Pieces status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0123")
       assert_eq(t.session, "20261115-D")
     }
@@ -2091,7 +2091,7 @@ test "generated: Devin status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0131")
       assert_eq(t.session, "20261115-D")
     }
@@ -2139,7 +2139,7 @@ test "generated: Figma AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0134")
       assert_eq(t.session, "20261115-D")
     }
@@ -2187,7 +2187,7 @@ test "generated: Airtable AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0137")
       assert_eq(t.session, "20261115-D")
     }
@@ -2203,7 +2203,7 @@ test "generated: ClickUp AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0138")
       assert_eq(t.session, "20261115-D")
     }
@@ -2219,7 +2219,7 @@ test "generated: Asana AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0139")
       assert_eq(t.session, "20261115-D")
     }
@@ -2251,7 +2251,7 @@ test "generated: OpenAI API status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0141")
       assert_eq(t.session, "20261115-E")
     }
@@ -2267,7 +2267,7 @@ test "generated: Claude API status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0142")
       assert_eq(t.session, "20261115-E")
     }
@@ -2283,7 +2283,7 @@ test "generated: Gemini API status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0143")
       assert_eq(t.session, "20261115-E")
     }
@@ -2299,7 +2299,7 @@ test "generated: Mistral AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0144")
       assert_eq(t.session, "20261115-E")
     }
@@ -2363,7 +2363,7 @@ test "generated: Groq status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0148")
       assert_eq(t.session, "20261115-E")
     }
@@ -2379,7 +2379,7 @@ test "generated: Fireworks AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0149")
       assert_eq(t.session, "20261115-E")
     }
@@ -2427,7 +2427,7 @@ test "generated: DeepInfra status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0152")
       assert_eq(t.session, "20261115-E")
     }
@@ -2491,7 +2491,7 @@ test "generated: Pinecone status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0156")
       assert_eq(t.session, "20261115-E")
     }
@@ -2507,7 +2507,7 @@ test "generated: Weaviate status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0157")
       assert_eq(t.session, "20261115-E")
     }
@@ -2539,7 +2539,7 @@ test "generated: Zilliz status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0159")
       assert_eq(t.session, "20261115-E")
     }
@@ -2555,7 +2555,7 @@ test "generated: Modal status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0160")
       assert_eq(t.session, "20261115-E")
     }
@@ -2619,7 +2619,7 @@ test "generated: Novita AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0164")
       assert_eq(t.session, "20261115-E")
     }
@@ -2635,7 +2635,7 @@ test "generated: SiliconFlow / 硅基流动 status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0165")
       assert_eq(t.session, "20261115-E")
     }
@@ -2683,7 +2683,7 @@ test "generated: AWS Bedrock status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0168")
       assert_eq(t.session, "20261115-E")
     }
@@ -2731,7 +2731,7 @@ test "generated: Slack AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0171")
       assert_eq(t.session, "20261115-F")
     }
@@ -2747,7 +2747,7 @@ test "generated: Zoom AI Companion status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0172")
       assert_eq(t.session, "20261115-F")
     }
@@ -2763,7 +2763,7 @@ test "generated: Fellow status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0173")
       assert_eq(t.session, "20261115-F")
     }
@@ -2779,7 +2779,7 @@ test "generated: Read AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0174")
       assert_eq(t.session, "20261115-F")
     }
@@ -2859,7 +2859,7 @@ test "generated: Heptabase status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0179")
       assert_eq(t.session, "20261115-F")
     }
@@ -2875,7 +2875,7 @@ test "generated: Craft status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0180")
       assert_eq(t.session, "20261115-F")
     }
@@ -2891,7 +2891,7 @@ test "generated: Todoist AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0181")
       assert_eq(t.session, "20261115-F")
     }
@@ -2907,7 +2907,7 @@ test "generated: Sunsama status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0182")
       assert_eq(t.session, "20261115-F")
     }
@@ -2971,7 +2971,7 @@ test "generated: Salesforce Einstein status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0186")
       assert_eq(t.session, "20261115-F")
     }
@@ -2987,7 +2987,7 @@ test "generated: Zendesk AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0187")
       assert_eq(t.session, "20261115-F")
     }
@@ -3003,7 +3003,7 @@ test "generated: Intercom Fin status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0188")
       assert_eq(t.session, "20261115-F")
     }
@@ -3051,7 +3051,7 @@ test "generated: Genspark status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0191")
       assert_eq(t.session, "20261115-F")
     }
@@ -3067,7 +3067,7 @@ test "generated: Felo status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0192")
       assert_eq(t.session, "20261115-F")
     }
@@ -3211,7 +3211,7 @@ test "generated: Julius AI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0201")
       assert_eq(t.session, "20261115-I")
     }
@@ -3227,7 +3227,7 @@ test "generated: Polymer status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按月")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0202")
       assert_eq(t.session, "20261115-I")
     }
@@ -3275,7 +3275,7 @@ test "generated: Tableau status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0205")
       assert_eq(t.session, "20261115-I")
     }
@@ -3291,7 +3291,7 @@ test "generated: Power BI status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按年")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0206")
       assert_eq(t.session, "20261115-I")
     }
@@ -3323,7 +3323,7 @@ test "generated: Mixpanel status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0208")
       assert_eq(t.session, "20261115-I")
     }
@@ -3339,7 +3339,7 @@ test "generated: Amplitude status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-15")
+      assert_eq(t.verified_at, "2026-11-18")
       assert_eq(t.key, "APV-0209")
       assert_eq(t.session, "20261115-I")
     }

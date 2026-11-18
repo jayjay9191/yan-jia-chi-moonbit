@@ -79,10 +79,10 @@ test "real data passes all validation rules" {
 
 ///|
 test "report counts are internally consistent" {
-  // today = 2026-11-16（自 1970-01-01 起第 20773 天；R4 复核在 11-16 做，
-  // 数据里已有 11-16 的 verified_at，today 必须跟到同一天，否则未来日期被算过期）
+  // today = 2026-11-18（自 1970-01-01 起第 20775 天；R5 复核在 11-18 做，
+  // 数据里已有 11-18 的 verified_at，today 必须跟到同一天，否则未来日期被算过期）
   let tools = @yan-jia-chi-moonbit.all_tools()
-  let r = @yan-jia-chi-moonbit.build_report(tools, 20773)
+  let r = @yan-jia-chi-moonbit.build_report(tools, 20775)
   let total = tools.length()
   assert_eq(r.total, total)
   assert_eq(r.verified + r.partial + r.unverified, total)
@@ -112,9 +112,9 @@ test "report counts are internally consistent" {
     total,
   )
   assert_eq(r.student_seen + r.student_unseen, total)
-  // 2026-11-16 当天：11-08、11-15 与 11-16 三批都在 30 天内，无过期
+  // 2026-11-18 当天：11-08、11-15、11-16 与 11-18 四批都在 30 天内，无过期
   assert_eq(r.stale_count, 0)
-  assert_eq(r.today, "2026-11-16")
+  assert_eq(r.today, "2026-11-18")
   // 变动轨迹：自洽断言，不写死条数（R1 时写死 11/11/1/4，R2 一到就崩；
   // 见设计手记 §6 的教训）。R1 的事实仍可查：会话 20261115-R1 共 11 条、
   // 涨价 1 条、未看到价 4 条；R2（20261115-R2）新增 121 条。

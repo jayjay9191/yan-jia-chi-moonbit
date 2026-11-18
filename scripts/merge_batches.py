@@ -301,6 +301,61 @@ def apply_recheck4(tools: list) -> int:
     return applied
 
 
+# 2026-11-18 第五次复核（会话 20261118-R5）：复核目前状态为“已核验”的
+# 110 条，按上次核验日期最旧优先（2026-11-08 的 2 条 + 2026-11-15 的 108 条）。
+# 结论来自 /tmp/recheck_R5_result.json（/tmp 被清空时用 ~/workspace 下的备份）。
+# 94 条无变化（bump：verified_at 更新到 2026-11-18），16 条未看到价
+# （bump=false：原价与 verified_at 都不动）；涨价/降价/下架均为 0；
+# 全程无 429 限流；唯一一次抓取失败是 Comate（上游错误，未重试，记未看到价）。
+RECHECK5_SESSION = "20261118-R5"
+RECHECK5_DATE = "2026-11-18"
+RECHECK5_FILES = [
+    "/tmp/recheck_R5_result.json",
+]
+
+
+def apply_recheck5(tools: list) -> int:
+    """应用第五次复核结论，返回新增轨迹条数。幂等：同一会话只记一次。
+    - change 只有两种：无变化（bump，verified_at 更新到复核日）与
+      未看到价（不 bump，原价与 verified_at 都不动）。
+    - 无涨价/降价/下架/新档位；upgrade 字段未使用（样本全为已核验状态）。"""
+    by_key = {t["key"]: t for t in tools}
+    applied = 0
+    for path in RECHECK5_FILES:
+        p = Path(path)
+        if not p.exists():
+            alt = Path("/home/hatch/workspace") / p.name
+            p = alt if alt.exists() else p
+        if not p.exists():
+            print(f"跳过 {path}（不存在）")
+            continue
+        results = json.loads(p.read_text(encoding="utf-8"))["results"]
+        for r in results:
+            t = by_key.get(r["key"])
+            if t is None:
+                print(f"跳过未知记录键：{r['key']}（{r['name']}）")
+                continue
+            if t["name"] != r["name"]:
+                print(f"跳过名字不符：{r['key']} 表里是 {t['name']}，复核写的是 {r['name']}")
+                continue
+            if any(h.get("session") == RECHECK5_SESSION for h in t.get("history", [])):
+                continue
+            entry = {
+                "date": RECHECK5_DATE,
+                "session": RECHECK5_SESSION,
+                "change": r["change"],
+                "old_price": r.get("old_price", ""),
+                "new_price": r.get("new_price", ""),
+                "note": "复核：" + r.get("note", ""),
+            }
+            t.setdefault("history", []).append(entry)
+            if r.get("bump"):
+                t["verified_at"] = RECHECK5_DATE
+            applied += 1
+        print(f"应用 {path}：累计新增轨迹 {applied} 条")
+    return applied
+
+
 def apply_recheck2(tools: list) -> int:
     """应用第二次复核结论，返回新增轨迹条数。幂等：同一会话只记一次。"""
     by_key = {t["key"]: t for t in tools}
@@ -540,6 +595,7 @@ def main() -> int:
     recheck2_only = "--recheck2-only" in sys.argv
     recheck3_only = "--recheck3-only" in sys.argv
     recheck4_only = "--recheck4-only" in sys.argv
+    recheck5_only = "--recheck5-only" in sys.argv
     only = None
     if "--only" in sys.argv:
         only = sys.argv[sys.argv.index("--only") + 1].upper()
@@ -553,8 +609,9 @@ def main() -> int:
     applied2 = apply_recheck2(tools)
     applied3 = apply_recheck3(tools)
     applied4 = apply_recheck4(tools)
+    applied5 = apply_recheck5(tools)
     added = 0
-    if not reverify_only and not recheck2_only and not recheck3_only and not recheck4_only:
+    if not reverify_only and not recheck2_only and not recheck3_only and not recheck4_only and not recheck5_only:
         added = merge_batches(tools, only=only)
     issues = mirror_validate(tools)
     if issues:
@@ -568,7 +625,7 @@ def main() -> int:
     )
     from collections import Counter
 
-    print(f"写盘完成：共 {len(tools)} 条（新增 {added} 条，R2 复核轨迹 {applied2} 条，R3 复核轨迹 {applied3} 条，R4 复核轨迹 {applied4} 条）")
+    print(f"写盘完成：共 {len(tools)} 条（新增 {added} 条，R2 复核轨迹 {applied2} 条，R3 复核轨迹 {applied3} 条，R4 复核轨迹 {applied4} 条，R5 复核轨迹 {applied5} 条）")
     print(f"状态：{dict(Counter(t['status'] for t in tools))}")
     print(f"history 总条数：{sum(len(t.get('history', [])) for t in tools)}")
     print("下一步：python3 scripts/generate_data.py && python3 scripts/generate_tests.py")

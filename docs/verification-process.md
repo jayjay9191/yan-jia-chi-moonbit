@@ -242,3 +242,40 @@
 - 诚实备注：AE 批 6 条（Accela 404、Tyler 404、SmartGov 530、
   EngagementHQ 404、Municode 403、浙里办打不开）R4 重开仍未看到价，
   继续暂扣，不合入、不凑 1006 条。
+
+## 11. 第五轮实测结果（2026-11-18，R5 复核）
+
+- 第五次复核 R5（会话 20261118-R5）：样本按上次核验日期最旧优先，
+  复核 110 条已核验记录——2026-11-08 核验的 2 条（APV-0004 Kimi、
+  APV-0005 ChatGPT）+ 2026-11-15 核验的 108 条（按记录键顺序）。
+  结果：无变化 94 条、未看到价 16 条、涨价 0、降价 0、下架 0；
+  全程 0 次 429。唯一一次抓取失败是 Comate/文心快码（上游错误，
+  非限流，按流程未重试，记未看到价）。
+- 16 条未看到价：Kimi（首页文本无 API 价）、ChatGPT（定价页提取文本
+  无金额）、Writesonic（页面改版后提取文本无价）、10Web（FAQ 页，
+  价格按国家区分）、WellSaid Labs（定价页文本无价）、JetBrains AI
+  （页面已改为 JetBrains Air 产品页，无价）、v0（只剩按 token 的模型
+  价，无订阅价）、Lovable（仅积分机制 + FAQ，无价）、Trae（定价页
+  仅 2 行文本）、Comate/文心快码（抓取上游错误）、Mintlify（Pro 价位
+  渲染为空）、Miro AI（无美元价）、Linear（仅功能对比表）、Monday AI
+  （仅 FAQ）、FriendliAI（仅两段说明文字）、Azure OpenAI（全站价格位
+  显示 `$-` 空白）。
+- 8 条主价已确认、个别次要价未在提取文本中出现，按 R1 先例仍记无变化
+  并在 note 里写明哪项未见、下轮复核什么：Grok Ultra $200、Krea Max/
+  Business 黑五价、Qodo 2500 积分包、OpenAI API gpt-6-luna、Zilliz
+  计划起价、Modal B200/T4 秒价、Todoist 月付价、Tableau 分档价。
+  黑五促销价（如 Pictory、Krea、Craft、Slack）只影响划线价、基础价未
+  变，已在 note 里注明，不记涨价/降价。
+- 合并（`scripts/merge_batches.py` 新增 `apply_recheck5`，幂等，
+  `--recheck5-only`）：94 条无变化的 `verified_at` 更新到 2026-11-18，
+  16 条未看到价原价与原日期不动。轨迹总数 832 → 942 条；复核过
+  717 → 719/1000 条记录（R5 样本中此前无轨迹的是 Julius AI APV-0201
+  与 Mixpanel APV-0208）；状态分布不变（已核验 470 / 部分核验 221 /
+  未核验到 309）；`verify` 0 问题；`report` 今天 2026-11-18、过期
+  0/1000；核验日增至 4 天（11-08/11-15/11-16/11-18）。
+- 测试：MoonBit 1099/1099，Python 15/15；附带修了
+  `pricing_test.mbt` 的 today 写死 2026-11-16（R5 的 94 条 11-18 日期
+  在该“今天”之后被算过期）——按既有惯例移到 2026-11-18。
+- 诚实备注：JetBrains AI 页已改版为 JetBrains Air 产品页、v0 订阅价
+  已下架、Tableau 分档价未列出、Zilliz 计划起价须从主定价页复核——
+  这 4 条下轮复核须换页面或换口径，不能照抄本轮的“未看到价”。
