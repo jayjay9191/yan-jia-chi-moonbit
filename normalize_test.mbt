@@ -22,6 +22,16 @@ fn norm_reason(s : String) -> String {
 }
 
 ///|
+fn align_kind_of(a : String, b : String) -> String {
+  @yan-jia-chi-moonbit.align_kind(@yan-jia-chi-moonbit.align_prices(a, b))
+}
+
+///|
+fn align_reason_of(a : String, b : String) -> String {
+  @yan-jia-chi-moonbit.align_reason(@yan-jia-chi-moonbit.align_prices(a, b))
+}
+
+///|
 test "normalize monthly usd" {
   assert_eq(norm_kind("$10/月按月"), "normalized")
   assert_eq(norm_cents("$10/月按月"), 1000)
@@ -478,4 +488,117 @@ test "accessors on non-normalized results" {
   assert_eq(@yan-jia-chi-moonbit.normalized_currency_code(bad), "")
   assert_true(!@yan-jia-chi-moonbit.normalized_per_seat(bad))
   assert_true(!@yan-jia-chi-moonbit.normalized_billed_annually(bad))
+}
+
+///|
+/// 口径对齐：同一工具不同来源的两种价格写法，判定是否为同一套餐。
+/// 判定标准：两侧都能归一化成功，且货币相同、月均价（整数分）相同、
+/// 计费口径（按席/按用户/按人 vs 不按人头）相同；任一侧被拒绝直接
+/// 拒绝判定，不猜。
+
+///|
+test "align same plan different spellings" {
+  // Midjourney Basic 年付月费率 vs Pika Starter 年总价：同为 USD 800 分
+  assert_eq(align_kind_of("$8/月按年", "$96/年"), "same")
+  assert_eq(align_kind_of("$96/年", "$8/月按年"), "same")
+  // 同一套餐时原因留空
+  assert_eq(align_reason_of("$8/月按年", "$96/年"), "")
+  // Midjourney Standard 年付月费率 vs Udio Pro 年总价：同为 USD 2400 分
+  assert_eq(align_kind_of("$24/月", "$288/年"), "same")
+  assert_eq(align_kind_of("$10/月按月", "$120/年"), "same")
+  assert_eq(align_kind_of("€20/月", "€240/年"), "same")
+}
+
+///|
+test "align different monthly price" {
+  assert_eq(align_kind_of("$10/月", "$8/月"), "different")
+  assert_true(align_reason_of("$10/月", "$8/月").contains("月均价不同"))
+  // 真实记录：TripIt Pro $49/年（408 分）vs KOA Rewards $39/年（325 分）
+  assert_eq(align_kind_of("$49/年", "$39/年"), "different")
+  // 同一档位按月付与按年付的月费率不同时判不同：月均价是判据，
+  // 不是档位——Basic 按月 $10 与按年折算 $8 是两个价格，不是一回事；
+  // 要比同一档位的不同付费周期，用 annual_saving_pct
+  assert_eq(align_kind_of("$10/月按月", "$8/月按年"), "different")
+}
+
+///|
+test "align different currency" {
+  assert_eq(align_kind_of("$10/月", "€10/月"), "different")
+  assert_true(align_reason_of("$10/月", "€10/月").contains("货币不同"))
+  // 真实记录：Emitwise £7,500/年 vs TripIt Pro $49/年
+  assert_eq(align_kind_of("£7,500/年", "$49/年"), "different")
+}
+
+///|
+test "align different billing unit" {
+  // 按席/按用户计价 vs 不按人头计价：月均价同为 1200 分，口径不同
+  assert_eq(align_kind_of("$12/用户/月", "$12/月"), "different")
+  assert_true(
+    align_reason_of("$12/用户/月", "$12/月").contains("计费口径不同"),
+  )
+  // 真实记录写法：Grammarly $12/用户/月 vs Playground 年付 $144/年
+  assert_eq(align_kind_of("$12/用户/月", "$144/年"), "different")
+}
+
+///|
+test "align refuses multi-tier side" {
+  // Midjourney 整条 paid_price 原文：四档合写，先指定档位
+  let s = "Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%"
+  assert_eq(align_kind_of(s, "$8/月按年"), "cannot_align")
+  assert_true(align_reason_of(s, "$8/月按年").contains("多档套餐"))
+  // 第二侧被拒绝也一样：报第二处的原因
+  assert_eq(align_kind_of("$8/月按年", s), "cannot_align")
+  assert_true(align_reason_of("$8/月按年", s).contains("多档套餐"))
+  // Power BI：顿号分隔两档
+  let pbi = "Pro $14/用户/月、Premium Per User $24/用户/月（均按年付）"
+  assert_eq(align_kind_of(pbi, "$14/用户/月"), "cannot_align")
+}
+
+///|
+test "align refuses usage-based and custom sides" {
+  assert_eq(
+    align_kind_of("API按量：输入 ¥8/1M tokens", "$10/月"),
+    "cannot_align",
+  )
+  assert_true(
+    align_reason_of("API按量：输入 ¥8/1M tokens", "$10/月").contains(
+      "按量计费",
+    ),
+  )
+  assert_eq(align_kind_of("定制定价", "$10/月"), "cannot_align")
+  assert_true(
+    align_reason_of("定制定价", "$10/月").contains("定制定价"),
+  )
+}
+
+///|
+test "align refuses bare yen and empty price" {
+  assert_eq(align_kind_of("¥99/月", "$10/月"), "cannot_align")
+  assert_true(
+    align_reason_of("¥99/月", "$10/月").contains(
+      "无法区分人民币与日元",
+    ),
+  )
+  assert_eq(align_kind_of("", "$10/月"), "cannot_align")
+  assert_true(align_reason_of("", "$10/月").contains("空价格"))
+  assert_eq(align_kind_of("$10/月", ""), "cannot_align")
+  // 两侧都被拒绝：报第一处的
+  assert_eq(align_kind_of("定制定价", ""), "cannot_align")
+  assert_true(align_reason_of("定制定价", "").contains("定制定价"))
+}
+
+///|
+test "align free cases" {
+  assert_eq(align_kind_of("免费使用", "$0/月"), "same")
+  assert_eq(align_kind_of("免费使用", "$10/月"), "different")
+  assert_true(
+    align_reason_of("免费使用", "$10/月").contains("一侧免费"),
+  )
+  assert_eq(align_kind_of("$10/月", "免费使用"), "different")
+}
+
+///|
+test "align rounds to same cents" {
+  // AllTrails+ $35.99/年：(3599+6)/12=300 分，与 $3/月同价
+  assert_eq(align_kind_of("$35.99/年", "$3/月"), "same")
 }

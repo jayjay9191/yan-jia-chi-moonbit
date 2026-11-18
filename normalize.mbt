@@ -238,6 +238,73 @@ pub fn cheaper_monthly(
 }
 
 ///|
+/// 口径对齐结论：Same = 同一套餐；Different = 不同套餐（reason 说明
+/// 哪项不同）；CannotAlign = 无法判定（reason 说明哪一侧被拒绝，绝不猜）。
+/// 判定标准：两侧都能归一化成功，且货币相同、月均价（整数分）相同、
+/// 计费口径（按席/按用户/按人 vs 不按人头）相同。按年付与否不参与判定——
+/// 它只影响月均价本身；同一档位按月付与按年付的月费率不同时判不同
+/// （如 Midjourney Basic $10/月按月 vs $8/月按年），要比同一档位的
+/// 不同付费周期用 annual_saving_pct。更细的计费单位（按次、按 token）
+/// 都在按量拒绝里，根本进不了对齐。
+pub enum AlignResult {
+  Same
+  Different(String)
+  CannotAlign(String)
+}
+
+///|
+/// 供 CLI 与黑盒测试用的公开读数（枚举构造子在包外只读，见 AGENTS.md）。
+pub fn align_kind(r : AlignResult) -> String {
+  match r {
+    AlignResult::Same => "same"
+    AlignResult::Different(_) => "different"
+    AlignResult::CannotAlign(_) => "cannot_align"
+  }
+}
+
+///|
+pub fn align_reason(r : AlignResult) -> String {
+  match r {
+    AlignResult::Different(reason) => reason
+    AlignResult::CannotAlign(reason) => reason
+    AlignResult::Same => ""
+  }
+}
+
+///|
+/// 对齐两个价格字符串：是否为同一套餐。任一侧无法归一化时直接拒绝
+/// 判定并说明是哪一侧、为什么，绝不猜。
+pub fn align_prices(a : String, b : String) -> AlignResult {
+  match (normalize_price(a), normalize_price(b)) {
+    (NormalizeResult::Free, NormalizeResult::Free) => AlignResult::Same
+    (NormalizeResult::Free, NormalizeResult::Normalized(_)) =>
+      AlignResult::Different("一侧免费、一侧付费")
+    (NormalizeResult::Normalized(_), NormalizeResult::Free) =>
+      AlignResult::Different("一侧免费、一侧付费")
+    (NormalizeResult::Normalized(pa), NormalizeResult::Normalized(pb)) =>
+      if !currency_eq(pa.currency, pb.currency) {
+        AlignResult::Different(
+          "货币不同：\{currency_code(pa.currency)} 与 \{currency_code(pb.currency)}，不做汇率换算",
+        )
+      } else if pa.monthly_cents != pb.monthly_cents {
+        AlignResult::Different(
+          "月均价不同：\{format_monthly(pa)} 与 \{format_monthly(pb)}",
+        )
+      } else if pa.per_seat != pb.per_seat {
+        AlignResult::Different(
+          "计费口径不同：一侧按席/按用户/按人计价，一侧不按人头计价",
+        )
+      } else {
+        AlignResult::Same
+      }
+    (NormalizeResult::CannotNormalize(reason), _) =>
+      AlignResult::CannotAlign("第一处价格无法归一化：" + reason)
+    (_, NormalizeResult::CannotNormalize(reason)) =>
+      AlignResult::CannotAlign("第二处价格无法归一化：" + reason)
+  }
+}
+
+///|
 /// 前置判定：返回 Some 表示结论已定（免费或明确拒绝），None 表示继续解析。
 /// 顺序有讲究：多档/定制/按量先于免费——"免费版 + Pro $20/月"这种
 /// 混写不能按免费算，也不能只取其中一个数，必须拒绝并让人拆分。

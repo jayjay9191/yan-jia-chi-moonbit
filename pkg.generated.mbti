@@ -4,6 +4,12 @@ package "jayjay9191/yan-jia-chi-moonbit"
 // Values
 pub const STALE_DAYS : Int32 = 30
 
+pub fn align_kind(AlignResult) -> String
+
+pub fn align_prices(String, String) -> AlignResult
+
+pub fn align_reason(AlignResult) -> String
+
 pub fn all_tools() -> Array[ToolPricing]
 
 pub fn annual_saving_pct(Int32, Int32) -> Int32
@@ -105,6 +111,12 @@ pub fn verified_count(Array[ToolPricing]) -> Int32
 // Errors
 
 // Types and methods
+pub enum AlignResult {
+  Same
+  Different(String)
+  CannotAlign(String)
+}
+
 pub enum Currency {
   CNY
   USD
