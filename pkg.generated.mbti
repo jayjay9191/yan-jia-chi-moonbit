@@ -6,9 +6,15 @@ pub const STALE_DAYS : Int32 = 30
 
 pub fn all_tools() -> Array[ToolPricing]
 
+pub fn annual_saving_pct(Int32, Int32) -> Int32
+
 pub fn billing_category(String) -> String
 
 pub fn build_report(Array[ToolPricing], Int32) -> PricingReport
+
+pub fn cheaper_monthly(NormalizedPrice, NormalizedPrice) -> NormalizedPrice?
+
+pub fn cheaper_monthly_cents(String, String) -> Int32
 
 pub fn count_billing_category(Array[ToolPricing], String) -> Int32
 
@@ -20,6 +26,8 @@ pub fn count_reachable(Array[ToolPricing], String) -> Int32
 
 pub fn count_status(Array[ToolPricing], PriceStatus) -> Int32
 
+pub fn currency_code(Currency) -> String
+
 pub fn date_to_days(String) -> Int32
 
 pub fn days_since_verified(String, Int32) -> Int32
@@ -27,6 +35,10 @@ pub fn days_since_verified(String, Int32) -> Int32
 pub fn days_to_date(Int32) -> String
 
 pub fn evidence_lines(ToolPricing) -> Array[String]
+
+pub fn format_monthly(NormalizedPrice) -> String
+
+pub fn format_monthly_of(String) -> String
 
 pub fn history_entries_count(Array[ToolPricing]) -> Int32
 
@@ -45,6 +57,24 @@ pub fn names_unverified(Array[ToolPricing]) -> Array[String]
 pub fn names_verified(Array[ToolPricing]) -> Array[String]
 
 pub fn names_with_status(Array[ToolPricing], PriceStatus) -> Array[String]
+
+pub fn normalize_kind(NormalizeResult) -> String
+
+pub fn normalize_price(String) -> NormalizeResult
+
+pub fn normalize_price_with_currency(String, String) -> NormalizeResult
+
+pub fn normalize_reason(NormalizeResult) -> String
+
+pub fn normalize_tool_price(ToolPricing) -> NormalizeResult
+
+pub fn normalized_billed_annually(NormalizeResult) -> Bool
+
+pub fn normalized_currency_code(NormalizeResult) -> String
+
+pub fn normalized_monthly_cents(NormalizeResult) -> Int32
+
+pub fn normalized_per_seat(NormalizeResult) -> Bool
 
 pub fn partial_count(Array[ToolPricing]) -> Int32
 
@@ -75,6 +105,16 @@ pub fn verified_count(Array[ToolPricing]) -> Int32
 // Errors
 
 // Types and methods
+pub enum Currency {
+  CNY
+  USD
+  EUR
+  GBP
+  JPY
+  INR
+  Other
+}
+
 pub(all) struct HistoryEntry {
   date : String
   session : String
@@ -82,6 +122,20 @@ pub(all) struct HistoryEntry {
   old_price : String
   new_price : String
   note : String
+}
+
+pub enum NormalizeResult {
+  Free
+  Normalized(NormalizedPrice)
+  CannotNormalize(String)
+}
+
+pub(all) struct NormalizedPrice {
+  currency : Currency
+  monthly_cents : Int32
+  per_seat : Bool
+  billed_annually : Bool
+  original : String
 }
 
 pub enum PriceStatus {

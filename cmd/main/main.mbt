@@ -5,6 +5,8 @@
 ///   verify                        跑全部验证规则，目标 0 错；有问题返回码 1
 ///   stale                         按 verified_at 标出过期未复核的记录（超 30 天）
 ///   check <工具名>                单条证据链：5 步可追溯（来源 URL → 记录键 → 原始记录 → 复核 → 实时页面）
+///   normalize "<单档价格>"       把单档价格折算成月均价（核心语义处理；
+///                                多档/按量/定制/免费混写会明确拒绝并说明原因）
 ///   help                          显示本帮助
 /// 用法：moon run cmd/main [子命令 ...]
 /// 工具名只接受全名，例如：
@@ -22,6 +24,7 @@ fn main {
     "stale" => cmd_stale()
     "report" => cmd_report()
     "check" => cmd_check(args)
+    "normalize" => cmd_normalize(args)
     "help" | "-h" | "--help" => print_usage()
     other => {
       println("未知子命令：\{other}")
@@ -57,6 +60,9 @@ fn print_usage() -> Unit {
   )
   println(
     "check <工具名>：单条证据链（5 步：来源 URL → 记录键 → 原始记录 → 复核 → 实时页面）",
+  )
+  println(
+    "normalize \"<单档价格>\"：折算月均价，如 normalize \"$8/月按年\"；多档/按量/定制会明确拒绝",
   )
   println("help：显示本帮助")
   println("工具名只接受全名，例如：moon run cmd/main check Cursor")
@@ -158,6 +164,33 @@ fn cmd_report() -> Unit {
   println(
     "数据说明：分批实测——首批 2026-11-08（人工通过云端浏览器实际打开各官网逐页核验），扩量 2026-11-15（逐个打开官方定价页核验）；未用第三方汇总文章，未编造未看到的价格。价格只在核验当天有效，官网随时会改，30 天后需复核；变动轨迹见各条记录的 history。",
   )
+}
+
+///|
+fn cmd_normalize(args : Array[String]) -> Unit {
+  if args.length() < 2 {
+    println(
+      "用法：normalize \"<单档价格>\"，如 normalize \"$8/月按年\"",
+    )
+    return
+  }
+  let s = args[1]
+  let r = @lib.normalize_price(s)
+  match @lib.normalize_kind(r) {
+    "free" => println("\{s} → 免费：无月费")
+    "normalized" => {
+      println("\{s} → 月均价：\{@lib.format_monthly_of(s)}")
+      if @lib.normalized_per_seat(r) {
+        println(
+          "  （按席/按用户计价：月均价是“每席每月”）",
+        )
+      }
+      if @lib.normalized_billed_annually(r) {
+        println("  （按年付折算）")
+      }
+    }
+    _ => println("\{s} → 无法归一化：\{@lib.normalize_reason(r)}")
+  }
 }
 
 ///|
