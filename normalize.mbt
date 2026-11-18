@@ -567,6 +567,41 @@ pub fn compare_budget(
   b : String,
   seats : Int32,
 ) -> Result[BudgetComparison, String] {
+  compare_subscription(a, b, seats, false)
+}
+
+///|
+/// 比较同一套餐的标准历史报价。套餐身份由来源确认。
+pub fn compare_repricing(
+  a : String,
+  b : String,
+  seats : Int32,
+) -> Result[BudgetComparison, String] {
+  for quote in [a, b] {
+    let text = quote.to_lower()
+    for
+      flag in [
+        "促销", "优惠", "折扣", "首月", "首年", "试用", "限时", "特价",
+        "promo", "discount", "introductory", "trial", "coupon", "first month", "first year",
+        "%",
+      ] {
+      if text.contains(flag) {
+        return Err(
+          "调价对比仅使用同一套餐的标准报价，请核实促销条件",
+        )
+      }
+    }
+  }
+  compare_subscription(a, b, seats, true)
+}
+
+///|
+fn compare_subscription(
+  a : String,
+  b : String,
+  seats : Int32,
+  same_cycle : Bool,
+) -> Result[BudgetComparison, String] {
   if seats <= 0 || seats > 10000 {
     return Err("席位数须为 1 至 10000")
   }
@@ -577,6 +612,11 @@ pub fn compare_budget(
       }
       if pa.per_seat != pb.per_seat {
         return Err("计费单位不同，无法计算预算差")
+      }
+      if same_cycle && pa.billed_annually != pb.billed_annually {
+        return Err(
+          "付款周期不同，调价须使用同为月付或同为年付的报价",
+        )
       }
       if !pa.per_seat && seats != 1 {
         return Err(

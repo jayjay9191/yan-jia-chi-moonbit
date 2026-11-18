@@ -30,6 +30,7 @@ fn main {
     "normalize" => cmd_normalize(args)
     "align" => cmd_align(args)
     "budget" => cmd_budget(args)
+    "reprice" => cmd_reprice(args)
     "help" | "-h" | "--help" => print_usage()
     other => {
       println("未知子命令：\{other}")
@@ -74,6 +75,12 @@ fn print_usage() -> Unit {
   )
   println(
     "budget <席位数> <报价A> <报价B>：比较首次扣款、12 个月成本与差额",
+  )
+  println(
+    "reprice slack <席位数>：复跑 Slack Business+ 公告的年付、月付调价",
+  )
+  println(
+    "reprice <席位数> <旧标准报价> <新标准报价>：复核同付款周期调价",
   )
   println("help：显示本帮助")
   println("工具名只接受全名，例如：moon run cmd/main check Cursor")
@@ -296,5 +303,71 @@ fn cmd_budget(args : Array[String]) -> Unit {
       }
     }
     Err(reason) => println("无法比较预算：" + reason)
+  }
+}
+
+///|
+fn print_repricing(old : String, new : String, seats : Int32) -> Unit {
+  match @lib.compare_repricing(old, new, seats) {
+    Ok(b) => {
+      let cycle = if @lib.normalized_billed_annually(@lib.normalize_price(old)) {
+        "年付"
+      } else {
+        "月付"
+      }
+      let unit = if @lib.normalized_per_seat(@lib.normalize_price(old)) {
+        "按席"
+      } else {
+        "整包"
+      }
+      let direction = if b.year_b > b.year_a {
+        "增加"
+      } else if b.year_b < b.year_a {
+        "减少"
+      } else {
+        "持平"
+      }
+      let diff = if b.year_b >= b.year_a {
+        b.year_b - b.year_a
+      } else {
+        b.year_a - b.year_b
+      }
+      println(
+        "\{cycle} · \{unit} · \{b.currency} · \{seats} 份｜原报价 \{old} → \{new}",
+      )
+      println(
+        "首次扣款 \{budget_money(b.first_charge_a)} → \{budget_money(b.first_charge_b)}｜12 个月 \{budget_money(b.year_a)} → \{budget_money(b.year_b)}（\{direction} \{budget_money(diff)}）",
+      )
+    }
+    Err(reason) => {
+      println("无法复核调价：" + reason)
+      @env.exit(2)
+    }
+  }
+}
+
+///|
+fn cmd_reprice(args : Array[String]) -> Unit {
+  if args.length() == 3 && args[1] == "slack" {
+    let seats = @string.parse_int(args[2]) catch { _ => 0 }
+    println(
+      "Slack Business+ · 2025-06-17 官方调价公告 · 标准报价，未计额外税费",
+    )
+    println(
+      "来源 https://slack.com/blog/news/june-2025-pricing-and-packaging-announcement",
+    )
+    print_repricing(
+      "$12.50 per user per month billed annually", "$15 per user per month billed annually",
+      seats,
+    )
+    print_repricing("$15/user/month", "$18/user/month", seats)
+  } else if args.length() == 4 {
+    let seats = @string.parse_int(args[1]) catch { _ => 0 }
+    print_repricing(args[2], args[3], seats)
+  } else {
+    println(
+      "用法：reprice slack <席位数> 或 reprice <席位数> <旧标准报价> <新标准报价>",
+    )
+    @env.exit(2)
   }
 }

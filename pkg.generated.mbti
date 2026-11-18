@@ -24,6 +24,8 @@ pub fn cheaper_monthly_cents(String, String) -> Int32
 
 pub fn compare_budget(String, String, Int32) -> Result[BudgetComparison, String]
 
+pub fn compare_repricing(String, String, Int32) -> Result[BudgetComparison, String]
+
 pub fn count_billing_category(Array[ToolPricing], String) -> Int32
 
 pub fn count_currency(Array[ToolPricing], String) -> Int32

@@ -711,3 +711,28 @@ test "Slack Business Plus announced repricing preserves billing basis" {
     Err(_) => assert_true(false)
   }
 }
+
+///|
+test "repricing compares paid standard quotes on the same renewal cycle" {
+  let annual = "$12.50 per user per month billed annually"
+  let new_annual = "$180/user/year"
+  assert_true(
+    @yan-jia-chi-moonbit.compare_repricing(annual, new_annual, 10) is Ok(_),
+  )
+  assert_true(
+    @yan-jia-chi-moonbit.compare_repricing(annual, "$18/user/month", 10)
+    is Err(_),
+  )
+  assert_true(
+    @yan-jia-chi-moonbit.compare_repricing(
+      "$10/user/month promo", "$18/user/month", 10,
+    )
+    is Err(_),
+  )
+  assert_true(
+    @yan-jia-chi-moonbit.compare_repricing(
+      "$10/user/month", "$18/user/month 优惠", 10,
+    )
+    is Err(_),
+  )
+}
