@@ -214,3 +214,24 @@ test "malformed observation cannot consume the valid observation of a session" {
   assert_true(report.observed_stable)
   assert_eq(report.sessions.map(s => s.class_count), [1, 1, 0])
 }
+
+///|
+test "self supplied quotes reject conflicting currency clues" {
+  for
+    quote in [
+      "EUR $10/月", "USD €10/月", "CNY JPY ¥10/月", "AUD C$10/月",
+    ] {
+    let result = normalize_price(quote)
+    assert_eq(normalize_kind(result), "cannot_normalize")
+    assert_true(normalize_reason(result).contains("币种标记冲突"))
+  }
+  for
+    quote in [
+      "USD $10/月", "EUR €10/月", "CAD C$10/月", "CNY ¥10/月", "JPY ¥10/月",
+    ] {
+    assert_eq(normalize_kind(normalize_price(quote)), "normalized")
+  }
+  let report = plan_classes("Basic USD €10/月；Basic USD $96/年")
+  assert_eq(report.issues.length(), 1)
+  assert_eq(report.classes[0].annual_saving, None)
+}

@@ -161,18 +161,9 @@ pub fn normalize_price(s : String) -> NormalizeResult {
   match precheck(s) {
     Some(r) => r
     None =>
-      if s.contains("¥") && !s.contains("CNY") && !s.contains("JPY") {
-        CannotNormalize(
-          "¥ 无法区分人民币与日元：请注明货币代码，或走工具记录的 currency 字段归一化",
-        )
-      } else {
-        match detect_currency(s) {
-          Some(cur) => normalize_core(s, cur)
-          None =>
-            CannotNormalize(
-              "未识别货币符号：价格里没有可识别的货币标记",
-            )
-        }
+      match detect_currency(s) {
+        Ok(cur) => normalize_core(s, cur)
+        Err(reason) => CannotNormalize(reason)
       }
   }
 }
@@ -345,40 +336,65 @@ fn precheck(s : String) -> NormalizeResult? {
 }
 
 ///|
-/// 从符号或代码识别货币：先认代码（C$/CAD、A$/AUD、NT$/HK$/R$、
-/// CNY、USD、EUR、GBP、JPY、INR、SAR），再认符号（$、€、£、₹）；
-/// NT$/HK$/R$ 不是美元，记 Other 不猜成 USD；都不认返回 None。
-fn detect_currency(s : String) -> Currency? {
-  if s.contains("C$") || s.contains("CAD") {
-    Some(Currency::Other)
-  } else if s.contains("A$") || s.contains("AUD") {
-    Some(Currency::Other)
-  } else if s.contains("NT$") || s.contains("HK$") || s.contains("R$") {
-    Some(Currency::Other)
-  } else if s.contains("CNY") {
-    Some(Currency::CNY)
-  } else if s.contains("USD") {
-    Some(Currency::USD)
-  } else if s.contains("EUR") {
-    Some(Currency::EUR)
-  } else if s.contains("GBP") {
-    Some(Currency::GBP)
-  } else if s.contains("JPY") {
-    Some(Currency::JPY)
-  } else if s.contains("INR") {
-    Some(Currency::INR)
-  } else if s.contains("SAR") {
-    Some(Currency::Other)
-  } else if s.contains("$") {
-    Some(Currency::USD)
-  } else if s.contains("€") {
-    Some(Currency::EUR)
-  } else if s.contains("£") {
-    Some(Currency::GBP)
-  } else if s.contains("₹") {
-    Some(Currency::INR)
+/// A written code and a currency sign must describe the same currency.
+fn detect_currency(s : String) -> Result[Currency, String] {
+  let codes = [
+    "CAD", "AUD", "TWD", "HKD", "BRL", "CNY", "USD", "EUR", "GBP", "JPY", "INR",
+    "SAR",
+  ]
+  let chars = s.to_array()
+  let hints : Array[String] = []
+  for i in 0..<chars.length() {
+    if i + 3 > chars.length() {
+      break
+    }
+    if (i > 0 && chars[i - 1].is_ascii_alphabetic()) ||
+      (i + 3 < chars.length() && chars[i + 3].is_ascii_alphabetic()) {
+      continue
+    }
+    let code = String::from_array(chars[i:i + 3])
+    if codes.contains(code) && !hints.contains(code) {
+      hints.push(code)
+    }
+  }
+  let mut bare = s
+  for
+    (mark, code) in [
+      ("NT$", "TWD"),
+      ("HK$", "HKD"),
+      ("C$", "CAD"),
+      ("A$", "AUD"),
+      ("R$", "BRL"),
+      ("$", "USD"),
+      ("€", "EUR"),
+      ("£", "GBP"),
+      ("₹", "INR"),
+    ] {
+    if bare.contains(mark) {
+      if !hints.contains(code) {
+        hints.push(code)
+      }
+      bare = bare.replace_all(old=mark, new="")
+    }
+  }
+  if hints.length() > 1 ||
+    (
+      s.contains("¥") &&
+      hints.length() == 1 &&
+      hints[0] != "CNY" &&
+      hints[0] != "JPY"
+    ) {
+    Err("币种标记冲突：请保留报价使用的单一币种")
+  } else if hints.is_empty() {
+    if s.contains("¥") {
+      Err(
+        "¥ 无法区分人民币与日元：请注明货币代码，或走工具记录的 currency 字段归一化",
+      )
+    } else {
+      Err("未识别货币符号：价格里没有可识别的货币标记")
+    }
   } else {
-    None
+    Ok(currency_from_code(hints[0]))
   }
 }
 
