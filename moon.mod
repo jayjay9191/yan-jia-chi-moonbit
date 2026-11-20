@@ -13,6 +13,8 @@ name = "jayjay9191/yan-jia-chi-moonbit"
 
 version = "0.1.4"
 
+repository = "https://github.com/jayjay9191/yan-jia-chi-moonbit"
+
 readme = "README.mbt.md"
 
 license = "Apache-2.0"

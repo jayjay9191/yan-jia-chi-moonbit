@@ -205,7 +205,13 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
   let mut observed_stable = true
   let mut baseline : Array[String]? = None
   let mut observed = 0
+  let seen_sessions : Array[String] = []
   for event in tool.history {
+    let session = event.session.trim().to_owned()
+    let independent = !session.is_empty() &&
+      !seen_sessions.contains(session) &&
+      is_valid_date(event.date)
+    seen_sessions.push(session)
     let quote = if event.new_price != "" {
       event.new_price
     } else if event.change == "无变化" {
@@ -214,7 +220,8 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
       ""
     }
     let report = plan_classes(quote)
-    let valid = quote != "" &&
+    let valid = independent &&
+      quote != "" &&
       report.issues.is_empty() &&
       !report.classes.is_empty()
     sessions.push({
@@ -224,7 +231,9 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
       } else {
         0
       },
-      detail: if quote == "" {
+      detail: if !independent {
+        "会话重复、标识为空或日期无效，不计为独立复核"
+      } else if quote == "" {
         "缺少复核当时的价格原文，稳定性待核对"
       } else if valid {
         "套餐身份与类内报价已核对"

@@ -129,3 +129,24 @@ test "external class audits reject unparseable members and never advertise unsup
   let absent = history_event("涨价", "$10/月", "")
   assert_false(class_stability({ ..tool, history: [absent], }).complete)
 }
+
+///|
+test "repeated or unnamed sessions and invalid dates are not independent rechecks" {
+  let tool = trajectory_tool("Midjourney")
+  let first = history_event("无变化", "Basic $10/月", "Basic $10/月")
+  for
+    second in [
+      first,
+      { ..first, session: " fixture ", },
+      { ..first, session: "", },
+      { ..first, session: "second", date: "2026-02-30", },
+    ] {
+    let report = class_stability({ ..tool, history: [first, second], })
+    assert_false(report.complete)
+    assert_false(report.observed_stable)
+    assert_true(
+      report.sessions[1].detail.contains("会话") ||
+      report.sessions[1].detail.contains("日期"),
+    )
+  }
+}
