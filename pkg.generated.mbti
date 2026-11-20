@@ -1,6 +1,10 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "jayjay9191/yan-jia-chi-moonbit"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub const STALE_DAYS : Int32 = 30
 
@@ -12,7 +16,11 @@ pub fn align_reason(AlignResult) -> String
 
 pub fn all_tools() -> Array[ToolPricing]
 
+pub fn analyze_trajectory(ToolPricing) -> TrajectoryReport raise PricingAnalysisError
+
 pub fn annual_saving_pct(Int32, Int32) -> Int32
+
+pub fn audit_plan_classes(Array[PlanClass]) -> Array[String]
 
 pub fn billing_category(String) -> String
 
@@ -21,6 +29,8 @@ pub fn build_report(Array[ToolPricing], Int32) -> PricingReport
 pub fn cheaper_monthly(NormalizedPrice, NormalizedPrice) -> NormalizedPrice?
 
 pub fn cheaper_monthly_cents(String, String) -> Int32
+
+pub fn class_stability(ToolPricing) -> ClassStability
 
 pub fn compare_budget(String, String, Int32) -> Result[BudgetComparison, String]
 
@@ -88,6 +98,10 @@ pub fn normalized_per_seat(NormalizeResult) -> Bool
 
 pub fn partial_count(Array[ToolPricing]) -> Int32
 
+pub fn plan_classes(String) -> PlanClassReport
+
+pub fn recheck_queue(Array[ToolPricing], Int32) -> Array[RecheckItem]
+
 pub fn rechecked_tools_count(Array[ToolPricing]) -> Int32
 
 pub fn report_lines(PricingReport) -> Array[String]
@@ -106,6 +120,10 @@ pub fn tool_by_name(String) -> ToolPricing?
 
 pub fn tool_names() -> Array[String]
 
+pub fn trajectory_categories() -> Array[String]
+
+pub fn trajectory_summary(Array[ToolPricing]) -> TrajectorySummary raise PricingAnalysisError
+
 pub fn unverified_count(Array[ToolPricing]) -> Int32
 
 pub fn validate_tools(Array[ToolPricing]) -> Array[String]
@@ -113,6 +131,10 @@ pub fn validate_tools(Array[ToolPricing]) -> Array[String]
 pub fn verified_count(Array[ToolPricing]) -> Int32
 
 // Errors
+#derive(@debug.Debug)
+pub suberror PricingAnalysisError {
+  InvalidAnalysis(String)
+}
 
 // Types and methods
 pub enum AlignResult {
@@ -128,6 +150,18 @@ pub(all) struct BudgetComparison {
   first_charge_b : Int64
   year_a : Int64
   year_b : Int64
+}
+
+pub(all) struct ClassSession {
+  session : String
+  class_count : Int32
+  detail : String
+}
+
+pub(all) struct ClassStability {
+  sessions : Array[ClassSession]
+  complete : Bool
+  observed_stable : Bool
 }
 
 pub enum Currency {
@@ -161,6 +195,23 @@ pub(all) struct NormalizedPrice {
   per_seat : Bool
   billed_annually : Bool
   original : String
+}
+
+pub(all) struct PlanClass {
+  plan : String
+  members : Array[PlanOffer]
+  annual_saving : Int32?
+}
+
+pub(all) struct PlanClassReport {
+  classes : Array[PlanClass]
+  issues : Array[String]
+}
+
+pub(all) struct PlanOffer {
+  plan : String
+  quote : String
+  source : String
 }
 
 pub enum PriceStatus {
@@ -208,6 +259,14 @@ pub(all) struct PricingReport {
   today : String
 }
 
+pub(all) struct RecheckItem {
+  key : String
+  name : String
+  verified_at : String
+  score : Int32
+  reason : String
+}
+
 pub(all) struct ToolPricing {
   key : String
   session : String
@@ -223,6 +282,28 @@ pub(all) struct ToolPricing {
   note : String
   status : PriceStatus
   history : Array[HistoryEntry]
+}
+
+pub(all) struct TrajectoryEvent {
+  date : String
+  session : String
+  change : String
+  percent : Int64?
+  level : String
+  detail : String
+  needs_review : Bool
+}
+
+pub(all) struct TrajectoryReport {
+  key : String
+  name : String
+  events : Array[TrajectoryEvent]
+  status : String
+}
+
+pub(all) struct TrajectorySummary {
+  counts : Array[Int32]
+  review : Array[TrajectoryReport]
 }
 
 // Type aliases

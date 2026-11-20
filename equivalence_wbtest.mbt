@@ -1,0 +1,131 @@
+///|
+test "Midjourney has eight observed payment variants in four plan classes" {
+  let report = plan_classes(trajectory_tool("Midjourney").paid_price)
+  assert_eq(report.classes.length(), 4)
+  assert_eq(
+    report.classes.fold(init=0, (n, cls) => n + cls.members.length()),
+    8,
+  )
+  assert_eq(report.issues.length(), 0)
+  for cls in report.classes {
+    assert_eq(cls.annual_saving, Some(20))
+  }
+}
+
+///|
+test "equal prices do not merge different named plans" {
+  let report = plan_classes("Basic $10/月；Pro $10/月")
+  assert_eq(report.classes.length(), 2)
+  assert_eq(report.issues.length(), 0)
+}
+
+///|
+test "duplicate named plan declarations are unioned and conflicting same-cycle prices reported" {
+  let report = plan_classes("Basic $10/月；Basic $11/月")
+  assert_eq(report.classes.length(), 1)
+  assert_true(report.issues.any(s => s.contains("月均价不同")))
+}
+
+///|
+test "annual monthly rate and annual total align inside one plan" {
+  let report = plan_classes("Basic $8/月按年；Basic $96/年")
+  assert_eq(report.classes.length(), 1)
+  assert_eq(report.issues.length(), 0)
+}
+
+///|
+test "class audit checks every pair and catches currency or seat contradictions" {
+  for
+    quote in [
+      "Basic $10/月；Basic €8/月按年", "Basic $10/用户/月；Basic $8/月按年",
+    ] {
+    assert_true(plan_classes(quote).issues.length() > 0)
+  }
+}
+
+///|
+test "compact pairs require explicit period context and ambiguous fragments remain visible" {
+  let report = plan_classes("Standard $30/$24")
+  assert_eq(report.classes.length(), 0)
+  assert_true(report.issues.length() > 0)
+  assert_true(plan_classes("Basic $10/月；待定").issues.length() > 0)
+}
+
+///|
+test "empty unnamed free and malformed prices are not fabricated into offers" {
+  for
+    quote in [
+      "", "$10/月", "Basic $0/月", "Basic $x/月", "Basic $10/月、$8/月、$6/月",
+    ] {
+    assert_true(plan_classes(quote).issues.length() > 0)
+  }
+}
+
+///|
+test "manual conflicting membership is diagnosed across classes" {
+  let cls = plan_classes("Basic $10/月").classes[0]
+  let other = { ..cls, plan: "Pro", }
+  assert_true(
+    audit_plan_classes([cls, other]).any(s => s.contains("两个类")),
+  )
+  assert_true(
+    audit_plan_classes([
+      { ..cls, members: [{ ..cls.members[0], plan: "Pro", }], },
+    ]).any(s => s.contains("套餐身份")),
+  )
+}
+
+///|
+test "actual Midjourney sessions expose R1 evidence gap and verify R3 R5 identities" {
+  let report = class_stability(trajectory_tool("Midjourney"))
+  assert_eq(report.sessions.length(), 3)
+  assert_false(report.complete)
+  assert_true(report.observed_stable)
+  assert_eq(report.sessions[0].class_count, 0)
+  assert_true(report.sessions[0].detail.contains("缺少"))
+  assert_eq([report.sessions[1].class_count, report.sessions[2].class_count], [
+    4, 4,
+  ])
+}
+
+///|
+test "fully observed sessions are stable only when plan identities stay equal" {
+  let tool = trajectory_tool("Midjourney")
+  let first = history_event("无变化", "Basic $10/月", "Basic $10/月")
+  let second = { ..first, session: "second", }
+  let stable = class_stability({ ..tool, history: [first, second], })
+  assert_true(stable.complete && stable.observed_stable)
+  let changed = { ..second, new_price: "Pro $10/月", }
+  assert_false(
+    class_stability({ ..tool, history: [first, changed], }).observed_stable,
+  )
+}
+
+///|
+test "missing history or an internally inconsistent snapshot cannot certify stability" {
+  let tool = trajectory_tool("Midjourney")
+  assert_false(class_stability({ ..tool, history: [], }).complete)
+  let inconsistent = history_event(
+    "无变化", "", "Basic $10/月；Basic $20/月",
+  )
+  assert_false(
+    class_stability({ ..tool, history: [inconsistent, inconsistent], }).complete,
+  )
+}
+
+///|
+test "external class audits reject unparseable members and never advertise unsupported savings" {
+  let cls = plan_classes("Basic $10/月").classes[0]
+  let bad = { ..cls.members[0], quote: "定制价格", }
+  assert_true(
+    audit_plan_classes([{ ..cls, members: [cls.members[0], bad], }]).length() >=
+    2,
+  )
+  assert_true(
+    plan_classes("Basic $10/月；Basic €8/月按年").classes[0].annual_saving
+    is None,
+  )
+  let tool = trajectory_tool("Tana")
+  let absent = history_event("涨价", "$10/月", "")
+  assert_false(class_stability({ ..tool, history: [absent], }).complete)
+}

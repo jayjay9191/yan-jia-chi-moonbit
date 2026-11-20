@@ -6,7 +6,7 @@
 
 ///|
 /// 日期格式 YYYY-MM-DD：长度 10，第 5、8 位为 '-'，其余为数字，
-/// 月 01–12，日 01–31（不校验每月实际天数，如 02-31 不拦截）。
+/// 校验实际月长与闰年，拒绝不存在的日期。
 pub fn is_valid_date(s : String) -> Bool {
   if s.length() != 10 {
     return false
@@ -25,7 +25,26 @@ pub fn is_valid_date(s : String) -> Bool {
   let day_ok = (chars[8] == '0' && chars[9] >= '1' && chars[9] <= '9') ||
     ((chars[8] == '1' || chars[8] == '2') && chars[9] >= '0' && chars[9] <= '9') ||
     (chars[8] == '3' && chars[9] >= '0' && chars[9] <= '1')
-  month_ok && day_ok
+  if !month_ok || !day_ok {
+    return false
+  }
+  let year = digit_value(chars[0]) * 1000 +
+    digit_value(chars[1]) * 100 +
+    digit_value(chars[2]) * 10 +
+    digit_value(chars[3])
+  let month = digit_value(chars[5]) * 10 + digit_value(chars[6])
+  let day = digit_value(chars[8]) * 10 + digit_value(chars[9])
+  let limit = match month {
+    2 =>
+      if year % 400 == 0 || (year % 4 == 0 && year % 100 != 0) {
+        29
+      } else {
+        28
+      }
+    4 | 6 | 9 | 11 => 30
+    _ => 31
+  }
+  day <= limit
 }
 
 ///|

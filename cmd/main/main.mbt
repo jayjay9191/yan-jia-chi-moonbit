@@ -31,6 +31,8 @@ fn main {
     "align" => cmd_align(args)
     "budget" => cmd_budget(args)
     "reprice" => cmd_reprice(args)
+    "trajectory" | "trajectory-summary" | "classes" | "recheck-queue" =>
+      cmd_analysis(args)
     "help" | "-h" | "--help" => print_usage()
     other => {
       println("未知子命令：\{other}")
@@ -83,7 +85,116 @@ fn print_usage() -> Unit {
     "reprice <席位数> <旧标准报价> <新标准报价>：复核同付款周期调价",
   )
   println("help：显示本帮助")
+  println(
+    "trajectory <工具名>：轨迹幅度、异常分级与当前可观测状态",
+  )
+  println("trajectory-summary：六类轨迹计数与重点复核清单")
+  println(
+    "classes <工具名>：套餐身份、付款方式、一致性与历史证据缺口",
+  )
+  println(
+    "recheck-queue [YYYY-MM-DD]：按账龄、变动历史和未核验状态列前20项",
+  )
   println("工具名只接受全名，例如：moon run cmd/main check Cursor")
+}
+
+///|
+fn cmd_analysis(args : Array[String]) -> Unit {
+  try {
+    match args[0] {
+      "trajectory-summary" => {
+        if args.length() != 1 {
+          fail("用法：trajectory-summary")
+        }
+        let summary = @lib.trajectory_summary(@lib.all_tools())
+        let categories = @lib.trajectory_categories()
+        for i in 0..<categories.length() {
+          println("\{categories[i]}：\{summary.counts[i]}")
+        }
+        println(
+          "重点复核（可计算幅度降序，多档待核对单列）：",
+        )
+        for report in summary.review {
+          for event in report.events {
+            if event.needs_review {
+              println(
+                "\{report.name} | \{event.date} | \{event.level} | \{event.detail}",
+              )
+            }
+          }
+        }
+      }
+      "recheck-queue" => {
+        if args.length() > 2 {
+          fail("用法：recheck-queue [YYYY-MM-DD]")
+        }
+        let today = if args.length() == 2 {
+          if !@lib.is_valid_date(args[1]) {
+            fail("复核日期不合法")
+          }
+          @lib.date_to_days(args[1])
+        } else {
+          @lib.today_days_cst(@env.now())
+        }
+        for item in @lib.recheck_queue(@lib.all_tools(), today) {
+          println(
+            "\{item.key} | \{item.name} | \{item.reason} | 上次核验 \{item.verified_at} | 分数 \{item.score}",
+          )
+        }
+      }
+      "trajectory" | "classes" => {
+        if args.length() != 2 {
+          fail("用法：\{args[0]} <工具全名>")
+        }
+        guard @lib.tool_by_name(args[1]) is Some(tool) else {
+          fail("未找到工具：" + args[1])
+        }
+        if args[0] == "trajectory" {
+          let report = @lib.analyze_trajectory(tool)
+          println("\{report.name} | \{report.status}")
+          for event in report.events {
+            println(
+              "\{event.date} \{event.session} | \{event.change} | \{event.level} | \{event.detail}",
+            )
+          }
+        } else {
+          let report = @lib.plan_classes(tool.paid_price)
+          println("\{tool.name}：\{report.classes.length()}类")
+          for cls in report.classes {
+            let saving = match cls.annual_saving {
+              Some(n) => "年付节省\{n}%"
+              None => "缺少月付/年付成对报价"
+            }
+            println(
+              "\{cls.plan} | \{cls.members.length()}种写法 | \{saving}",
+            )
+            for offer in cls.members {
+              println("  \{offer.quote}")
+            }
+          }
+          println("矛盾/待核对：\{report.issues.length()}")
+          for issue in report.issues {
+            println(issue)
+          }
+          let stability = @lib.class_stability(tool)
+          println(
+            "历史证据完整：\{stability.complete}；有原文的复核套餐身份稳定：\{stability.observed_stable}",
+          )
+          for session in stability.sessions {
+            println(
+              "\{session.session} | \{session.class_count}类 | \{session.detail}",
+            )
+          }
+        }
+      }
+      _ => fail("未知分析命令")
+    }
+  } catch {
+    err => {
+      println("分析失败：" + err.to_string())
+      @env.exit(2)
+    }
+  }
 }
 
 ///|
