@@ -41,3 +41,7 @@ jobs:
         run: |
           export PATH="$HOME/.moon/bin:$PATH"
           moon run cmd/main -- report
+      - name: Verify trajectory, classes and recheck CLI
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          python3 scripts/verify_review.py

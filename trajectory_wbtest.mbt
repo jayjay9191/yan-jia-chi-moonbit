@@ -241,9 +241,45 @@ test "percentage calculation retains wide integer precision at supported price l
     ..tool,
     history: [history_event("涨价", "$0.01/月", "$21474836.47/月")],
   })
-  assert_eq(
-    report.events[0].percent,
-    Some(214748364600L),
-  )
+  assert_eq(report.events[0].percent, Some(214748364600L))
   assert_true(report.events[0].needs_review)
+}
+
+///|
+test "annual repricing uses original charges before monthly rounding" {
+  let tool = trajectory_tool("Tana")
+  for
+    (old, next, percent) in [
+      ("$0.01/年", "$0.02/年", 100L),
+      ("$49/年", "$50/年", 2L),
+    ] {
+    let event = analyze_trajectory({
+        ..tool,
+        history: [history_event("涨价", old, next)],
+      }).events[0]
+    assert_eq(event.percent, Some(percent))
+  }
+}
+
+///|
+test "queue derives delisting and observability from chronological trajectory" {
+  let tool = trajectory_tool("Tana")
+  let delisted = history_event("下架", "$10/月", "", date="2026-11-19")
+  let seen = history_event("无变化", "$10/月", "$10/月", date="2026-11-17")
+  let queue = recheck_queue(
+    [{ ..tool, history: [delisted, seen], }],
+    date_to_days("2026-11-20"),
+  )
+  assert_true(queue[0].reason.contains("停止报价复核"))
+  let missing = history_event("未看到价", "", "")
+  let unseen = recheck_queue(
+    [{ ..tool, history: [missing, missing], }],
+    date_to_days("2026-11-20"),
+  )
+  assert_true(unseen[0].reason.contains("数据不可观测"))
+  let malformed = recheck_queue(
+    [{ ..tool, history: [history_event("无变化", "", "", date="invalid")], }],
+    date_to_days("2026-11-20"),
+  )
+  assert_true(malformed[0].reason.contains("轨迹不合法"))
 }

@@ -2,6 +2,32 @@
 
 量一量 AI 工具的真实定价。
 
+## v0.1.4：先跑轨迹、套餐与复核队列
+
+本轮核心是跨观测的异常分级、套餐身份与一致性审计、复核机会排序，均由 MoonBit
+计算。原报价和来源来自人工核验台账，Python 只整理数据和执行复跑检查。
+
+```sh
+moon run cmd/main -- trajectory Tana
+moon run cmd/main -- trajectory "智谱清言 / GLM"
+moon run cmd/main -- classes Midjourney
+moon run cmd/main -- recheck-queue 2026-11-20
+moon run cmd/main -- trajectory-summary
+python scripts/verify_review.py
+```
+
+代表性结果：Tana −21%；GLM 多档幅度须逐档核对；Midjourney 8 种写法 → 4 个
+命名套餐类、无矛盾、年付均省 20%；六类轨迹共 942 条，队列取前 20 条。
+月付与年付可以属于同一套餐而金额不同；同周期报价仍需两两一致。
+R1 没有保存原始报价，不能用当前价倒填，三轮整体标为不完整；R3/R5 可重建并
+核对身份稳定。详细边界、计算方法和手写测试见下文第二轮说明。
+
+强化回归：年度变动复用已有标准订阅成本函数，以原始年费用计算比例，避免月均
+分取整造成方向误判或零分母；复核队列复用按日期整理后的轨迹结论，乱序记录
+也能保留下架停核状态，连续不可观测会提高未核验优先级。
+1146 项测试通过；CI 同时执行上述 CLI 的结果与错误输入检查。
+源码版本为 0.1.4，Mooncakes 新包尚待登录后发布。
+
 ## 先跑三个核价案例
 
 克隆仓库，在仓库根目录用 MoonBit CLI 运行以下命令。以下金额均为美元。

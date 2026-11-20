@@ -31,18 +31,10 @@ pub fn trajectory_categories() -> Array[String] {
 ///|
 /// Compare only single-tier quotes with matching currency, seat and billing terms.
 fn history_movement(event : HistoryEntry) -> (Int64?, Bool, String) {
-  match (normalize_price(event.old_price), normalize_price(event.new_price)) {
-    (Normalized(old), Normalized(next)) => {
-      if !currency_eq(old.currency, next.currency) ||
-        old.per_seat != next.per_seat ||
-        old.billed_annually != next.billed_annually {
-        return (
-          None,
-          true,
-          "币种、席位或付款周期不同，幅度须逐档核对",
-        )
-      }
-      let delta = next.monthly_cents.to_int64() - old.monthly_cents.to_int64()
+  // Reuse original charge precision rather than rounded monthly cents.
+  match compare_repricing(event.old_price, event.new_price, 1) {
+    Ok(cost) => {
+      let delta = cost.year_b - cost.year_a
       if (event.change == "涨价" && delta <= 0L) ||
         (event.change == "降价" && delta >= 0L) {
         return (
@@ -51,7 +43,7 @@ fn history_movement(event : HistoryEntry) -> (Int64?, Bool, String) {
           "声明的变动方向与金额不一致，须逐档核对",
         )
       }
-      let base = old.monthly_cents.to_int64()
+      let base = cost.year_a
       let magnitude = if delta < 0L { -delta } else { delta }
       let rounded = (magnitude * 100L + base / 2L) / base
       let percent = if delta < 0L { -rounded } else { rounded }
@@ -62,11 +54,12 @@ fn history_movement(event : HistoryEntry) -> (Int64?, Bool, String) {
         "单档同口径变化\{percent}%（四舍五入）；分级使用未舍入幅度",
       )
     }
-    _ =>
+    Err(reason) =>
       (
         None,
         true,
-        "多档、按量或单价不可解析，幅度须逐档核对",
+        "多档、按量或单价不可解析/不可比，幅度须逐档核对：" +
+        reason,
       )
   }
 }
@@ -216,12 +209,21 @@ pub fn recheck_queue(
       score += 100
       reasons.push("有调价或下架历史")
     }
-    if tool.status is Unverified {
+    let trajectory = Some(analyze_trajectory(tool)) catch { _ => None }
+    let unobservable = trajectory is Some(report) &&
+      report.status.contains("数据不可观测")
+    if tool.status is Unverified || unobservable {
       score += 50
       reasons.push("未核验")
     }
-    if tool.history.last() is Some(event) && event.change == "下架" {
+    if trajectory is Some(report) && report.status.contains("已下架") {
       reasons.push("已下架，仅核对存档状态，停止报价复核")
+    }
+    if unobservable {
+      reasons.push("数据不可观测，须恢复价格证据")
+    }
+    if trajectory is None {
+      reasons.push("轨迹不合法，须核对日期和变动类型")
     }
     items.push({
       key: tool.key,
