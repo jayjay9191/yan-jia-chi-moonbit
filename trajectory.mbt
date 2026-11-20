@@ -65,6 +65,28 @@ fn history_movement(event : HistoryEntry) -> (Int64?, Bool, String) {
 }
 
 ///|
+fn observation_order(history : Array[HistoryEntry]) -> Array[Int32] {
+  // Stable tie-breaking retains the recorded order of same-day sessions.
+  let dates = history.map(event => {
+    if is_valid_date(event.date) {
+      date_to_days(event.date)
+    } else {
+      2147483647
+    }
+  })
+  let order = Array::makei(history.length(), i => i)
+  order.sort_by((a, b) => {
+    let date_order = dates[a].compare(dates[b])
+    if date_order == 0 {
+      a.compare(b)
+    } else {
+      date_order
+    }
+  })
+  order
+}
+
+///|
 pub fn analyze_trajectory(
   tool : ToolPricing,
 ) -> TrajectoryReport raise PricingAnalysisError {
@@ -75,16 +97,7 @@ pub fn analyze_trajectory(
       )
     }
   }
-  // Stable tie-breaking retains the recorded order of same-day sessions.
-  let order = Array::makei(tool.history.length(), i => i)
-  order.sort_by((a, b) => {
-    let date_order = tool.history[a].date.compare(tool.history[b].date)
-    if date_order == 0 {
-      a.compare(b)
-    } else {
-      date_order
-    }
-  })
+  let order = observation_order(tool.history)
   let events = []
   let mut missing = 0
   let mut status = "保留原核验状态"

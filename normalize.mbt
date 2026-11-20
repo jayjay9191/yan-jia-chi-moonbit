@@ -488,8 +488,19 @@ fn parse_amount_cents(chars : Array[Char]) -> Int32 {
   while i < n && !chars[i].is_ascii_digit() {
     i = i + 1
   }
-  if i == n || (i > 0 && (chars[i - 1] == '-' || chars[i - 1] == '.')) {
+  if i == n || (i > 0 && chars[i - 1] == '.') {
     return -1
+  }
+  // Check the whole price prefix up to the nearest word or punctuation.
+  // This also catches a sign before a currency marker (for example -$10).
+  let mut prefix = i
+  while prefix > 0 {
+    prefix -= 1
+    match chars[prefix] {
+      '-' | '−' => return -1
+      ' ' | '\t' | '$' | '€' | '£' | '¥' | '₹' => continue
+      _ => break
+    }
   }
   let mut whole = 0
   let mut group = 0
@@ -533,6 +544,10 @@ fn parse_amount_cents(chars : Array[Char]) -> Int32 {
         i = i + 1
       }
     }
+  }
+  if i < n &&
+    (chars[i] == 'k' || chars[i] == 'K' || chars[i] == 'm' || chars[i] == 'M') {
+    return -1
   }
   while i < n {
     if chars[i].is_ascii_digit() {

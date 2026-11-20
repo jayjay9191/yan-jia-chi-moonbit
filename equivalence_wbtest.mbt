@@ -180,3 +180,37 @@ test "annual plan classes compare exact charges before monthly rounding" {
   assert_eq(tiny.issues.length(), 0)
   assert_eq(tiny.classes[0].annual_saving, Some(92))
 }
+
+///|
+test "negative or abbreviated charges are not fabricated as low positive prices" {
+  for
+    quote in ["-$10/月", "$−10/月", "−€10/月", "$1k/月", "$1.2M/年"] {
+    assert_eq(normalize_kind(normalize_price(quote)), "cannot_normalize")
+  }
+  let supplied = plan_classes("Basic -$10/月")
+  assert_eq(supplied.classes.length(), 0)
+  assert_eq(supplied.issues.length(), 1)
+}
+
+///|
+test "self-supplied quotes accept English separators and numeric currency codes" {
+  let report = plan_classes("Basic USD 10/month; Basic USD 96/year")
+  assert_eq(report.issues, [])
+  assert_eq(report.classes.length(), 1)
+  assert_eq(report.classes[0].annual_saving, Some(20))
+  let inr = plan_classes("Starter ₹100/月；Starter INR 960/年")
+  assert_eq(inr.issues, [])
+  assert_eq(inr.classes[0].annual_saving, Some(20))
+}
+
+///|
+test "malformed observation cannot consume the valid observation of a session" {
+  let tool = trajectory_tool("Midjourney")
+  let first = history_event("无变化", "", "Basic $10/月")
+  let later = { ..first, session: "later", date: "2026-11-21", }
+  let invalid = { ..first, date: "invalid", }
+  let report = class_stability({ ..tool, history: [later, invalid, first], })
+  assert_false(report.complete)
+  assert_true(report.observed_stable)
+  assert_eq(report.sessions.map(s => s.class_count), [1, 1, 0])
+}

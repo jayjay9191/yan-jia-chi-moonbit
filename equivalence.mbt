@@ -97,13 +97,17 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
   let issues = []
   // Compact $30/$24 inherits the order only from explicit monthly/annual labels.
   let compact_context = raw.contains("/月按月") && raw.contains("/月按年")
-  for fragment in raw.split("；") {
+  for fragment in raw.replace_all(old=";", new="；").split("；") {
     let fragment = fragment.trim().to_owned()
     if fragment.has_prefix("年付约省") {
       continue
     }
     let mut price_start : Int32? = None
-    for symbol in ["$", "€", "£", "¥"] {
+    for
+      symbol in [
+        "C$", "A$", "NT$", "HK$", "R$", "$", "€", "£", "¥", "₹", " USD ", " EUR ",
+        " GBP ", " CNY ", " JPY ", " INR ",
+      ] {
       if fragment.find(symbol) is Some(offset) {
         if price_start is None ||
           (price_start is Some(previous) && offset < previous) {
@@ -120,7 +124,11 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       issues.push("报价缺少套餐身份：" + fragment)
       continue
     }
-    let price = fragment.clamped_view(start=offset).to_owned()
+    if plan.has_suffix("-") || plan.has_suffix("−") {
+      issues.push("无法确认有效价格：\{fragment}")
+      continue
+    }
+    let price = fragment.clamped_view(start=offset).trim().to_owned()
     let quotes = price.split("、").map(s => s.trim().to_owned()).to_array()
     let compact = price.split("/").map(s => s.trim().to_owned()).to_array()
     if quotes.length() == 1 &&
@@ -219,12 +227,16 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
   let mut baseline : Array[String]? = None
   let mut observed = 0
   let seen_sessions : Array[String] = []
-  for event in tool.history {
+  for index in observation_order(tool.history) {
+    let event = tool.history[index]
     let session = event.session.trim().to_owned()
     let independent = !session.is_empty() &&
       !seen_sessions.contains(session) &&
-      is_valid_date(event.date)
-    seen_sessions.push(session)
+      is_valid_date(event.date) &&
+      is_valid_change(event.change)
+    if independent {
+      seen_sessions.push(session)
+    }
     let quote = if event.new_price != "" {
       event.new_price
     } else if event.change == "无变化" {
@@ -245,7 +257,7 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
         0
       },
       detail: if !independent {
-        "会话重复、标识为空或日期无效，不计为独立复核"
+        "会话重复、标识为空或日期/变动类型无效，不计为独立复核"
       } else if quote == "" {
         "缺少复核当时的价格原文，稳定性待核对"
       } else if valid {

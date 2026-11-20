@@ -32,6 +32,10 @@ def main():
     assert "年付节省20%" in fresh and "矛盾/待核对：0" in fresh
     conflict = run("classes-quote", "Basic $96/年；Basic $96.01/年")
     assert "矛盾/待核对：1" in conflict and "9600 分与 9601 分" in conflict
+    iso = run("classes-quote", "Basic USD 10/month; Basic USD 96/year")
+    assert "年付节省20%" in iso and "矛盾/待核对：0" in iso
+    invalid = run("classes-quote", "Basic -$10/月; Pro $1k/月")
+    assert "输入报价：0类" in invalid and "矛盾/待核对：2" in invalid
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),
