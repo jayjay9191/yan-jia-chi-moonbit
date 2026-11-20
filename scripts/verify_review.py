@@ -48,6 +48,10 @@ def main():
     assert "年付节省20%" in real_cycle and "矛盾/待核对：0" in real_cycle
     starting = run("classes-quote", "Basic from $10/月; Basic $96/年")
     assert "报价下限" in starting and "Basic | 1种写法" in starting and "年付节省20%" not in starting
+    sign = run("classes-quote", "Basic -USD $10/month; Basic $96/year")
+    assert "Basic | 1种写法" in sign and "矛盾/待核对：1" in sign
+    introductory = run("classes-quote", "Basic 首月 $10/月; Basic $96/年")
+    assert "首期报价" in introductory and "未能计算年付节省率" in introductory
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

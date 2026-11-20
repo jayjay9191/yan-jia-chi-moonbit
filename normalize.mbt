@@ -336,12 +336,13 @@ fn precheck(s : String) -> NormalizeResult? {
 }
 
 ///|
+let price_codes : Array[String] = [
+  "CAD", "AUD", "TWD", "HKD", "BRL", "CNY", "USD", "EUR", "GBP", "JPY", "INR", "SAR",
+]
+
+///|
 /// A written code and a currency sign must describe the same currency.
 fn detect_currency(s : String) -> Result[Currency, String] {
-  let codes = [
-    "CAD", "AUD", "TWD", "HKD", "BRL", "CNY", "USD", "EUR", "GBP", "JPY", "INR",
-    "SAR",
-  ]
   let chars = s.to_array()
   let hints : Array[String] = []
   for i in 0..<chars.length() {
@@ -353,7 +354,7 @@ fn detect_currency(s : String) -> Result[Currency, String] {
       continue
     }
     let code = String::from_array(chars[i:i + 3])
-    if codes.contains(code) && !hints.contains(code) {
+    if price_codes.contains(code) && !hints.contains(code) {
       hints.push(code)
     }
   }
@@ -524,15 +525,36 @@ fn parse_amount_cents(chars : Array[Char]) -> Int32 {
   if i == n || (i > 0 && chars[i - 1] == '.') {
     return -1
   }
-  // Check the whole price prefix up to the nearest word or punctuation.
-  // This also catches a sign before a currency marker (for example -$10).
+  // The sign may be before a symbol, before a currency code or next to the amount.
   let mut prefix = i
   while prefix > 0 {
     prefix -= 1
     match chars[prefix] {
       '-' | '−' => return -1
-      ' ' | '\t' | '$' | '€' | '£' | '¥' | '₹' => continue
-      _ => break
+      ' ' | '\t' | '€' | '£' | '¥' | '₹' => continue
+      '$' => {
+        if prefix >= 2 {
+          let marker = String::from_array(chars[prefix - 2:prefix])
+          if marker == "NT" || marker == "HK" {
+            prefix -= 2
+            continue
+          }
+        }
+        if prefix >= 1 {
+          match chars[prefix - 1] {
+            'C' | 'A' | 'R' => prefix -= 1
+            _ => ()
+          }
+        }
+      }
+      _ =>
+        if prefix >= 2 &&
+          (prefix == 2 || !chars[prefix - 3].is_ascii_alphabetic()) &&
+          price_codes.contains(String::from_array(chars[prefix - 2:prefix + 1])) {
+          prefix -= 2
+        } else {
+          break
+        }
     }
   }
   let mut whole = 0
@@ -656,6 +678,18 @@ fn is_starting_quote(quote : String) -> Bool {
 }
 
 ///|
+let first_term_markers : Array[String] = [
+  "首月", "首年", "首期", "试用", "first month", "first year", "introductory",
+  "trial",
+]
+
+///|
+fn is_first_term_quote(quote : String) -> Bool {
+  let text = quote.to_lower()
+  first_term_markers.iter().any(marker => text.contains(marker))
+}
+
+///|
 fn compare_subscription(
   a : String,
   b : String,
@@ -669,6 +703,9 @@ fn compare_subscription(
     let text = quote.trim().to_owned().to_lower()
     if is_starting_quote(quote) {
       return Err("报价只给出下限，无法核算固定订阅成本")
+    }
+    if is_first_term_quote(quote) {
+      return Err("报价仅适用于首期或试用，无法核算全年成本")
     }
     if text.contains("或") || text.contains(" or ") {
       return Err("报价列有备选金额或付款条件，请先选定一种")

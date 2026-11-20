@@ -269,3 +269,36 @@ test "starting quotes remain pending instead of counting as firm offers" {
   }
   assert_true(compare_budget("$10+/month", "$96/year", 1) is Err(_))
 }
+
+///|
+test "negative sign before a currency code is not lost in normalization or class parsing" {
+  for
+    quote in ["-USD 10/month", "−EUR €10/月", "-C$10/month", "USD -10/月"] {
+    assert_eq(normalize_kind(normalize_price(quote)), "cannot_normalize")
+  }
+  let report = plan_classes("Basic -USD $10/month；Basic $96/year")
+  assert_eq(report.issues.length(), 1)
+  assert_eq(report.classes[0].members.length(), 1)
+  assert_eq(report.classes[0].annual_saving, None)
+  assert_eq(normalize_kind(normalize_price("EUR €10/month")), "normalized")
+}
+
+///|
+test "first-term prices are not used for a twelve-month comparison" {
+  for
+    quote in [
+      "$10/月（首月优惠）", "首年 $96/年", "$10/month first month", "introductory $10/month",
+    ] {
+    match compare_budget(quote, "$96/year", 1) {
+      Err(error) => assert_true(error.contains("首期"))
+      Ok(_) => fail("first-term quote was accepted")
+    }
+  }
+  let report = plan_classes("Basic 首月 $10/月；Basic $96/年")
+  assert_eq(report.classes[0].members.length(), 1)
+  assert_eq(report.classes[0].annual_saving, None)
+  assert_true(report.issues.any(issue => issue.contains("首期")))
+  assert_true(
+    compare_budget("$10/月", "$96/年（年付优惠）", 1) is Ok(_),
+  )
+}
