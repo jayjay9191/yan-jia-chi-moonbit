@@ -19,15 +19,6 @@ pub(all) struct PlanClassReport {
 }
 
 ///|
-fn plan_root(parents : Array[Int32], start : Int32) -> Int32 {
-  let mut index = start
-  while parents[index] != index {
-    index = parents[index]
-  }
-  index
-}
-
-///|
 /// Currency/seat must agree across billing options; same-cycle quotes must align.
 /// ponytail: quadratic per-record audit; index pairs if records grow to thousands of offers.
 pub fn audit_plan_classes(classes : Array[PlanClass]) -> Array[String] {
@@ -202,6 +193,9 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
     .split("；")
     .map(fragment => fragment.trim().to_owned())
     .to_array()
+  while fragments.length() > 1 && fragments[fragments.length() - 1] == "" {
+    ignore(fragments.pop())
+  }
   let compact_order = compact_billing_order(fragments)
   for fragment in fragments {
     if fragment.has_prefix("年付约省") {
@@ -263,20 +257,19 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       }
     }
   }
-  let parents = Array::makei(offers.length(), i => i)
-  for i in 0..<offers.length() {
-    for j in (i + 1)..<offers.length() {
-      if offers[i].plan == offers[j].plan {
-        parents[plan_root(parents, j)] = plan_root(parents, i)
-      }
+  let groups : Map[String, Array[PlanOffer]] = Map([])
+  let names : Array[String] = []
+  for offer in offers {
+    if groups.get(offer.plan) is Some(members) {
+      members.push(offer)
+    } else {
+      groups[offer.plan] = [offer]
+      names.push(offer.plan)
     }
   }
   let classes = []
-  for i in 0..<offers.length() {
-    if plan_root(parents, i) != i {
-      continue
-    }
-    let members = offers.filter(offer => offer.plan == offers[i].plan)
+  for plan in names {
+    let members = groups[plan]
     let monthly = members
       .iter()
       .find_first(offer => {
@@ -287,9 +280,7 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       .find_first(offer => {
         normalized_billed_annually(normalize_price(offer.quote))
       })
-    let coherent = audit_plan_classes([
-      { plan: offers[i].plan, members, annual_saving: None, },
-    ]).is_empty()
+    let coherent = audit_plan_classes([{ plan, members, annual_saving: None, }]).is_empty()
     let saving = match (monthly, annual) {
       (Some(m), Some(a)) =>
         if coherent {
@@ -302,7 +293,7 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
         }
       _ => None
     }
-    classes.push({ plan: offers[i].plan, members, annual_saving: saving, })
+    classes.push({ plan, members, annual_saving: saving, })
   }
   for issue in audit_plan_classes(classes) {
     issues.push(issue)
@@ -344,7 +335,7 @@ fn session_options(
 fn compare_session_options(
   before : Array[PlanClass],
   after : Array[PlanClass],
-) -> String {
+) -> (String, Bool) {
   let old = session_options(before)
   let current = session_options(after)
   let keys = old.keys().collect()
@@ -375,9 +366,12 @@ fn compare_session_options(
     }
   }
   if differences.is_empty() {
-    "与前次独立原文逐套餐、逐付款周期核对，金额和口径一致"
+    (
+      "与前次独立原文逐套餐、逐付款周期核对，金额和口径一致",
+      false,
+    )
   } else {
-    join_strings(differences, "；")
+    (join_strings(differences, "；"), true)
   }
 }
 
@@ -401,7 +395,11 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
     if independent {
       seen_sessions.push(session)
     }
-    let quote = if event.new_price != "" {
+    let cannot_observe = event.change == "下架" ||
+      event.change == "未看到价"
+    let quote = if cannot_observe {
+      ""
+    } else if event.new_price != "" {
       event.new_price
     } else if event.change == "无变化" {
       event.old_price
@@ -422,11 +420,21 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
       },
       detail: if !independent {
         "会话重复、标识为空或日期/变动类型无效，不计为独立复核"
+      } else if cannot_observe {
+        "该会话标为" + event.change + "，不作为有效报价"
       } else if quote == "" {
         "缺少复核当时的价格原文，稳定性待核对"
       } else if valid {
         if last_valid is Some(previous) {
-          compare_session_options(previous, report.classes)
+          let (detail, changed) = compare_session_options(
+            previous,
+            report.classes,
+          )
+          if changed && event.change == "无变化" {
+            "台账标为无变化，原文差异须复核：" + detail
+          } else {
+            detail
+          }
         } else if sessions.is_empty() {
           "套餐身份与类内报价已核对，作为首个可比快照"
         } else {

@@ -341,3 +341,56 @@ test "historical plan audit keeps an explicit gap between snapshots" {
   assert_false(report.sessions[2].detail.contains("14400"))
   assert_true(report.sessions[2].detail.contains("前次证据不可用"))
 }
+
+///|
+test "historical plan audit ignores prices attached to unobserved and delisted entries" {
+  let old = history_event("无变化", "", "Basic $10/月")
+  for code in ["未看到价", "下架"] {
+    let invalid = {
+      ..old,
+      session: "second",
+      change: code,
+      new_price: "Basic $99/月",
+    }
+    let result = class_stability({
+      ..trajectory_tool("Midjourney"),
+      history: [old, invalid],
+    })
+    assert_false(result.complete)
+    assert_eq(result.sessions[1].class_count, 0)
+    assert_true(result.sessions[1].detail.contains("有效报价"))
+  }
+}
+
+///|
+test "terminal separators are allowed but missing internal plan segments are reported" {
+  let valid = "Basic $10/月；Basic $96/年"
+  assert_eq(plan_classes(valid + "； ; ").issues, [])
+  assert_eq(plan_classes(" ; ").classes.length(), 0)
+  assert_true(!plan_classes(" ; ").issues.is_empty())
+  assert_true(
+    !plan_classes("Basic $10/月； ；Basic $96/年").issues.is_empty(),
+  )
+}
+
+///|
+test "plan group order follows first observation and preserves member order" {
+  let report = plan_classes("Zeta $10/月；Alpha $5/月；Zeta $96/年")
+  assert_eq(report.classes.map(cls => cls.plan), ["Zeta", "Alpha"])
+  assert_eq(report.classes[0].members.map(offer => offer.quote), [
+    "$10/月", "$96/年",
+  ])
+  assert_eq(report.classes[0].annual_saving, Some(20))
+}
+
+///|
+test "historical plan audit flags unchanged labels when the original amounts disagree" {
+  let old = history_event("无变化", "", "Basic $10/月")
+  let new = { ..old, session: "second", new_price: "Basic $11/月", }
+  let result = class_stability({
+    ..trajectory_tool("Midjourney"),
+    history: [old, new],
+  })
+  assert_true(result.sessions[1].detail.contains("台账标为无变化"))
+  assert_true(result.sessions[1].detail.contains("12000 → 13200"))
+}
