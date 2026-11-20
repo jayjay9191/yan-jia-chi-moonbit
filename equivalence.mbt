@@ -188,13 +188,29 @@ fn compact_billing_order(fragments : Array[String]) -> Bool? {
 pub fn plan_classes(raw : String) -> PlanClassReport {
   let offers : Array[PlanOffer] = []
   let issues = []
-  let fragments = raw
-    .replace_all(old=";", new="；")
-    .split("；")
-    .map(fragment => fragment.trim().to_owned())
-    .to_array()
-  while fragments.length() > 1 && fragments[fragments.length() - 1] == "" {
-    ignore(fragments.pop())
+  let fragments : Array[String] = []
+  let lines = raw
+    .replace_all(old="\r\n", new="\n")
+    .replace_all(old="\r", new="\n")
+  for line in lines.split("\n") {
+    let line = line.trim().to_owned()
+    if line.is_empty() {
+      continue
+    }
+    let parts = line
+      .replace_all(old=";", new="；")
+      .split("；")
+      .map(part => part.trim().to_owned())
+      .to_array()
+    while parts.length() > 1 && parts[parts.length() - 1].is_empty() {
+      ignore(parts.pop())
+    }
+    for part in parts {
+      fragments.push(part)
+    }
+  }
+  if fragments.is_empty() {
+    fragments.push("")
   }
   let compact_order = compact_billing_order(fragments)
   for fragment in fragments {

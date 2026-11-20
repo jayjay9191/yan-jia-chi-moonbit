@@ -496,3 +496,17 @@ test "quote comparison preserves source fragments when monthly and annual prices
   assert_eq(change.before_quote, Some("$24/月按年"))
   assert_eq(change.year_delta, Some(1200L))
 }
+
+///|
+test "multiline quote snapshots handle clipboard line endings and preserve exact source" {
+  let a = "Basic $10/月按月、$8/月按年；\r\n\r\n Standard $30/$24"
+  let b = "Basic $10/月按月、$8/月按年\n Standard $30/$25"
+  let result = compare_quote_snapshots(a, b)
+  assert_true(result.before_issues.is_empty() && result.after_issues.is_empty())
+  assert_eq(result.changes.length(), 1)
+  assert_eq(result.changes[0].before_source, Some("Standard $30/$24"))
+  assert_eq(result.changes[0].year_delta, Some(1200L))
+  assert_true(
+    !plan_classes("Basic $10/月；；Basic $96/年\n").issues.is_empty(),
+  )
+}

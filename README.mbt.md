@@ -18,7 +18,7 @@
 moon run cmd/main -- compare-quotes 'Basic $10/月；Basic $96/年' 'Basic $11/月；Basic $8/月按年'
 ```
 
-可导入 `jayjay9191/yan-jia-chi-moonbit` 并调用 `compare_quote_snapshots(before, after)`。该接口无需访问历史台账。结果含两侧报价问题和按套餐、付款周期匹配的差异。变化类型为 `amount-changed`、`basis-changed`、`added` 或 `missing`。本例只发现月付变化，年费用从 12000 分增至 13200 分。
+可导入 `jayjay9191/yan-jia-chi-moonbit` 并调用 `compare_quote_snapshots(before, after)`。可粘贴每行一条套餐的文本，支持 Windows 和 Unix 换行。空白行可跳过，行内两个分号之间的空报价仍会报待核对。该接口无需访问历史台账。结果含两侧报价问题和按套餐、付款周期匹配的差异。变化类型为 `amount-changed`、`basis-changed`、`added` 或 `missing`。本例只发现月付变化，年费用从 12000 分增至 13200 分。
 
 同一口径的金额差异才提供前后年费用，JSON 中金额以字符串保留 Int64 精度。任一侧含矛盾或无法解析的原文时，先返回该侧问题，待补齐后再比较。
 
@@ -72,7 +72,7 @@ R1 没有保存原始报价，不能用当前价倒填，三轮整体标为不�
 强化回归：年度变动复用已有标准订阅成本函数，以原始年费用计算比例，避免月均
 分取整造成方向误判或零分母；复核队列复用按日期整理后的轨迹结论，乱序记录
 也能保留下架停核状态，连续不可观测会提高未核验优先级。
-1173 项测试通过；CI 同时执行上述 CLI 的结果与错误输入检查。
+1174 项测试通过；CI 同时执行上述 CLI 的结果与错误输入检查。
 源码版本为 0.1.4，Mooncakes 新包尚待登录后发布。
 
 初审核对入口：[`trajectory.mbt`](trajectory.mbt) 分析跨次观测与复核队列，

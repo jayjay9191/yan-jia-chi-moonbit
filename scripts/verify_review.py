@@ -94,7 +94,13 @@ def main():
     parsed = compact["changes"][0]
     assert len(compact["changes"]) == 1 and parsed["annual"] and parsed["year_delta"] == "1200"
     assert (parsed["before_source"], parsed["after_source"]) == ("Standard $30/$24", "Standard $30/$25")
-    print("PASS structured quote comparisons preserve matched billing options, source fragments and incompatible evidence")
+    pasted = json.loads(run(
+        "compare-quotes", "Basic $10/月按月、$8/月按年；\r\n\r\nStandard $30/$24",
+        "Basic $10/月按月、$8/月按年\nStandard $30/$25"))
+    assert pasted == compact
+    invalid_line = json.loads(run("compare-quotes", "Basic $10/月；；Basic $96/年\n", "Basic $11/月"))
+    assert invalid_line["before_issues"] and invalid_line["changes"] == []
+    print("PASS quote comparisons with clipboard line breaks, matched billing and source fragments")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),
