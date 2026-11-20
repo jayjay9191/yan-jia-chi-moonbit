@@ -431,6 +431,11 @@ fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
   }
   let monthly = is_monthly_period(s)
   let yearly = is_yearly_period(s)
+  if monthly && yearly && (has_yearly_rate(s) || has_monthly_payment(s)) {
+    return CannotNormalize(
+      "计费周期冲突：请区分金额对应周期和实际付款周期",
+    )
+  }
   let mut monthly_cents = 0
   if monthly {
     monthly_cents = cents
@@ -460,11 +465,18 @@ fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
 }
 
 ///|
+fn has_monthly_payment(s : String) -> Bool {
+  s.contains("按月") ||
+  s.contains("月付") ||
+  s.contains("billed monthly") ||
+  s.contains("paid monthly")
+}
+
+///|
 fn is_monthly_period(s : String) -> Bool {
   s.contains("/月") ||
   s.contains("每月") ||
-  s.contains("按月") ||
-  s.contains("月付") ||
+  has_monthly_payment(s) ||
   s.contains("/mo") ||
   s.contains("/ month") ||
   s.contains("per month") ||
@@ -472,15 +484,20 @@ fn is_monthly_period(s : String) -> Bool {
 }
 
 ///|
-fn is_yearly_period(s : String) -> Bool {
+fn has_yearly_rate(s : String) -> Bool {
   s.contains("/年") ||
   s.contains("每年") ||
+  s.contains("/yr") ||
+  s.contains("/year") ||
+  s.contains("per year")
+}
+
+///|
+fn is_yearly_period(s : String) -> Bool {
+  has_yearly_rate(s) ||
   s.contains("按年") ||
   s.contains("年付") ||
   s.contains("年缴") ||
-  s.contains("/yr") ||
-  s.contains("/year") ||
-  s.contains("per year") ||
   s.contains("yearly") ||
   s.contains("annual")
 }

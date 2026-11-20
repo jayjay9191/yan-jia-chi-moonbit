@@ -760,3 +760,18 @@ test "budget and repricing reject starting prices and mixed payment labels" {
     )
   }
 }
+
+///|
+test "conflicting billing basis is rejected while annual payment of a monthly rate is valid" {
+  for
+    quote in [
+      "USD 20/月/年", "USD 20/年按月", "USD 20/月按月且按年", "USD 20/month per year",
+      "USD 20/year billed monthly",
+    ] {
+    assert_eq(norm_kind(quote), "cannot_normalize")
+    assert_true(norm_reason(quote).contains("计费周期冲突"))
+  }
+  assert_eq(norm_cents("USD 20/month billed annually"), 2000)
+  assert_eq(norm_cents("USD 20/月（按年付）"), 2000)
+  assert_eq(norm_cents("USD 240/year billed annually"), 2000)
+}

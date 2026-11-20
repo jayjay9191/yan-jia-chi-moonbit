@@ -42,6 +42,10 @@ def main():
     assert "Standard | 2种写法 | 年付节省20%" in reversed_pair
     unlabelled = run("classes-quote", "Basic $10/月按月；Pro $8/月按年；Standard $30/$24")
     assert "简写缺少一致的月付/年付顺序：Standard $30/$24" in unlabelled
+    ambiguous_cycle = run("classes-quote", "Basic USD 20/月/年")
+    assert "计费周期冲突" in ambiguous_cycle and "输入报价：0类" in ambiguous_cycle
+    real_cycle = run("classes-quote", "Basic USD 25/month; Basic USD 20/month billed annually")
+    assert "年付节省20%" in real_cycle and "矛盾/待核对：0" in real_cycle
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),
