@@ -94,13 +94,13 @@ fn print_usage() -> Unit {
   )
   println("trajectory-summary：六类轨迹计数与重点复核清单")
   println(
-    "classes <工具名>：套餐身份、付款方式、一致性与历史证据缺口",
+    "classes <工具名> [--json]：套餐身份、付款方式、一致性与历史证据缺口",
   )
   println(
     "recheck-queue [YYYY-MM-DD]：按账龄、变动历史和未核验状态列前20项",
   )
   println(
-    "classes-quote <报价原文>：输入自有报价，核对套餐与年付差额",
+    "classes-quote <报价原文> [--json]：输入自有报价，核对套餐与年付差额",
   )
   println("工具名只接受全名，例如：moon run cmd/main check Cursor")
 }
@@ -121,6 +121,93 @@ fn print_class_report(label : String, report : @lib.PlanClassReport) -> Unit {
   println("矛盾/待核对：\{report.issues.length()}")
   for issue in report.issues {
     println(issue)
+  }
+}
+
+///|
+fn class_output_json(
+  label : String,
+  report : @lib.PlanClassReport,
+  stability : @lib.ClassStability?,
+) -> Json {
+  let classes = report.classes.map(cls => {
+    let saving = match cls.annual_saving {
+      Some(value) => Json(value)
+      None => Json::null()
+    }
+    let members = cls.members.map(offer => {
+      Json::object({
+        "plan": Json(offer.plan),
+        "quote": Json(offer.quote),
+        "source": Json(offer.source),
+      })
+    })
+    Json::object({
+      "plan": Json(cls.plan),
+      "annual_saving": saving,
+      "members": Json(members),
+    })
+  })
+  let history = match stability {
+    Some(s) =>
+      Json::object({
+        "complete": Json(s.complete),
+        "observed_stable": Json(s.observed_stable),
+        "sessions": Json(
+          s.sessions.map(session => {
+            Json::object({
+              "session": Json(session.session),
+              "class_count": Json(session.class_count),
+              "detail": Json(session.detail),
+            })
+          }),
+        ),
+      })
+    None => Json::null()
+  }
+  Json::object({
+    "schema_version": Json(1),
+    "label": Json(label),
+    "classes": Json(classes),
+    "issues": Json(report.issues),
+    "history": history,
+  })
+}
+
+///|
+fn cmd_classes(args : Array[String]) -> Unit raise {
+  let json = args.length() == 3 && args[2] == "--json"
+  if (!json && args.length() != 2) ||
+    args[1].trim().is_empty() ||
+    args[1] == "--json" {
+    fail("用法：\{args[0]} <工具名或报价原文> [--json]")
+  }
+  let (label, report, stability) = if args[0] == "classes-quote" {
+    ("输入报价", @lib.plan_classes(args[1]), None)
+  } else {
+    guard @lib.tool_by_name(args[1]) is Some(tool) else {
+      fail("未找到工具：" + args[1])
+    }
+    (
+      tool.name,
+      @lib.plan_classes(tool.paid_price),
+      Some(@lib.class_stability(tool)),
+    )
+  }
+  if json {
+    println(class_output_json(label, report, stability).stringify())
+    return
+  }
+  print_class_report(label, report)
+  if stability is Some(s) {
+    println(
+      "历史证据完整：\{s.complete}；有原文的复核套餐身份稳定：\{s.observed_stable}",
+    )
+    for session in s.sessions {
+      println(
+        "\{session.session} | \{session.class_count}类 | \{session.detail}",
+      )
+    }
   }
 }
 
@@ -168,45 +255,32 @@ fn cmd_analysis(args : Array[String]) -> Unit {
           )
         }
       }
-      "classes-quote" => {
-        if args.length() != 2 || args[1].trim().is_empty() {
-          fail("用法：classes-quote <报价原文>")
-        }
-        print_class_report("输入报价", @lib.plan_classes(args[1]))
-      }
-      "trajectory" | "classes" => {
+      "classes-quote" | "classes" => cmd_classes(args)
+      "trajectory" => {
         if args.length() != 2 {
           fail("用法：\{args[0]} <工具全名>")
         }
         guard @lib.tool_by_name(args[1]) is Some(tool) else {
           fail("未找到工具：" + args[1])
         }
-        if args[0] == "trajectory" {
-          let report = @lib.analyze_trajectory(tool)
-          println("\{report.name} | \{report.status}")
-          for event in report.events {
-            println(
-              "\{event.date} \{event.session} | \{event.change} | \{event.level} | \{event.detail}",
-            )
-          }
-        } else {
-          print_class_report(tool.name, @lib.plan_classes(tool.paid_price))
-          let stability = @lib.class_stability(tool)
+        let report = @lib.analyze_trajectory(tool)
+        println("\{report.name} | \{report.status}")
+        for event in report.events {
           println(
-            "历史证据完整：\{stability.complete}；有原文的复核套餐身份稳定：\{stability.observed_stable}",
+            "\{event.date} \{event.session} | \{event.change} | \{event.level} | \{event.detail}",
           )
-          for session in stability.sessions {
-            println(
-              "\{session.session} | \{session.class_count}类 | \{session.detail}",
-            )
-          }
         }
       }
       _ => fail("未知分析命令")
     }
   } catch {
     err => {
-      println("分析失败：" + err.to_string())
+      let message = "分析失败：" + err.to_string()
+      if args.length() > 1 && args[args.length() - 1] == "--json" {
+        eprintln(message)
+      } else {
+        println(message)
+      }
       @env.exit(2)
     }
   }

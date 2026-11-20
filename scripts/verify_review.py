@@ -1,4 +1,5 @@
 """Exercise the public CLI and measured second-review cases."""
+import json
 from pathlib import Path
 import subprocess
 
@@ -52,6 +53,22 @@ def main():
     assert "Basic | 1种写法" in sign and "矛盾/待核对：1" in sign
     introductory = run("classes-quote", "Basic 首月 $10/月; Basic $96/年")
     assert "首期报价" in introductory and "未能计算年付节省率" in introductory
+    machine = json.loads(run("classes-quote", "跨平台 $10/月；跨平台 $96/年", "--json"))
+    assert machine["schema_version"] == 1 and machine["history"] is None and machine["issues"] == []
+    assert machine["classes"] == [
+        {"plan": "跨平台", "annual_saving": 20, "members": [
+            {"plan": "跨平台", "quote": "$10/月", "source": "跨平台 $10/月"},
+            {"plan": "跨平台", "quote": "$96/年", "source": "跨平台 $96/年"},
+        ]},
+    ]
+    conditional = json.loads(run("classes-quote", "Basic 首月 $10/月；Basic $96/年", "--json"))
+    assert conditional["classes"][0]["annual_saving"] is None and len(conditional["issues"]) == 1
+    stored = json.loads(run("classes", "Midjourney", "--json"))
+    assert len(stored["classes"]) == 4 and not stored["history"]["complete"]
+    assert stored["history"]["observed_stable"]
+    assert stored["history"]["sessions"][0]["class_count"] == 0
+    assert "缺少" in stored["history"]["sessions"][0]["detail"]
+    assert run("classes-quote", "", "--json", success=False) == ""
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

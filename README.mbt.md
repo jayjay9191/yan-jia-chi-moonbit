@@ -11,6 +11,7 @@
 moon run cmd/main -- trajectory Tana
 moon run cmd/main -- trajectory "智谱清言 / GLM"
 moon run cmd/main -- classes Midjourney
+moon run cmd/main -- classes Midjourney --json
 moon run cmd/main -- classes-quote 'Basic $10/月；Basic $96/年'
 moon run cmd/main -- classes-quote 'Basic $96/年；Basic $96.01/年'
 moon run cmd/main -- recheck-queue 2026-11-20
@@ -33,7 +34,11 @@ python scripts/verify_review.py
 会提示核对固定金额。另一条明确报价仍会列出，节省率须等固定月付和年付报价都齐备。
 紧贴金额、货币符号或货币代码的负号会触发待核对。首月、首年和试用金额只覆盖特定阶段，
 须补固定续费价再计算全年预算和年付节省率。
-CI 复跑正常报价、价差、金额和币种校验，以及简写顺序案例。
+`classes` 和 `classes-quote` 追加 `--json` 可让脚本读取套餐、原文、来源、节省率和待核对项。
+结果带 `schema_version: 1`，无法核算的节省率为 `null`。自填报价的历史字段也为 `null`。
+参考 [GitHub CLI 的可选 JSON 输出](https://cli.github.com/manual/gh_help_formatting)。
+
+CI 复跑正常报价、价差、金额和币种校验，以及简写顺序和 JSON 输出案例。
 
 
 代表性结果：Tana −21%；GLM 多档幅度须逐档核对；Midjourney 8 种写法 → 4 个
