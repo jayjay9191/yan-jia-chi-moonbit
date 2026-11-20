@@ -480,3 +480,19 @@ test "structured quote differences preserve signed annual deltas and omit equal 
   assert_eq(comparison.changes.length(), 1)
   assert_eq(comparison.changes[0].year_delta, Some(-399L))
 }
+
+///|
+test "quote comparison preserves source fragments when monthly and annual prices are expanded" {
+  let result = compare_quote_snapshots(
+    "Basic $10/月按月、$8/月按年；Standard $30/$24", "Basic $10/月按月、$8/月按年；Standard $30/$25",
+  )
+  assert_true(result.before_issues.is_empty() && result.after_issues.is_empty())
+  assert_eq(result.changes.length(), 1)
+  let change = result.changes[0]
+  assert_eq(change.plan, "Standard")
+  assert_true(change.annual)
+  assert_eq(change.before_source, Some("Standard $30/$24"))
+  assert_eq(change.after_source, Some("Standard $30/$25"))
+  assert_eq(change.before_quote, Some("$24/月按年"))
+  assert_eq(change.year_delta, Some(1200L))
+}

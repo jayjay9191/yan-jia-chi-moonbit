@@ -318,13 +318,16 @@ pub(all) struct ClassStability {
 ///|
 fn session_options(
   classes : Array[PlanClass],
-) -> Map[(String, Bool), NormalizedPrice] {
+) -> Map[(String, Bool), (NormalizedPrice, String)] {
   let options = Map([])
   for cls in classes {
     for offer in cls.members {
       if normalize_price(offer.quote) is Normalized(price) {
         // A valid report has already checked that duplicate options agree exactly.
-        options[(cls.plan, price.billed_annually)] = price
+        let key = (cls.plan, price.billed_annually)
+        if !options.contains(key) {
+          options[key] = (price, offer.source)
+        }
       }
     }
   }
@@ -339,6 +342,8 @@ pub(all) struct QuoteChange {
   kind : String
   before_quote : String?
   after_quote : String?
+  before_source : String?
+  after_source : String?
   before_year : Int64?
   after_year : Int64?
   before_currency : String?
@@ -373,8 +378,10 @@ fn diff_plan_options(
   let differences : Array[QuoteChange] = []
   for key in keys {
     let (plan, annual) = key
-    let a = old.get(key)
-    let b = current.get(key)
+    let old_option = old.get(key)
+    let new_option = current.get(key)
+    let a = old_option.map(pair => pair.0)
+    let b = new_option.map(pair => pair.0)
     let (kind, before_year, after_year) = match (a, b) {
       (Some(left), Some(right)) =>
         if !currency_eq(left.currency, right.currency) ||
@@ -398,6 +405,8 @@ fn diff_plan_options(
       kind,
       before_quote: a.map(price => price.original),
       after_quote: b.map(price => price.original),
+      before_source: old_option.map(pair => pair.1),
+      after_source: new_option.map(pair => pair.1),
       before_year,
       after_year,
       before_currency: a.map(price => currency_code(price.currency)),

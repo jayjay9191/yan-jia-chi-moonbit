@@ -269,6 +269,8 @@ pub(all) struct QuoteChange {
   kind : String
   before_quote : String?
   after_quote : String?
+  before_source : String?
+  after_source : String?
   before_year : Int64?
   after_year : Int64?
   before_currency : String?
