@@ -101,6 +101,15 @@ def main():
     invalid_line = json.loads(run("compare-quotes", "Basic $10/月；；Basic $96/年\n", "Basic $11/月"))
     assert invalid_line["before_issues"] and invalid_line["changes"] == []
     print("PASS quote comparisons with clipboard line breaks, matched billing and source fragments")
+    demand = "2,2,2,2,2,2,8,8,8,8,8,8"
+    quote = "Pro $10/用户/月；Pro $96/用户/年"
+    seats = json.loads(run("seat-plan", "Pro", demand, quote))
+    assert seats["currency"] == "USD" and seats["annual_seats"] == 2
+    assert seats["monthly_seats"] == [0] * 6 + [6] * 6
+    assert (seats["monthly_only"], seats["annual_only"], seats["best_total"]) == ("60000", "76800", "55200")
+    assert run("seat-plan", "Pro", "1,2", quote, success=False) == ""
+    assert run("seat-plan", "Pro", demand, "Pro $10/月；Pro $96/年", success=False) == ""
+    print("PASS seat cost plan finds the minimum exact cost across annual reservation breakpoints")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

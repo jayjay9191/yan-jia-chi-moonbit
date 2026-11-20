@@ -103,6 +103,8 @@ pub fn partial_count(Array[ToolPricing]) -> Int32
 
 pub fn plan_classes(String) -> PlanClassReport
 
+pub fn plan_seat_costs(String, String, Array[Int32]) -> SeatCostPlan raise PricingAnalysisError
+
 pub fn recheck_queue(Array[ToolPricing], Int32) -> Array[RecheckItem]
 
 pub fn rechecked_tools_count(Array[ToolPricing]) -> Int32
@@ -293,6 +295,17 @@ pub(all) struct RecheckItem {
   verified_at : String
   score : Int32
   reason : String
+}
+
+#derive(@json.ToJson)
+pub(all) struct SeatCostPlan {
+  currency : String
+  annual_seats : Int32
+  seat_demand : Array[Int32]
+  monthly_seats : Array[Int32]
+  monthly_only : Int64
+  annual_only : Int64
+  best_total : Int64
 }
 
 pub(all) struct ToolPricing {

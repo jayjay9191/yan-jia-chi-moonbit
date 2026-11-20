@@ -30,6 +30,7 @@ fn main {
     "normalize" => cmd_normalize(args)
     "align" => cmd_align(args)
     "budget" => cmd_budget(args)
+    "seat-plan" => cmd_seat_plan(args)
     "reprice" => cmd_reprice(args)
     "compare-quotes" => {
       if args.length() != 3 {
@@ -73,6 +74,9 @@ fn print_usage() -> Unit {
   println("用法：moon run cmd/main [子命令 ...]")
   println("无参数 / report：带分母的汇总报告")
   println("list：列出全部工具及价格状态")
+  println(
+    "seat-plan <套餐名> <12个月席位数，英文逗号分隔> <报价原文>：模拟月付和年付组合",
+  )
   println(
     "compare-quotes <前次报价原文> <本次报价原文>：输出逐套餐差异 JSON",
   )
@@ -482,6 +486,25 @@ fn budget_money(cents : Int64) -> String {
   let whole = (cents / 100L).to_string()
   let fraction = (cents % 100L).to_string().pad_start(2, '0')
   whole + "." + fraction
+}
+
+///|
+fn cmd_seat_plan(args : Array[String]) -> Unit {
+  try {
+    if args.length() != 4 {
+      fail("用法：seat-plan <套餐名> <12个月席位数> <报价原文>")
+    }
+    let seats : Array[Int32] = []
+    for field in args[2].split(",") {
+      seats.push(@string.parse_int(field.trim().to_owned()))
+    }
+    println(Json(@lib.plan_seat_costs(args[3], args[1], seats)).stringify())
+  } catch {
+    err => {
+      eprintln("席位预算模拟失败：" + err.to_string())
+      @env.exit(2)
+    }
+  }
 }
 
 ///|

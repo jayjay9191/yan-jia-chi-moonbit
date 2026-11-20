@@ -510,3 +510,64 @@ test "multiline quote snapshots handle clipboard line endings and preserve exact
     !plan_classes("Basic $10/月；；Basic $96/年\n").issues.is_empty(),
   )
 }
+
+///|
+test "seat planning finds a hybrid optimum below either pure policy" {
+  let prices = "Pro $10/用户/月；Pro $96/用户/年"
+  let demand = [2, 2, 2, 2, 2, 2, 8, 8, 8, 8, 8, 8]
+  let result = plan_seat_costs(prices, "Pro", demand)
+  assert_eq((result.currency, result.annual_seats), ("USD", 2))
+  assert_eq(
+    (result.monthly_only, result.annual_only, result.best_total),
+    (60000L, 76800L, 55200L),
+  )
+  let safe_lower = plan_seat_costs(prices, "Pro", Array::make(12, 0))
+  assert_eq((safe_lower.annual_seats, safe_lower.best_total), (0, 0L))
+}
+
+///|
+test "seat planning breakpoints agree with exhaustive reservation counts" {
+  let prices = "Pro $10/用户/月；Pro $96/用户/年"
+  for
+    demand in [
+      [0, 0, 3, 6, 1, 1, 2, 2, 6, 2, 2, 1],
+      [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ] {
+    let mut best_seats = 0
+    let mut best = 1000000L
+    for reserve in 0..<=8 {
+      let mut cost = reserve.to_int64() * 9600L
+      for requested in demand {
+        if requested > reserve {
+          cost += (requested - reserve).to_int64() * 1000L
+        }
+      }
+      if cost < best {
+        best = cost
+        best_seats = reserve
+      }
+    }
+    let result = plan_seat_costs(prices, "Pro", demand)
+    assert_eq((result.annual_seats, result.best_total), (best_seats, best))
+  }
+}
+
+///|
+test "seat planning rejects flat prices and incomplete or contradictory inputs" {
+  for
+    prices in [
+      "Pro $10/月；Pro $96/年", "Pro $10/用户/月", "Pro $10/用户/月；Pro €96/用户/年",
+      "Other $10/用户/月；Other $96/用户/年",
+    ] {
+    let result = Ok(plan_seat_costs(prices, "Pro", Array::make(12, 2))) catch {
+      err => Err(err)
+    }
+    assert_true(result is Err(_))
+  }
+  let prices = "Pro $10/用户/月；Pro $96/用户/年"
+  let result = Ok(plan_seat_costs(prices, "Pro", [1, 2])) catch {
+    err => Err(err)
+  }
+  assert_true(result is Err(_))
+}
