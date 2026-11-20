@@ -46,6 +46,8 @@ def main():
     assert "计费周期冲突" in ambiguous_cycle and "输入报价：0类" in ambiguous_cycle
     real_cycle = run("classes-quote", "Basic USD 25/month; Basic USD 20/month billed annually")
     assert "年付节省20%" in real_cycle and "矛盾/待核对：0" in real_cycle
+    starting = run("classes-quote", "Basic from $10/月; Basic $96/年")
+    assert "报价下限" in starting and "Basic | 1种写法" in starting and "年付节省20%" not in starting
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

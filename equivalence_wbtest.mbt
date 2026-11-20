@@ -252,3 +252,20 @@ test "compact offers require a consistent paired example and follow its order" {
     assert_false(report.classes.any(cls => cls.plan == "Standard"))
   }
 }
+
+///|
+test "starting quotes remain pending instead of counting as firm offers" {
+  for
+    quote in [
+      "Basic $10/月；Basic $96/年起", "Basic from $10/月；Basic $96/年", "Basic起价 $10/月；Basic $96/年",
+      "Basic $10+/月；Basic $96/年",
+    ] {
+    let report = plan_classes(quote)
+    assert_eq(report.classes.length(), 1)
+    assert_eq(report.classes[0].plan, "Basic")
+    assert_eq(report.classes[0].members.length(), 1)
+    assert_eq(report.classes[0].annual_saving, None)
+    assert_true(report.issues.any(issue => issue.contains("报价下限")))
+  }
+  assert_true(compare_budget("$10+/month", "$96/year", 1) is Err(_))
+}

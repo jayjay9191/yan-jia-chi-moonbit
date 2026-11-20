@@ -29,6 +29,8 @@ python scripts/verify_review.py
 报价金额的单位周期与付款周期分别核对。`USD 20/月/年` 提示周期冲突，
 `USD 20/month billed annually` 作为年付的月费率正常核算。
 设计参考 [Beancount 对单位价和总额的拆分](https://github.com/beancount/beancount/blob/master/beancount/parser/grammar.py)。
+起价写法如 `Basic from $10/月`、`Basic $10+/月` 和 `Basic $96/年起`
+会提示核对固定金额。另一条明确报价仍会列出，节省率须等固定月付和年付报价都齐备。
 CI 复跑正常报价、价差、金额和币种校验，以及简写顺序案例。
 
 
@@ -41,7 +43,7 @@ R1 没有保存原始报价，不能用当前价倒填，三轮整体标为不�
 强化回归：年度变动复用已有标准订阅成本函数，以原始年费用计算比例，避免月均
 分取整造成方向误判或零分母；复核队列复用按日期整理后的轨迹结论，乱序记录
 也能保留下架停核状态，连续不可观测会提高未核验优先级。
-1157 项测试通过；CI 同时执行上述 CLI 的结果与错误输入检查。
+1158 项测试通过；CI 同时执行上述 CLI 的结果与错误输入检查。
 源码版本为 0.1.4，Mooncakes 新包尚待登录后发布。
 
 初审核对入口：[`trajectory.mbt`](trajectory.mbt) 分析跨次观测与复核队列，

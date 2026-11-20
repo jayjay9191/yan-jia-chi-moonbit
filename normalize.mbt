@@ -643,6 +643,19 @@ pub fn compare_repricing(
 }
 
 ///|
+fn is_starting_quote(quote : String) -> Bool {
+  let text = quote.trim().to_owned().to_lower()
+  text.has_suffix("起") ||
+  text.has_suffix("+") ||
+  [
+    "起价", "起步", "起（", "起(", "起/月", "起/年", "starting at", "starts at",
+    "from ", " and up", "at least", "+/",
+  ]
+  .iter()
+  .any(flag => text.contains(flag))
+}
+
+///|
 fn compare_subscription(
   a : String,
   b : String,
@@ -654,13 +667,7 @@ fn compare_subscription(
   }
   for quote in [a, b] {
     let text = quote.trim().to_owned().to_lower()
-    if text.has_suffix("起") ||
-      [
-        "起价", "起步", "起（", "起(", "起/月", "起/年", "starting at",
-        "starts at", "from ", " and up", "at least",
-      ]
-      .iter()
-      .any(flag => text.contains(flag)) {
+    if is_starting_quote(quote) {
       return Err("报价只给出下限，无法核算固定订阅成本")
     }
     if text.contains("或") || text.contains(" or ") {

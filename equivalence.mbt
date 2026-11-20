@@ -46,7 +46,9 @@ pub fn audit_plan_classes(classes : Array[PlanClass]) -> Array[String] {
       if offer.plan != cls.plan {
         issues.push("套餐身份冲突：" + cls.plan + " / " + offer.plan)
       }
-      if normalize_kind(normalize_price(offer.quote)) != "normalized" {
+      if is_starting_quote(offer.quote) {
+        issues.push("报价下限，须核对固定金额：\{offer.quote}")
+      } else if normalize_kind(normalize_price(offer.quote)) != "normalized" {
         issues.push("不可解析报价：" + offer.quote)
       }
       for j in 0..<i {
@@ -61,6 +63,9 @@ pub fn audit_plan_classes(classes : Array[PlanClass]) -> Array[String] {
       for b in (a + 1)..<cls.members.length() {
         let left = cls.members[a].quote
         let right = cls.members[b].quote
+        if is_starting_quote(left) || is_starting_quote(right) {
+          continue
+        }
         match (normalize_price(left), normalize_price(right)) {
           (Normalized(pa), Normalized(pb)) => {
             let reason = if !currency_eq(pa.currency, pb.currency) {
@@ -110,13 +115,31 @@ fn quote_start(fragment : String) -> Int32? {
 }
 
 ///|
+fn starting_prefix(plan : String) -> Bool {
+  let text = plan.to_lower()
+  text.has_suffix("起价") ||
+  text.has_suffix("起步") ||
+  ["from", "starting at", "starts at", "at least"]
+  .iter()
+  .any(marker => {
+    text == marker ||
+    text.has_suffix(" " + marker) ||
+    text.has_suffix("(" + marker) ||
+    text.has_suffix("（" + marker)
+  })
+}
+
+///|
 // Learn the column order from an explicit pair in one named offer.
 fn compact_billing_order(fragments : Array[String]) -> Bool? {
   let mut order = None
   for fragment in fragments {
     guard quote_start(fragment) is Some(start) else { continue }
     let plan = fragment.clamped_view(end=start).trim().to_owned()
-    if plan.is_empty() || plan.has_suffix("-") || plan.has_suffix("−") {
+    if plan.is_empty() ||
+      starting_prefix(plan) ||
+      plan.has_suffix("-") ||
+      plan.has_suffix("−") {
       continue
     }
     let pair = fragment
@@ -132,7 +155,10 @@ fn compact_billing_order(fragments : Array[String]) -> Bool? {
     let second = pair[1]
     let a = normalize_price(first)
     let b = normalize_price(second)
-    if normalize_kind(a) != "normalized" || normalize_kind(b) != "normalized" {
+    if is_starting_quote(first) ||
+      is_starting_quote(second) ||
+      normalize_kind(a) != "normalized" ||
+      normalize_kind(b) != "normalized" {
       continue
     }
     let annual_first = normalized_billed_annually(a)
@@ -176,6 +202,10 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       issues.push("无法确认有效价格：\{fragment}")
       continue
     }
+    if starting_prefix(plan) {
+      issues.push("报价下限，须核对固定金额：\{fragment}")
+      continue
+    }
     let price = fragment.clamped_view(start=offset).trim().to_owned()
     let quotes = price.split("、").map(s => s.trim().to_owned()).to_array()
     let compact = price.split("/").map(s => s.trim().to_owned()).to_array()
@@ -198,7 +228,9 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       continue
     }
     for quote in quotes {
-      if normalize_kind(normalize_price(quote)) == "normalized" {
+      if is_starting_quote(quote) {
+        issues.push("报价下限，须核对固定金额：\{fragment}")
+      } else if normalize_kind(normalize_price(quote)) == "normalized" {
         offers.push({ plan, quote, source: fragment, })
       } else {
         issues.push(
