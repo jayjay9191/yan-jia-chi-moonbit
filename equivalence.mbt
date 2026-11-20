@@ -325,12 +325,70 @@ pub(all) struct ClassStability {
 }
 
 ///|
+fn session_options(
+  classes : Array[PlanClass],
+) -> Map[(String, Bool), NormalizedPrice] {
+  let options = Map([])
+  for cls in classes {
+    for offer in cls.members {
+      if normalize_price(offer.quote) is Normalized(price) {
+        // A valid report has already checked that duplicate options agree exactly.
+        options[(cls.plan, price.billed_annually)] = price
+      }
+    }
+  }
+  options
+}
+
+///|
+fn compare_session_options(
+  before : Array[PlanClass],
+  after : Array[PlanClass],
+) -> String {
+  let old = session_options(before)
+  let current = session_options(after)
+  let keys = old.keys().collect()
+  for key in current.keys() {
+    if !old.contains(key) {
+      keys.push(key)
+    }
+  }
+  keys.sort()
+  let differences : Array[String] = []
+  for key in keys {
+    let (plan, annual) = key
+    let label = plan + (if annual { " 年付" } else { " 月付" })
+    match (old.get(key), current.get(key)) {
+      (Some(a), Some(b)) =>
+        if !currency_eq(a.currency, b.currency) || a.per_seat != b.per_seat {
+          differences.push(label + "：币种或席位口径变化，须核对")
+        } else {
+          let (_, old_cost) = subscription_cost(a, 1)
+          let (_, new_cost) = subscription_cost(b, 1)
+          if old_cost != new_cost {
+            differences.push("\{label}：\{old_cost} → \{new_cost} 分/年")
+          }
+        }
+      (Some(_), None) => differences.push(label + "：本次原文未见")
+      (None, Some(_)) => differences.push(label + "：前次原文未见")
+      (None, None) => ()
+    }
+  }
+  if differences.is_empty() {
+    "与前次独立原文逐套餐、逐付款周期核对，金额和口径一致"
+  } else {
+    join_strings(differences, "；")
+  }
+}
+
+///|
 /// Inspect stored quotes only. A note saying "unchanged" cannot recreate a quote.
 pub fn class_stability(tool : ToolPricing) -> ClassStability {
   let sessions = []
   let mut complete = tool.history.length() >= 2
   let mut observed_stable = true
   let mut baseline : Array[String]? = None
+  let mut last_valid : Array[PlanClass]? = None
   let mut observed = 0
   let seen_sessions : Array[String] = []
   for index in observation_order(tool.history) {
@@ -367,15 +425,23 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
       } else if quote == "" {
         "缺少复核当时的价格原文，稳定性待核对"
       } else if valid {
-        "套餐身份与类内报价已核对"
+        if last_valid is Some(previous) {
+          compare_session_options(previous, report.classes)
+        } else if sessions.is_empty() {
+          "套餐身份与类内报价已核对，作为首个可比快照"
+        } else {
+          "套餐身份与类内报价已核对，前次证据不可用"
+        }
       } else {
         join_strings(report.issues, "；")
       },
     })
     if !valid {
       complete = false
+      last_valid = None
       continue
     }
+    last_valid = Some(report.classes)
     let names = report.classes.map(cls => cls.plan)
     names.sort()
     if baseline is Some(previous) {

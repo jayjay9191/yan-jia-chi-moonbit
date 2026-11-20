@@ -68,6 +68,8 @@ def main():
     assert stored["history"]["observed_stable"]
     assert stored["history"]["sessions"][0]["class_count"] == 0
     assert "缺少" in stored["history"]["sessions"][0]["detail"]
+    assert "前次证据不可用" in stored["history"]["sessions"][1]["detail"]
+    assert "逐套餐、逐付款周期核对，金额和口径一致" in stored["history"]["sessions"][2]["detail"]
     assert run("classes-quote", "", "--json", success=False) == ""
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20

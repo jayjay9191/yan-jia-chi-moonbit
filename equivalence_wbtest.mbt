@@ -302,3 +302,42 @@ test "first-term prices are not used for a twelve-month comparison" {
     compare_budget("$10/月", "$96/年（年付优惠）", 1) is Ok(_),
   )
 }
+
+///|
+test "historical plan audit compares each matching billing option across sessions" {
+  let tool = trajectory_tool("Midjourney")
+  let a = history_event(
+    "无变化", "", "Basic $10/月；Basic $96/年；Pro $20/月；Team $30/月",
+  )
+  let b = {
+    ..a,
+    session: "second",
+    new_price: "Basic $11/月；Basic $8/月按年；Pro €20/月；Plus $30/月",
+  }
+  let report = class_stability({
+    ..tool,
+    history: [b, { ..a, date: "2026-11-14", }],
+  })
+  let detail = report.sessions[1].detail
+  assert_true(report.complete)
+  assert_false(report.observed_stable)
+  assert_true(detail.contains("Basic 月付：12000 → 13200 分/年"))
+  assert_false(detail.contains("Basic 年付："))
+  assert_true(detail.contains("Pro 月付：币种或席位口径变化"))
+  assert_true(detail.contains("Team 月付：本次原文未见"))
+  assert_true(detail.contains("Plus 月付：前次原文未见"))
+}
+
+///|
+test "historical plan audit keeps an explicit gap between snapshots" {
+  let a = history_event("无变化", "", "Basic $10/月")
+  let gaps = { ..a, session: "gap", new_price: "", }
+  let b = { ..a, session: "after-gap", new_price: "Basic $12/月", }
+  let report = class_stability({
+    ..trajectory_tool("Midjourney"),
+    history: [a, gaps, b],
+  })
+  assert_false(report.complete)
+  assert_false(report.sessions[2].detail.contains("14400"))
+  assert_true(report.sessions[2].detail.contains("前次证据不可用"))
+}
