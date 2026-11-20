@@ -38,6 +38,10 @@ def main():
     assert "输入报价：0类" in invalid and "矛盾/待核对：2" in invalid
     mixed = run("classes-quote", "Basic USD €10/月；Basic USD $96/年")
     assert "币种标记冲突" in mixed and "矛盾/待核对：1" in mixed and "年付节省20%" not in mixed
+    reversed_pair = run("classes-quote", "Basic $8/月按年、$10/月按月；Standard $24/$30")
+    assert "Standard | 2种写法 | 年付节省20%" in reversed_pair
+    unlabelled = run("classes-quote", "Basic $10/月按月；Pro $8/月按年；Standard $30/$24")
+    assert "简写缺少一致的月付/年付顺序：Standard $30/$24" in unlabelled
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

@@ -92,30 +92,78 @@ pub fn audit_plan_classes(classes : Array[PlanClass]) -> Array[String] {
 }
 
 ///|
+fn quote_start(fragment : String) -> Int32? {
+  let mut price_start : Int32? = None
+  for
+    symbol in [
+      "C$", "A$", "NT$", "HK$", "R$", "$", "€", "£", "¥", "₹", " USD ", " EUR ",
+      " GBP ", " CNY ", " JPY ", " INR ",
+    ] {
+    if fragment.find(symbol) is Some(offset) {
+      if price_start is None ||
+        (price_start is Some(previous) && offset < previous) {
+        price_start = Some(offset)
+      }
+    }
+  }
+  price_start
+}
+
+///|
+// Learn the column order from an explicit pair in one named offer.
+fn compact_billing_order(fragments : Array[String]) -> Bool? {
+  let mut order = None
+  for fragment in fragments {
+    guard quote_start(fragment) is Some(start) else { continue }
+    let plan = fragment.clamped_view(end=start).trim().to_owned()
+    if plan.is_empty() || plan.has_suffix("-") || plan.has_suffix("−") {
+      continue
+    }
+    let pair = fragment
+      .clamped_view(start~)
+      .to_owned()
+      .split("、")
+      .map(part => part.trim().to_owned())
+      .to_array()
+    if pair.length() != 2 {
+      continue
+    }
+    let first = pair[0]
+    let second = pair[1]
+    let a = normalize_price(first)
+    let b = normalize_price(second)
+    if normalize_kind(a) != "normalized" || normalize_kind(b) != "normalized" {
+      continue
+    }
+    let annual_first = normalized_billed_annually(a)
+    if annual_first == normalized_billed_annually(b) ||
+      !(first.has_suffix("/月按月") || first.has_suffix("/月按年")) ||
+      !(second.has_suffix("/月按月") || second.has_suffix("/月按年")) {
+      continue
+    }
+    if order is Some(previous) && previous != annual_first {
+      return None
+    }
+    order = Some(annual_first)
+  }
+  order
+}
+
+///|
 pub fn plan_classes(raw : String) -> PlanClassReport {
   let offers : Array[PlanOffer] = []
   let issues = []
-  // Compact $30/$24 inherits the order only from explicit monthly/annual labels.
-  let compact_context = raw.contains("/月按月") && raw.contains("/月按年")
-  for fragment in raw.replace_all(old=";", new="；").split("；") {
-    let fragment = fragment.trim().to_owned()
+  let fragments = raw
+    .replace_all(old=";", new="；")
+    .split("；")
+    .map(fragment => fragment.trim().to_owned())
+    .to_array()
+  let compact_order = compact_billing_order(fragments)
+  for fragment in fragments {
     if fragment.has_prefix("年付约省") {
       continue
     }
-    let mut price_start : Int32? = None
-    for
-      symbol in [
-        "C$", "A$", "NT$", "HK$", "R$", "$", "€", "£", "¥", "₹", " USD ", " EUR ",
-        " GBP ", " CNY ", " JPY ", " INR ",
-      ] {
-      if fragment.find(symbol) is Some(offset) {
-        if price_start is None ||
-          (price_start is Some(previous) && offset < previous) {
-          price_start = Some(offset)
-        }
-      }
-    }
-    guard price_start is Some(offset) else {
+    guard quote_start(fragment) is Some(offset) else {
       issues.push("缺少命名套餐或可解析报价：" + fragment)
       continue
     }
@@ -135,13 +183,15 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       compact.length() == 2 &&
       compact[0].has_prefix("$") &&
       compact[1].has_prefix("$") {
-      if !compact_context {
-        issues.push("简写缺少月付/年付口径：" + fragment)
+      guard compact_order is Some(annual_first) else {
+        issues.push("简写缺少一致的月付/年付顺序：\{fragment}")
         continue
       }
       quotes.clear()
-      quotes.push(compact[0] + "/月按月")
-      quotes.push(compact[1] + "/月按年")
+      let monthly = if annual_first { compact[1] } else { compact[0] }
+      let annual = if annual_first { compact[0] } else { compact[1] }
+      quotes.push(monthly + "/月按月")
+      quotes.push(annual + "/月按年")
     }
     if quotes.length() > 2 {
       issues.push("多档混写须逐档核对：" + fragment)

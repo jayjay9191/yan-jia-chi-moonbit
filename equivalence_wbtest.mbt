@@ -235,3 +235,20 @@ test "self supplied quotes reject conflicting currency clues" {
   assert_eq(report.issues.length(), 1)
   assert_eq(report.classes[0].annual_saving, None)
 }
+
+///|
+test "compact offers require a consistent paired example and follow its order" {
+  let reversed = plan_classes(
+    "Basic $8/月按年、$10/月按月；Standard $24/$30",
+  )
+  assert_eq(reversed.issues, [])
+  assert_eq(reversed.classes[1].annual_saving, Some(20))
+  for
+    quote in [
+      "Basic $10/月按月；Pro $8/月按年；Standard $30/$24", "Basic $10/月按月、$8/月按年；Pro $16/月按年、$20/月按月；Standard $30/$24",
+    ] {
+    let report = plan_classes(quote)
+    assert_true(report.issues.any(issue => issue.contains("Standard $30/$24")))
+    assert_false(report.classes.any(cls => cls.plan == "Standard"))
+  }
+}
