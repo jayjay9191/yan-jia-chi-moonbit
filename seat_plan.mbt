@@ -11,19 +11,22 @@ pub(all) struct SeatCostPlan {
 }
 
 ///|
-/// Compare static annual seats plus month-by-month overflow against pure billing options.
-/// The model assumes that both billing cycles can coexist at the supplied fixed rates.
-pub fn plan_seat_costs(
-  raw : String,
-  plan : String,
+fn validate_seat_counts(
   seat_demand : Array[Int32],
-) -> SeatCostPlan raise PricingAnalysisError {
+) -> Unit raise PricingAnalysisError {
   if seat_demand.length() != 12 ||
     seat_demand.any(count => count < 0 || count > 1000000) {
     raise InvalidAnalysis(
       "须提供 12 个月的席位数，每月 0 至 1,000,000",
     )
   }
+}
+
+///|
+fn quoted_seat_rates(
+  raw : String,
+  plan : String,
+) -> (String, Int64, Int64) raise PricingAnalysisError {
   let report = plan_classes(raw)
   if !report.issues.is_empty() {
     raise InvalidAnalysis(join_strings(report.issues, "；"))
@@ -40,35 +43,64 @@ pub fn plan_seat_costs(
   }
   let (per_month, _) = subscription_cost(monthly, 1)
   let (_, per_year) = subscription_cost(annual, 1)
-  let candidates = [0]
-  let mut peak = 0
-  let mut monthly_only = 0L
-  for requested in seat_demand {
-    if !candidates.contains(requested) {
-      candidates.push(requested)
+  (currency_code(monthly.currency), per_month, per_year)
+}
+
+///|
+fn seat_cost_at(
+  demand : Array[Int32],
+  reserve : Int32,
+  month : Int64,
+  year : Int64,
+) -> Int64 {
+  demand.fold(init=reserve.to_int64() * year, (total, requested) => {
+    total +
+    (if requested > reserve {
+      (requested - reserve).to_int64() * month
+    } else {
+      0L
+    })
+  })
+}
+
+///|
+fn seat_peak(demand : Array[Int32]) -> Int32 {
+  demand.fold(init=0, (peak, count) => if count > peak { count } else { peak })
+}
+
+///|
+fn seat_breakpoint_optimum(
+  demand : Array[Int32],
+  month : Int64,
+  year : Int64,
+) -> (Int32, Int64) {
+  // Between demand levels the cost is linear in reserved seats.
+  let mut reserved = 0
+  let mut best = seat_cost_at(demand, 0, month, year)
+  for candidate in demand {
+    let cost = seat_cost_at(demand, candidate, month, year)
+    if cost < best || (cost == best && candidate < reserved) {
+      best = cost
+      reserved = candidate
     }
-    if requested > peak {
-      peak = requested
-    }
-    monthly_only += requested.to_int64() * per_month
   }
-  // Between monthly demand levels the model is linear in reserved seats.
-  let mut annual_seats = 0
-  let mut best_total = monthly_only
-  for reserve in candidates {
-    let mut total = reserve.to_int64() * per_year
-    for requested in seat_demand {
-      if requested > reserve {
-        total += (requested - reserve).to_int64() * per_month
-      }
-    }
-    if total < best_total || (total == best_total && reserve < annual_seats) {
-      best_total = total
-      annual_seats = reserve
-    }
-  }
+  (reserved, best)
+}
+
+///|
+/// Compare static annual seats plus month-by-month overflow against pure billing options.
+pub fn plan_seat_costs(
+  raw : String,
+  plan : String,
+  seat_demand : Array[Int32],
+) -> SeatCostPlan raise PricingAnalysisError {
+  validate_seat_counts(seat_demand)
+  let (currency, month, year) = quoted_seat_rates(raw, plan)
+  let (annual_seats, best_total) = seat_breakpoint_optimum(
+    seat_demand, month, year,
+  )
   {
-    currency: currency_code(monthly.currency),
+    currency,
     annual_seats,
     seat_demand: seat_demand.copy(),
     monthly_seats: seat_demand.map(requested => {
@@ -78,8 +110,81 @@ pub fn plan_seat_costs(
         0
       }
     }),
-    monthly_only,
-    annual_only: peak.to_int64() * per_year,
+    monthly_only: seat_cost_at(seat_demand, 0, month, year),
+    annual_only: seat_peak(seat_demand).to_int64() * year,
     best_total,
+  }
+}
+
+///|
+#derive(ToJson)
+pub(all) struct SeatRiskScenario {
+  cost : Int64
+  known_demand_optimum : Int64
+  regret : Int64
+}
+
+///|
+#derive(ToJson)
+pub(all) struct SeatRiskPlan {
+  currency : String
+  annual_seats : Int32
+  worst_regret : Int64
+  scenarios : Array[SeatRiskScenario]
+}
+
+///|
+/// Minimize the largest excess cost over each scenario's own optimum.
+pub fn plan_seat_risk(
+  raw : String,
+  plan : String,
+  scenarios : Array[Array[Int32]],
+) -> SeatRiskPlan raise PricingAnalysisError {
+  if scenarios.length() < 2 || scenarios.length() > 16 {
+    raise InvalidAnalysis("须提供 2 至 16 组席位需求情景")
+  }
+  for demand in scenarios {
+    validate_seat_counts(demand)
+  }
+  let (currency, month, year) = quoted_seat_rates(raw, plan)
+  let optima = scenarios.map(demand => {
+    seat_breakpoint_optimum(demand, month, year).1
+  })
+  let worst = reserve => {
+    let mut largest = 0L
+    for i in 0..<scenarios.length() {
+      let add = seat_cost_at(scenarios[i], reserve, month, year) - optima[i]
+      if add > largest {
+        largest = add
+      }
+    }
+    largest
+  }
+  let mut lo = 0
+  let mut hi = scenarios.fold(init=0, (peak, demand) => {
+    let maximum = seat_peak(demand)
+    if maximum > peak {
+      maximum
+    } else {
+      peak
+    }
+  })
+  // Maximum of convex scenario regrets is convex. Search the first nonnegative discrete slope.
+  while lo < hi {
+    let mid = lo + (hi - lo) / 2
+    if worst(mid) <= worst(mid + 1) {
+      hi = mid
+    } else {
+      lo = mid + 1
+    }
+  }
+  {
+    currency,
+    annual_seats: lo,
+    worst_regret: worst(lo),
+    scenarios: Array::makei(scenarios.length(), i => {
+      let cost = seat_cost_at(scenarios[i], lo, month, year)
+      { cost, known_demand_optimum: optima[i], regret: cost - optima[i], }
+    }),
   }
 }

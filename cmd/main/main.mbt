@@ -30,7 +30,7 @@ fn main {
     "normalize" => cmd_normalize(args)
     "align" => cmd_align(args)
     "budget" => cmd_budget(args)
-    "seat-plan" => cmd_seat_plan(args)
+    "seat-plan" | "seat-risk" => cmd_seat_plan(args)
     "reprice" => cmd_reprice(args)
     "compare-quotes" => {
       if args.length() != 3 {
@@ -76,6 +76,9 @@ fn print_usage() -> Unit {
   println("list：列出全部工具及价格状态")
   println(
     "seat-plan <套餐名> <12个月席位数，英文逗号分隔> <报价原文>：模拟月付和年付组合",
+  )
+  println(
+    "seat-risk <套餐名> <需求情景1> <需求情景2> <报价原文>：最小化最坏情景的额外成本",
   )
   println(
     "compare-quotes <前次报价原文> <本次报价原文>：输出逐套餐差异 JSON",
@@ -489,16 +492,37 @@ fn budget_money(cents : Int64) -> String {
 }
 
 ///|
+fn parse_seat_demand(raw : String) -> Array[Int32] raise {
+  let seats : Array[Int32] = []
+  for field in raw.split(",") {
+    seats.push(@string.parse_int(field.trim().to_owned()))
+  }
+  seats
+}
+
+///|
 fn cmd_seat_plan(args : Array[String]) -> Unit {
   try {
-    if args.length() != 4 {
-      fail("用法：seat-plan <套餐名> <12个月席位数> <报价原文>")
+    let risk = args[0] == "seat-risk"
+    let length = if risk { 5 } else { 4 }
+    if args.length() != length {
+      fail(
+        "用法：seat-plan <套餐名> <12个月席位数> <报价原文> 或 seat-risk <套餐名> <情景1> <情景2> <报价原文>",
+      )
     }
-    let seats : Array[Int32] = []
-    for field in args[2].split(",") {
-      seats.push(@string.parse_int(field.trim().to_owned()))
+    let seats = parse_seat_demand(args[2])
+    if risk {
+      println(
+        Json(
+          @lib.plan_seat_risk(args[4], args[1], [
+            seats,
+            parse_seat_demand(args[3]),
+          ]),
+        ).stringify(),
+      )
+    } else {
+      println(Json(@lib.plan_seat_costs(args[3], args[1], seats)).stringify())
     }
-    println(Json(@lib.plan_seat_costs(args[3], args[1], seats)).stringify())
   } catch {
     err => {
       eprintln("席位预算模拟失败：" + err.to_string())

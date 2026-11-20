@@ -110,6 +110,13 @@ def main():
     assert run("seat-plan", "Pro", "1,2", quote, success=False) == ""
     assert run("seat-plan", "Pro", demand, "Pro $10/月；Pro $96/年", success=False) == ""
     print("PASS seat cost plan finds the minimum exact cost across annual reservation breakpoints")
+    low, high = (",".join([str(n)] * 12) for n in (2, 8))
+    robust = json.loads(run("seat-risk", "Pro", low, high, quote))
+    assert robust["currency"] == "USD" and robust["annual_seats"] == 3 and robust["worst_regret"] == "12000"
+    assert [(item["cost"], item["known_demand_optimum"], item["regret"]) for item in robust["scenarios"]] == [
+        ("28800", "19200", "9600"), ("88800", "76800", "12000")]
+    assert run("seat-risk", "Pro", low, "2,8", quote, success=False) == ""
+    print("PASS robust seat planning finds an interior optimum at three annual seats")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

@@ -571,3 +571,62 @@ test "seat planning rejects flat prices and incomplete or contradictory inputs" 
   }
   assert_true(result is Err(_))
 }
+
+///|
+test "robust seat planning finds an interior minimum between demand breakpoints" {
+  let quote = "Pro $10/用户/月；Pro $96/用户/年"
+  let low = Array::make(12, 2)
+  let high = Array::make(12, 8)
+  let result = plan_seat_risk(quote, "Pro", [low, high])
+  assert_eq(result.annual_seats, 3)
+  assert_eq(result.worst_regret, 12000L)
+  assert_eq(result.scenarios.map(item => item.regret), [9600L, 12000L])
+  assert_eq(result.scenarios.map(item => item.known_demand_optimum), [
+    19200L, 76800L,
+  ])
+}
+
+///|
+test "robust seat planning agrees with integer enumeration for mixed demand and ties" {
+  let quote = "Pro $10/用户/月；Pro $96/用户/年"
+  let sets = [
+    [Array::make(12, 0), Array::make(12, 5)],
+    [[0, 2, 1, 4, 5, 3, 2, 2, 0, 1, 4, 5], [1, 2, 4, 1, 1, 4, 1, 5, 3, 2, 1, 4]],
+    [Array::make(12, 0), Array::make(12, 0)],
+  ]
+  for scenarios in sets {
+    let costs = scenarios.map(demand => {
+      Array::makei(6, k => {
+        demand.fold(init=k.to_int64() * 9600L, (c, d) => {
+          c + (if d > k { (d - k).to_int64() * 1000L } else { 0L })
+        })
+      })
+    })
+    let minima = costs.map(values => {
+      values.fold(init=values[0], (best, cost) => {
+        if cost < best {
+          cost
+        } else {
+          best
+        }
+      })
+    })
+    let mut chosen = 0
+    let mut best = 1000000L
+    for k in 0..<6 {
+      let a = costs[0][k] - minima[0]
+      let b = costs[1][k] - minima[1]
+      let regret = if a > b { a } else { b }
+      if regret < best {
+        chosen = k
+        best = regret
+      }
+    }
+    let result = plan_seat_risk(quote, "Pro", scenarios)
+    assert_eq((result.annual_seats, result.worst_regret), (chosen, best))
+  }
+  let invalid = Ok(plan_seat_risk(quote, "Pro", [Array::make(12, 1)])) catch {
+    err => Err(err)
+  }
+  assert_true(invalid is Err(_))
+}
