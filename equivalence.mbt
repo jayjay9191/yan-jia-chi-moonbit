@@ -68,7 +68,14 @@ pub fn audit_plan_classes(classes : Array[PlanClass]) -> Array[String] {
             } else if pa.per_seat != pb.per_seat {
               "席位口径不同"
             } else if pa.billed_annually == pb.billed_annually {
-              align_reason(align_prices(left, right))
+              let reason = align_reason(align_prices(left, right))
+              let (_, year_a) = subscription_cost(pa, 1)
+              let (_, year_b) = subscription_cost(pb, 1)
+              if reason != "" || year_a == year_b {
+                reason
+              } else {
+                "同一付款周期折算一年分别为 \{year_a} 分与 \{year_b} 分"
+              }
             } else {
               ""
             }
@@ -172,12 +179,10 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
     let saving = match (monthly, annual) {
       (Some(m), Some(a)) =>
         if coherent {
-          Some(
-            annual_saving_pct(
-              normalized_monthly_cents(normalize_price(m.quote)),
-              normalized_monthly_cents(normalize_price(a.quote)),
-            ),
-          )
+          match compare_budget(m.quote, a.quote, 1) {
+            Ok(budget) => Some(saving_pct(budget.year_a, budget.year_b))
+            Err(_) => None
+          }
         } else {
           None
         }

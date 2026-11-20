@@ -171,3 +171,12 @@ test "class audit refuses empty identities and split classes for one plan" {
     }),
   )
 }
+
+///|
+test "annual plan classes compare exact charges before monthly rounding" {
+  let conflict = plan_classes("Basic $96/年；Basic $96.01/年")
+  assert_eq(conflict.issues.length(), 1)
+  let tiny = plan_classes("Basic $0.01/月；Basic $0.01/年")
+  assert_eq(tiny.issues.length(), 0)
+  assert_eq(tiny.classes[0].annual_saving, Some(92))
+}

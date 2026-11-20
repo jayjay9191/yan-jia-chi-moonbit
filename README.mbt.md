@@ -11,10 +11,18 @@
 moon run cmd/main -- trajectory Tana
 moon run cmd/main -- trajectory "智谱清言 / GLM"
 moon run cmd/main -- classes Midjourney
+moon run cmd/main -- classes-quote 'Basic $10/月；Basic $96/年'
+moon run cmd/main -- classes-quote 'Basic $96/年；Basic $96.01/年'
 moon run cmd/main -- recheck-queue 2026-11-20
 moon run cmd/main -- trajectory-summary
 python scripts/verify_review.py
 ```
+
+第一条自填报价得出年付节省 20%。第二条报 1 项矛盾，原始年费为 9600 分与
+9601 分；套餐核对使用精确金额计算，避免月均分舍入掩盖价差或夸大折扣。
+自填报价可用全角分号“；”分隔多条，逐条写明套餐名、币种及付款周期。
+这两条命令会在 CI 复跑。
+
 
 代表性结果：Tana −21%；GLM 多档幅度须逐档核对；Midjourney 8 种写法 → 4 个
 命名套餐类、无矛盾、年付均省 20%；六类轨迹共 942 条，队列取前 20 条。
@@ -25,7 +33,7 @@ R1 没有保存原始报价，不能用当前价倒填，三轮整体标为不�
 强化回归：年度变动复用已有标准订阅成本函数，以原始年费用计算比例，避免月均
 分取整造成方向误判或零分母；复核队列复用按日期整理后的轨迹结论，乱序记录
 也能保留下架停核状态，连续不可观测会提高未核验优先级。
-1150 项测试通过；CI 同时执行上述 CLI 的结果与错误输入检查。
+1151 项测试通过；CI 同时执行上述 CLI 的结果与错误输入检查。
 源码版本为 0.1.4，Mooncakes 新包尚待登录后发布。
 
 初审核对入口：[`trajectory.mbt`](trajectory.mbt) 分析跨次观测与复核队列，

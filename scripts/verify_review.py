@@ -28,10 +28,15 @@ def main():
     assert "矛盾/待核对：0" in classes
     assert "20261115-R1 | 0类 | 缺少" in classes
     assert "20261115-R3 | 4类" in classes and "20261118-R5 | 4类" in classes
+    fresh = run("classes-quote", "Basic $10/月；Basic $96/年")
+    assert "年付节省20%" in fresh and "矛盾/待核对：0" in fresh
+    conflict = run("classes-quote", "Basic $96/年；Basic $96.01/年")
+    assert "矛盾/待核对：1" in conflict and "9600 分与 9601 分" in conflict
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),
-                 ("classes",), ("recheck-queue", "2026-02-30"),
+                 ("classes",), ("classes-quote",), ("classes-quote", " "),
+                 ("recheck-queue", "2026-02-30"),
                  ("trajectory-summary", "unexpected")):
         run(*args, success=False)
     print("PASS measured trajectories, 942 category counts, four plan classes, R1 evidence gap and top20 queue")

@@ -212,16 +212,15 @@ pub fn annual_saving_pct(
   monthly_cents : Int32,
   annual_monthly_cents : Int32,
 ) -> Int32 {
-  if monthly_cents <= 0 ||
-    annual_monthly_cents < 0 ||
-    annual_monthly_cents >= monthly_cents {
+  saving_pct(monthly_cents.to_int64(), annual_monthly_cents.to_int64())
+}
+
+///|
+fn saving_pct(baseline : Int64, candidate : Int64) -> Int32 {
+  if baseline <= 0 || candidate < 0 || candidate >= baseline {
     0
   } else {
-    ((
-      (monthly_cents - annual_monthly_cents).to_int64() * 100 +
-      monthly_cents.to_int64() / 2
-    ) /
-    monthly_cents.to_int64()).to_int()
+    (((baseline - candidate) * 100 + baseline / 2) / baseline).to_int()
   }
 }
 

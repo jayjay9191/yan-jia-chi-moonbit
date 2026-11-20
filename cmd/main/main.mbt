@@ -31,8 +31,11 @@ fn main {
     "align" => cmd_align(args)
     "budget" => cmd_budget(args)
     "reprice" => cmd_reprice(args)
-    "trajectory" | "trajectory-summary" | "classes" | "recheck-queue" =>
-      cmd_analysis(args)
+    "trajectory"
+    | "trajectory-summary"
+    | "classes"
+    | "classes-quote"
+    | "recheck-queue" => cmd_analysis(args)
     "help" | "-h" | "--help" => print_usage()
     other => {
       println("未知子命令：\{other}")
@@ -96,7 +99,29 @@ fn print_usage() -> Unit {
   println(
     "recheck-queue [YYYY-MM-DD]：按账龄、变动历史和未核验状态列前20项",
   )
+  println(
+    "classes-quote <报价原文>：输入自有报价，核对套餐与年付差额",
+  )
   println("工具名只接受全名，例如：moon run cmd/main check Cursor")
+}
+
+///|
+fn print_class_report(label : String, report : @lib.PlanClassReport) -> Unit {
+  println("\{label}：\{report.classes.length()}类")
+  for cls in report.classes {
+    let saving = match cls.annual_saving {
+      Some(n) => "年付节省\{n}%"
+      None => "未能计算年付节省率"
+    }
+    println("\{cls.plan} | \{cls.members.length()}种写法 | \{saving}")
+    for offer in cls.members {
+      println("  \{offer.quote}")
+    }
+  }
+  println("矛盾/待核对：\{report.issues.length()}")
+  for issue in report.issues {
+    println(issue)
+  }
 }
 
 ///|
@@ -143,6 +168,12 @@ fn cmd_analysis(args : Array[String]) -> Unit {
           )
         }
       }
+      "classes-quote" => {
+        if args.length() != 2 || args[1].trim().is_empty() {
+          fail("用法：classes-quote <报价原文>")
+        }
+        print_class_report("输入报价", @lib.plan_classes(args[1]))
+      }
       "trajectory" | "classes" => {
         if args.length() != 2 {
           fail("用法：\{args[0]} <工具全名>")
@@ -159,24 +190,7 @@ fn cmd_analysis(args : Array[String]) -> Unit {
             )
           }
         } else {
-          let report = @lib.plan_classes(tool.paid_price)
-          println("\{tool.name}：\{report.classes.length()}类")
-          for cls in report.classes {
-            let saving = match cls.annual_saving {
-              Some(n) => "年付节省\{n}%"
-              None => "缺少月付/年付成对报价"
-            }
-            println(
-              "\{cls.plan} | \{cls.members.length()}种写法 | \{saving}",
-            )
-            for offer in cls.members {
-              println("  \{offer.quote}")
-            }
-          }
-          println("矛盾/待核对：\{report.issues.length()}")
-          for issue in report.issues {
-            println(issue)
-          }
+          print_class_report(tool.name, @lib.plan_classes(tool.paid_price))
           let stability = @lib.class_stability(tool)
           println(
             "历史证据完整：\{stability.complete}；有原文的复核套餐身份稳定：\{stability.observed_stable}",
