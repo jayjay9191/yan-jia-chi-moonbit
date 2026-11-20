@@ -88,17 +88,33 @@ pub fn analyze_trajectory(
   let events = []
   let mut missing = 0
   let mut status = "保留原核验状态"
+  let delisted_status = "已下架，停止复核，保留历史"
+  let seen_sessions : Array[String] = []
   for index in order {
     let event = tool.history[index]
-    missing = if event.change == "未看到价" { missing + 1 } else { 0 }
-    let (percent, needs_review, detail) = if event.change == "涨价" ||
-      event.change == "降价" {
+    let session = event.session.trim().to_owned()
+    let independent = !session.is_empty() && !seen_sessions.contains(session)
+    if independent {
+      seen_sessions.push(session)
+      missing = if event.change == "未看到价" { missing + 1 } else { 0 }
+    }
+    let (percent, needs_review, detail) = if !independent {
+      (
+        None,
+        true,
+        "会话重复或缺少标识，未计为独立观测，须核对原始记录",
+      )
+    } else if event.change == "涨价" || event.change == "降价" {
       history_movement(event)
     } else {
       (None, false, event.change)
     }
-    let level = if event.change == "下架" {
-      "已下架，停止复核，保留历史"
+    let archive_only = status == delisted_status &&
+      (event.change == "未看到价" || event.new_price.trim().is_empty())
+    let level = if !independent {
+      "复核会话待核对"
+    } else if event.change == "下架" || archive_only {
+      delisted_status
     } else if missing >= 2 {
       "数据不可观测，降级为未核验"
     } else if needs_review && percent is Some(_) {
@@ -108,8 +124,10 @@ pub fn analyze_trajectory(
     } else {
       "常规复核"
     }
-    status = if event.change == "下架" {
-      "已下架，停止复核，保留历史"
+    status = if !independent || archive_only {
+      status
+    } else if event.change == "下架" {
+      delisted_status
     } else if missing >= 2 {
       "数据不可观测，降级为未核验"
     } else if event.change == "未看到价" {

@@ -10,10 +10,11 @@ fn history_event(
   old : String,
   next : String,
   date~ : String = "2026-11-18",
+  session~ : String = "fixture",
 ) -> HistoryEntry {
   {
     date,
-    session: "fixture",
+    session,
     change,
     old_price: old,
     new_price: next,
@@ -49,7 +50,7 @@ test "two trailing unobserved events downgrade the current verdict" {
   let tool = trajectory_tool("Tana")
   let history = [
     history_event("未看到价", "", ""),
-    history_event("未看到价", "", ""),
+    history_event("未看到价", "", "", session="second"),
   ]
   assert_eq(
     analyze_trajectory({ ..tool, history, }).status,
@@ -61,13 +62,16 @@ test "two trailing unobserved events downgrade the current verdict" {
 test "one observation failure does not downgrade and later observation recovers" {
   let tool = trajectory_tool("Tana")
   let missing = history_event("未看到价", "", "")
-  let seen = history_event("无变化", "", "")
+  let seen = history_event("无变化", "", "", session="third")
   assert_eq(
     analyze_trajectory({ ..tool, history: [missing], }).status,
     "保留原核验状态",
   )
   assert_eq(
-    analyze_trajectory({ ..tool, history: [missing, missing, seen], }).status,
+    analyze_trajectory({
+      ..tool,
+      history: [missing, { ..missing, session: "second", }, seen],
+    }).status,
     "保留原核验状态",
   )
 }
@@ -93,7 +97,13 @@ test "major movement thresholds are inclusive" {
 ///|
 test "history is processed in chronological order without mutating its source" {
   let tool = trajectory_tool("Tana")
-  let late = history_event("无变化", "", "", date="2026-11-19")
+  let late = history_event(
+    "无变化",
+    "",
+    "",
+    date="2026-11-19",
+    session="late",
+  )
   let early = history_event("未看到价", "", "", date="2026-11-17")
   let report = analyze_trajectory({ ..tool, history: [late, early], })
   assert_eq(report.events[0].date, early.date)
@@ -264,7 +274,13 @@ test "annual repricing uses original charges before monthly rounding" {
 ///|
 test "queue derives delisting and observability from chronological trajectory" {
   let tool = trajectory_tool("Tana")
-  let delisted = history_event("下架", "$10/月", "", date="2026-11-19")
+  let delisted = history_event(
+    "下架",
+    "$10/月",
+    "",
+    date="2026-11-19",
+    session="delisted",
+  )
   let seen = history_event("无变化", "$10/月", "$10/月", date="2026-11-17")
   let queue = recheck_queue(
     [{ ..tool, history: [delisted, seen], }],
@@ -273,7 +289,7 @@ test "queue derives delisting and observability from chronological trajectory" {
   assert_true(queue[0].reason.contains("停止报价复核"))
   let missing = history_event("未看到价", "", "")
   let unseen = recheck_queue(
-    [{ ..tool, history: [missing, missing], }],
+    [{ ..tool, history: [missing, { ..missing, session: "second", }], }],
     date_to_days("2026-11-20"),
   )
   assert_true(unseen[0].reason.contains("数据不可观测"))
@@ -282,4 +298,74 @@ test "queue derives delisting and observability from chronological trajectory" {
     date_to_days("2026-11-20"),
   )
   assert_true(malformed[0].reason.contains("轨迹不合法"))
+}
+
+///|
+test "duplicate missing-price sessions cannot cause a false observability downgrade" {
+  let tool = trajectory_tool("Tana")
+  let missing = history_event("未看到价", "", "")
+  let report = analyze_trajectory({ ..tool, history: [missing, missing], })
+  assert_eq(report.events.length(), 2)
+  assert_eq(report.status, "保留原核验状态")
+  assert_true(report.events[1].detail.contains("独立"))
+}
+
+///|
+test "delisted archives stay stopped until a new observed price returns" {
+  let tool = trajectory_tool("Tana")
+  let removed = history_event(
+    "下架",
+    "$10/月",
+    "",
+    date="2026-11-18",
+    session="removed",
+  )
+  let first = history_event(
+    "未看到价",
+    "",
+    "",
+    date="2026-11-19",
+    session="missing-1",
+  )
+  let second = history_event(
+    "未看到价",
+    "",
+    "",
+    date="2026-11-20",
+    session="missing-2",
+  )
+  let archive = { ..tool, history: [removed, first, second], }
+  let report = analyze_trajectory(archive)
+  assert_eq(report.status, "已下架，停止复核，保留历史")
+  assert_eq(report.events[2].level, "已下架，停止复核，保留历史")
+  assert_true(
+    recheck_queue([archive], date_to_days("2026-11-20"))[0].reason.contains(
+      "停止报价复核",
+    ),
+  )
+  let note_only = history_event(
+    "无变化",
+    "",
+    "",
+    date="2026-11-21",
+    session="note-only",
+  )
+  assert_eq(
+    analyze_trajectory({ ..tool, history: [removed, first, second, note_only], }).status,
+    "已下架，停止复核，保留历史",
+  )
+  let observed = history_event(
+    "新档位",
+    "",
+    "$12/月",
+    date="2026-11-21",
+    session="returned",
+  )
+  let active = { ..tool, history: [removed, first, second, observed], }
+  assert_eq(analyze_trajectory(active).status, "保留原核验状态")
+  assert_false(
+    recheck_queue([active], date_to_days("2026-11-21"))[0].reason.contains(
+      "停止报价复核",
+    ),
+  )
 }
