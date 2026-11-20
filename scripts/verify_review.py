@@ -13,6 +13,7 @@ def run(*args, success=True):
 
 
 def main():
+    assert "用法" in run("help")
     tana = run("trajectory", "Tana")
     assert "-21%" in tana and "降价" in tana
     glm = run("trajectory", "智谱清言 / GLM")
@@ -29,7 +30,7 @@ def main():
     assert "20261115-R3 | 4类" in classes and "20261118-R5 | 4类" in classes
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
-    for args in (("trajectory",), ("trajectory", "missing"),
+    for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),
                  ("classes",), ("recheck-queue", "2026-02-30"),
                  ("trajectory-summary", "unexpected")):
         run(*args, success=False)

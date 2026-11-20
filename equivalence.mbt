@@ -34,6 +34,14 @@ pub fn audit_plan_classes(classes : Array[PlanClass]) -> Array[String] {
   let issues = []
   for i in 0..<classes.length() {
     let cls = classes[i]
+    if cls.plan.trim().is_empty() || cls.members.is_empty() {
+      issues.push("空套餐身份或空报价类：" + cls.plan)
+    }
+    for j in 0..<i {
+      if classes[j].plan.trim() == cls.plan.trim() {
+        issues.push("同一套餐被拆成多个类：" + cls.plan)
+      }
+    }
     for offer in cls.members {
       if offer.plan != cls.plan {
         issues.push("套餐身份冲突：" + cls.plan + " / " + offer.plan)

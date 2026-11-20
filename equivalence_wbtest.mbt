@@ -150,3 +150,24 @@ test "repeated or unnamed sessions and invalid dates are not independent recheck
     )
   }
 }
+
+///|
+test "class audit refuses empty identities and split classes for one plan" {
+  let basic = plan_classes("Basic $10/月").classes[0]
+  let duplicate = plan_classes("Basic $11/月").classes[0]
+  assert_true(
+    audit_plan_classes([basic, duplicate]).any(issue => {
+      issue.contains("同一套餐")
+    }),
+  )
+  assert_true(
+    audit_plan_classes([{ ..basic, members: [], }]).any(issue => {
+      issue.contains("空")
+    }),
+  )
+  assert_true(
+    audit_plan_classes([{ ..basic, plan: " ", }]).any(issue => {
+      issue.contains("空")
+    }),
+  )
+}
