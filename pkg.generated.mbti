@@ -3,6 +3,7 @@ package "jayjay9191/yan-jia-chi-moonbit"
 
 import {
   "moonbitlang/core/debug",
+  "moonbitlang/core/json",
 }
 
 // Values
@@ -33,6 +34,8 @@ pub fn cheaper_monthly_cents(String, String) -> Int32
 pub fn class_stability(ToolPricing) -> ClassStability
 
 pub fn compare_budget(String, String, Int32) -> Result[BudgetComparison, String]
+
+pub fn compare_quote_snapshots(String, String) -> QuoteComparison
 
 pub fn compare_repricing(String, String, Int32) -> Result[BudgetComparison, String]
 
@@ -257,6 +260,24 @@ pub(all) struct PricingReport {
   delisted : Int32
   unobserved : Int32
   today : String
+}
+
+#derive(@json.ToJson)
+pub(all) struct QuoteChange {
+  plan : String
+  annual : Bool
+  kind : String
+  before_quote : String?
+  after_quote : String?
+  before_year : Int64?
+  after_year : Int64?
+}
+
+#derive(@json.ToJson)
+pub(all) struct QuoteComparison {
+  before_issues : Array[String]
+  after_issues : Array[String]
+  changes : Array[QuoteChange]
 }
 
 pub(all) struct RecheckItem {

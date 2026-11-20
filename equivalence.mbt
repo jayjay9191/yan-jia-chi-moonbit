@@ -332,10 +332,30 @@ fn session_options(
 }
 
 ///|
-fn compare_session_options(
+#derive(ToJson)
+pub(all) struct QuoteChange {
+  plan : String
+  annual : Bool
+  kind : String
+  before_quote : String?
+  after_quote : String?
+  before_year : Int64?
+  after_year : Int64?
+}
+
+///|
+#derive(ToJson)
+pub(all) struct QuoteComparison {
+  before_issues : Array[String]
+  after_issues : Array[String]
+  changes : Array[QuoteChange]
+}
+
+///|
+fn diff_plan_options(
   before : Array[PlanClass],
   after : Array[PlanClass],
-) -> (String, Bool) {
+) -> Array[QuoteChange] {
   let old = session_options(before)
   let current = session_options(after)
   let keys = old.keys().collect()
@@ -345,34 +365,69 @@ fn compare_session_options(
     }
   }
   keys.sort()
-  let differences : Array[String] = []
+  let differences : Array[QuoteChange] = []
   for key in keys {
     let (plan, annual) = key
-    let label = plan + (if annual { " 年付" } else { " 月付" })
-    match (old.get(key), current.get(key)) {
-      (Some(a), Some(b)) =>
-        if !currency_eq(a.currency, b.currency) || a.per_seat != b.per_seat {
-          differences.push(label + "：币种或席位口径变化，须核对")
+    let a = old.get(key)
+    let b = current.get(key)
+    let (kind, before_year, after_year) = match (a, b) {
+      (Some(left), Some(right)) =>
+        if !currency_eq(left.currency, right.currency) ||
+          left.per_seat != right.per_seat {
+          ("basis-changed", None, None)
         } else {
-          let (_, old_cost) = subscription_cost(a, 1)
-          let (_, new_cost) = subscription_cost(b, 1)
-          if old_cost != new_cost {
-            differences.push("\{label}：\{old_cost} → \{new_cost} 分/年")
+          let (_, old_cost) = subscription_cost(left, 1)
+          let (_, new_cost) = subscription_cost(right, 1)
+          if old_cost == new_cost {
+            continue
           }
+          ("amount-changed", Some(old_cost), Some(new_cost))
         }
-      (Some(_), None) => differences.push(label + "：本次原文未见")
-      (None, Some(_)) => differences.push(label + "：前次原文未见")
-      (None, None) => ()
+      (Some(_), None) => ("missing", None, None)
+      (None, Some(_)) => ("added", None, None)
+      (None, None) => continue
     }
+    differences.push({
+      plan,
+      annual,
+      kind,
+      before_quote: a.map(price => price.original),
+      after_quote: b.map(price => price.original),
+      before_year,
+      after_year,
+    })
   }
-  if differences.is_empty() {
-    (
-      "与前次独立原文逐套餐、逐付款周期核对，金额和口径一致",
-      false,
-    )
+  differences
+}
+
+///|
+/// Compare two independent fixed subscription quote snapshots without network or ledger access.
+pub fn compare_quote_snapshots(
+  before : String,
+  after : String,
+) -> QuoteComparison {
+  let a = plan_classes(before)
+  let b = plan_classes(after)
+  let changes = if a.issues.is_empty() && b.issues.is_empty() {
+    diff_plan_options(a.classes, b.classes)
   } else {
-    (join_strings(differences, "；"), true)
+    []
   }
+  { before_issues: a.issues, after_issues: b.issues, changes, }
+}
+
+///|
+fn describe_quote_change(change : QuoteChange) -> String {
+  let label = change.plan + (if change.annual { " 年付" } else { " 月付" })
+  if change.before_year is Some(a) && change.after_year is Some(b) {
+    return "\{label}：\{a} → \{b} 分/年"
+  }
+  label +
+  (match change.kind {
+    "missing" => "：本次原文未见"
+    "added" => "：前次原文未见"
+    _ => "：币种或席位口径变化，须核对"
+  })
 }
 
 ///|
@@ -426,14 +481,16 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
         "缺少复核当时的价格原文，稳定性待核对"
       } else if valid {
         if last_valid is Some(previous) {
-          let (detail, changed) = compare_session_options(
-            previous,
-            report.classes,
-          )
-          if changed && event.change == "无变化" {
-            "台账标为无变化，原文差异须复核：" + detail
+          let changes = diff_plan_options(previous, report.classes)
+          if changes.is_empty() {
+            "与前次独立原文逐套餐、逐付款周期核对，金额和口径一致"
           } else {
-            detail
+            let detail = join_strings(changes.map(describe_quote_change), "；")
+            if event.change == "无变化" {
+              "台账标为无变化，原文差异须复核：" + detail
+            } else {
+              detail
+            }
           }
         } else if sessions.is_empty() {
           "套餐身份与类内报价已核对，作为首个可比快照"

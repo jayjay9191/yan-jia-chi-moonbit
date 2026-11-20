@@ -71,6 +71,20 @@ def main():
     assert "前次证据不可用" in stored["history"]["sessions"][1]["detail"]
     assert "逐套餐、逐付款周期核对，金额和口径一致" in stored["history"]["sessions"][2]["detail"]
     assert run("classes-quote", "", "--json", success=False) == ""
+    comparison = json.loads(run(
+        "compare-quotes", "Basic $10/月；Basic $96/年；Pro $20/月",
+        "Basic $11/月；Basic $8/月按年；Pro €20/月"))
+    assert comparison["before_issues"] == comparison["after_issues"] == []
+    changes = {entry["plan"]: entry for entry in comparison["changes"]}
+    assert set(changes) == {"Basic", "Pro"}
+    amount, basis = changes["Basic"], changes["Pro"]
+    assert (amount["plan"], amount["kind"], amount["annual"]) == ("Basic", "amount-changed", False)
+    assert (int(amount["before_year"]), int(amount["after_year"])) == (12000, 13200)
+    assert (basis["kind"], basis.get("before_year"), basis.get("after_year")) == ("basis-changed", None, None)
+    unsafe = json.loads(run("compare-quotes", "Basic $10/月；Basic $11/月", "Basic $12/月"))
+    assert len(unsafe["before_issues"]) == 1 and unsafe["changes"] == []
+    assert run("compare-quotes", "Basic $10/月", success=False) == ""
+    print("PASS structured quote comparisons preserve matched billing options and mark incompatible evidence")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

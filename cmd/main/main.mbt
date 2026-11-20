@@ -31,6 +31,15 @@ fn main {
     "align" => cmd_align(args)
     "budget" => cmd_budget(args)
     "reprice" => cmd_reprice(args)
+    "compare-quotes" => {
+      if args.length() != 3 {
+        eprintln(
+          "用法：compare-quotes <前次报价原文> <本次报价原文>",
+        )
+        @env.exit(2)
+      }
+      println(Json(@lib.compare_quote_snapshots(args[1], args[2])).stringify())
+    }
     "trajectory"
     | "trajectory-summary"
     | "classes"
@@ -64,6 +73,9 @@ fn print_usage() -> Unit {
   println("用法：moon run cmd/main [子命令 ...]")
   println("无参数 / report：带分母的汇总报告")
   println("list：列出全部工具及价格状态")
+  println(
+    "compare-quotes <前次报价原文> <本次报价原文>：输出逐套餐差异 JSON",
+  )
   println(
     "verify：跑全部验证规则，目标 0 错；有问题返回码 1",
   )

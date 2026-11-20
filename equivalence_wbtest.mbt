@@ -394,3 +394,45 @@ test "historical plan audit flags unchanged labels when the original amounts dis
   assert_true(result.sessions[1].detail.contains("台账标为无变化"))
   assert_true(result.sessions[1].detail.contains("12000 → 13200"))
 }
+
+///|
+test "structured quote comparison separates changed amounts from missing and incompatible options" {
+  let diff = compare_quote_snapshots(
+    "Basic $10/月；Basic $96/年；Pro $20/月；Solo $10/月", "Basic $11/月；Basic $8/月按年；Pro €20/月；Team $15/月",
+  )
+  assert_true(diff.before_issues.is_empty() && diff.after_issues.is_empty())
+  assert_eq(diff.changes.length(), 4)
+  let kinds = diff.changes.map(change => (change.plan, change.kind))
+  for
+    expected in [
+      ("Basic", "amount-changed"),
+      ("Pro", "basis-changed"),
+      ("Solo", "missing"),
+      ("Team", "added"),
+    ] {
+    assert_true(kinds.contains(expected))
+  }
+  guard diff.changes.iter().find_first(change => change.plan == "Basic")
+    is Some(basic) else {
+    abort("missing Basic change")
+  }
+  guard diff.changes.iter().find_first(change => change.plan == "Pro")
+    is Some(pro) else {
+    abort("missing Pro change")
+  }
+  assert_eq(basic.before_year, Some(12000L))
+  assert_eq(basic.after_year, Some(13200L))
+  assert_eq(basic.before_quote, Some("$10/月"))
+  assert_eq(pro.before_year, None)
+  assert_eq(pro.after_year, None)
+}
+
+///|
+test "structured quote comparison withholds findings for an inconsistent snapshot" {
+  let diff = compare_quote_snapshots(
+    "Basic $10/月；Basic $11/月", "Basic $12/月",
+  )
+  assert_eq(diff.before_issues.length(), 1)
+  assert_true(diff.after_issues.is_empty())
+  assert_true(diff.changes.is_empty())
+}
