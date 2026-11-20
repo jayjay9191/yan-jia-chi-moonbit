@@ -27,3 +27,28 @@ test "review sample withholds price changes when an input contradicts itself" {
   assert_true(result.after_issues.is_empty())
   assert_true(result.changes.is_empty())
 }
+
+///|
+test "review respects the upfront budget before minimizing regret" {
+  let quote = "Pro $10/用户/月；Pro $96/用户/年"
+  let cases = [Array::make(12, 2), Array::make(12, 8)]
+  let limited = @lib.plan_seat_risk(quote, "Pro", cases, annual_budget=25000L)
+  assert_eq(
+    (limited.annual_seats, limited.annual_commitment, limited.worst_regret),
+    (2, 19200L, 14400L),
+  )
+  assert_eq(limited.scenarios.map(row => row.regret), [0L, 14400L])
+  let no_prepaid = @lib.plan_seat_risk(quote, "Pro", cases, annual_budget=0L)
+  assert_eq(
+    (
+      no_prepaid.annual_seats,
+      no_prepaid.annual_commitment,
+      no_prepaid.worst_regret,
+    ),
+    (0, 0L, 19200L),
+  )
+  let invalid = Ok(@lib.plan_seat_risk(quote, "Pro", cases, annual_budget=-1L)) catch {
+    err => Err(err)
+  }
+  assert_true(invalid is Err(_))
+}

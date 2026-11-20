@@ -116,7 +116,22 @@ def main():
     assert [(item["cost"], item["known_demand_optimum"], item["regret"]) for item in robust["scenarios"]] == [
         ("28800", "19200", "9600"), ("88800", "76800", "12000")]
     assert run("seat-risk", "Pro", low, "2,8", quote, success=False) == ""
-    print("PASS robust seat planning finds an interior optimum at three annual seats")
+    assert robust["annual_commitment"] == "28800"
+    # Enumerate every feasible reserve rather than reusing the solver's search.
+    costs = [[reserve * 9600 + 12000 * max(demand - reserve, 0)
+              for reserve in range(9)] for demand in (2, 8)]
+    optima = [min(row) for row in costs]
+    for budget in (0, 9599, 9600, 19200, 25000, 28800, 76800, 9223372036854775807):
+        expected_regret, expected_reserve = min(
+            (max(row[reserve] - optimum for row, optimum in zip(costs, optima)), reserve)
+            for reserve in range(min(8, budget // 9600) + 1)
+        )
+        limited = json.loads(run("seat-risk", "Pro", low, high, quote, str(budget)))
+        assert limited["annual_seats"] == expected_reserve
+        assert limited["annual_commitment"] == str(expected_reserve * 9600)
+        assert limited["worst_regret"] == str(expected_regret)
+    assert run("seat-risk", "Pro", low, high, quote, "-1", success=False) == ""
+    print("PASS robust seat planning matches enumeration at eight upfront budget limits")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

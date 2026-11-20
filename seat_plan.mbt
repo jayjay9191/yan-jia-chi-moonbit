@@ -129,16 +129,19 @@ pub(all) struct SeatRiskScenario {
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
+  annual_commitment : Int64
   worst_regret : Int64
   scenarios : Array[SeatRiskScenario]
 }
 
 ///|
-/// Minimize the largest excess cost over each scenario's own optimum.
+/// Minimize the largest excess cost over each scenario's unconstrained optimum.
+/// An optional upfront budget limits annual seats in the quoted currency's hundredths.
 pub fn plan_seat_risk(
   raw : String,
   plan : String,
   scenarios : Array[Array[Int32]],
+  annual_budget? : Int64,
 ) -> SeatRiskPlan raise PricingAnalysisError {
   if scenarios.length() < 2 || scenarios.length() > 16 {
     raise InvalidAnalysis("须提供 2 至 16 组席位需求情景")
@@ -169,6 +172,15 @@ pub fn plan_seat_risk(
       peak
     }
   })
+  if annual_budget is Some(budget) {
+    if budget < 0L {
+      raise InvalidAnalysis("年付预付预算不能为负数")
+    }
+    if year > 0L && budget / year < hi.to_int64() {
+      hi = (budget / year).to_int()
+    }
+  }
+  // The budget truncates the integer interval without changing convexity.
   // Maximum of convex scenario regrets is convex. Search the first nonnegative discrete slope.
   while lo < hi {
     let mid = lo + (hi - lo) / 2
@@ -181,6 +193,7 @@ pub fn plan_seat_risk(
   {
     currency,
     annual_seats: lo,
+    annual_commitment: lo.to_int64() * year,
     worst_regret: worst(lo),
     scenarios: Array::makei(scenarios.length(), i => {
       let cost = seat_cost_at(scenarios[i], lo, month, year)

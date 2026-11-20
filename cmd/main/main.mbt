@@ -78,7 +78,7 @@ fn print_usage() -> Unit {
     "seat-plan <套餐名> <12个月席位数，英文逗号分隔> <报价原文>：模拟月付和年付组合",
   )
   println(
-    "seat-risk <套餐名> <需求情景1> <需求情景2> <报价原文>：最小化最坏情景的额外成本",
+    "seat-risk <套餐名> <需求情景1> <需求情景2> <报价原文> [预付预算，百分之一货币单位]：最小化最坏情景的额外成本",
   )
   println(
     "compare-quotes <前次报价原文> <本次报价原文>：输出逐套餐差异 JSON",
@@ -505,19 +505,26 @@ fn cmd_seat_plan(args : Array[String]) -> Unit {
   try {
     let risk = args[0] == "seat-risk"
     let length = if risk { 5 } else { 4 }
-    if args.length() != length {
+    if args.length() != length && !(risk && args.length() == length + 1) {
       fail(
-        "用法：seat-plan <套餐名> <12个月席位数> <报价原文> 或 seat-risk <套餐名> <情景1> <情景2> <报价原文>",
+        "用法：seat-plan <套餐名> <12个月席位数> <报价原文> 或 seat-risk <套餐名> <情景1> <情景2> <报价原文> [预付预算]",
       )
     }
     let seats = parse_seat_demand(args[2])
     if risk {
+      let annual_budget = if args.length() == length + 1 {
+        Some(@string.parse_int64(args[5]))
+      } else {
+        None
+      }
       println(
         Json(
-          @lib.plan_seat_risk(args[4], args[1], [
-            seats,
-            parse_seat_demand(args[3]),
-          ]),
+          @lib.plan_seat_risk(
+            args[4],
+            args[1],
+            [seats, parse_seat_demand(args[3])],
+            annual_budget?,
+          ),
         ).stringify(),
       )
     } else {

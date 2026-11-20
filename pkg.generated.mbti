@@ -105,7 +105,7 @@ pub fn plan_classes(String) -> PlanClassReport
 
 pub fn plan_seat_costs(String, String, Array[Int32]) -> SeatCostPlan raise PricingAnalysisError
 
-pub fn plan_seat_risk(String, String, Array[Array[Int32]]) -> SeatRiskPlan raise PricingAnalysisError
+pub fn plan_seat_risk(String, String, Array[Array[Int32]], annual_budget? : Int64) -> SeatRiskPlan raise PricingAnalysisError
 
 pub fn recheck_queue(Array[ToolPricing], Int32) -> Array[RecheckItem]
 
@@ -314,6 +314,7 @@ pub(all) struct SeatCostPlan {
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
+  annual_commitment : Int64
   worst_regret : Int64
   scenarios : Array[SeatRiskScenario]
 }
