@@ -341,6 +341,11 @@ pub(all) struct QuoteChange {
   after_quote : String?
   before_year : Int64?
   after_year : Int64?
+  before_currency : String?
+  after_currency : String?
+  before_per_seat : Bool?
+  after_per_seat : Bool?
+  year_delta : Int64?
 }
 
 ///|
@@ -395,6 +400,14 @@ fn diff_plan_options(
       after_quote: b.map(price => price.original),
       before_year,
       after_year,
+      before_currency: a.map(price => currency_code(price.currency)),
+      after_currency: b.map(price => currency_code(price.currency)),
+      before_per_seat: a.map(price => price.per_seat),
+      after_per_seat: b.map(price => price.per_seat),
+      year_delta: match (before_year, after_year) {
+        (Some(previous), Some(next)) => Some(next - previous)
+        _ => None
+      },
     })
   }
   differences

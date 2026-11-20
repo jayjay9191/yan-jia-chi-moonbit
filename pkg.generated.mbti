@@ -271,6 +271,11 @@ pub(all) struct QuoteChange {
   after_quote : String?
   before_year : Int64?
   after_year : Int64?
+  before_currency : String?
+  after_currency : String?
+  before_per_seat : Bool?
+  after_per_seat : Bool?
+  year_delta : Int64?
 }
 
 #derive(@json.ToJson)

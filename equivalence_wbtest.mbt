@@ -436,3 +436,47 @@ test "structured quote comparison withholds findings for an inconsistent snapsho
   assert_true(diff.after_issues.is_empty())
   assert_true(diff.changes.is_empty())
 }
+
+///|
+test "structured quote differences expose currency and seat evidence on both sides" {
+  let comparison = compare_quote_snapshots(
+    "Pro $10/用户/月；Team $50/月；Retired $5/月", "Pro $12/用户/月；Team €50/用户/月；New £3/月",
+  )
+  assert_eq(comparison.changes.length(), 4)
+  for row in comparison.changes {
+    match row.plan {
+      "Pro" => {
+        assert_eq(row.before_currency, Some("USD"))
+        assert_eq(row.after_currency, Some("USD"))
+        assert_eq(row.before_per_seat, Some(true))
+        assert_eq(row.after_per_seat, Some(true))
+        assert_eq(row.year_delta, Some(2400L))
+      }
+      "Team" => {
+        assert_eq(row.before_currency, Some("USD"))
+        assert_eq(row.after_currency, Some("EUR"))
+        assert_eq(row.before_per_seat, Some(false))
+        assert_eq(row.after_per_seat, Some(true))
+        assert_eq(row.year_delta, None)
+      }
+      "Retired" => {
+        assert_eq(row.after_currency, None)
+        assert_eq(row.before_currency, Some("USD"))
+      }
+      "New" => {
+        assert_eq(row.before_currency, None)
+        assert_eq(row.after_currency, Some("GBP"))
+      }
+      _ => abort("unexpected plan")
+    }
+  }
+}
+
+///|
+test "structured quote differences preserve signed annual deltas and omit equal terms" {
+  let comparison = compare_quote_snapshots(
+    "Pro $100/年；Basic $10/月", "Pro $96.01/年；Basic $10/月",
+  )
+  assert_eq(comparison.changes.length(), 1)
+  assert_eq(comparison.changes[0].year_delta, Some(-399L))
+}

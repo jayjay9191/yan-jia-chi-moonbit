@@ -79,8 +79,12 @@ def main():
     assert set(changes) == {"Basic", "Pro"}
     amount, basis = changes["Basic"], changes["Pro"]
     assert (amount["plan"], amount["kind"], amount["annual"]) == ("Basic", "amount-changed", False)
-    assert (int(amount["before_year"]), int(amount["after_year"])) == (12000, 13200)
+    assert (amount["before_year"], amount["after_year"], amount["year_delta"]) == ("12000", "13200", "1200")
+    assert (amount["before_currency"], amount["after_currency"]) == ("USD", "USD")
+    assert amount["before_per_seat"] is amount["after_per_seat"] is False
     assert (basis["kind"], basis.get("before_year"), basis.get("after_year")) == ("basis-changed", None, None)
+    assert (basis["before_currency"], basis["after_currency"]) == ("USD", "EUR")
+    assert "year_delta" not in basis
     unsafe = json.loads(run("compare-quotes", "Basic $10/月；Basic $11/月", "Basic $12/月"))
     assert len(unsafe["before_issues"]) == 1 and unsafe["changes"] == []
     assert run("compare-quotes", "Basic $10/月", success=False) == ""
