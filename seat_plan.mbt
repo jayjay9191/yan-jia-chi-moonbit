@@ -151,6 +151,15 @@ pub(all) struct WeightedSeatPlan {
 
 ///|
 #derive(ToJson)
+pub(all) struct TailSeatPlan {
+  annual_seats : Int32
+  regret_numerator : Int64
+  weight : Int32
+  worst_regret : Int64
+}
+
+///|
+#derive(ToJson)
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
@@ -160,6 +169,7 @@ pub(all) struct SeatRiskPlan {
   scenarios : Array[SeatRiskScenario]
   allowance : SeatRiskAllowance?
   weighted_plan : WeightedSeatPlan?
+  tail_plan : TailSeatPlan?
 }
 
 ///|
@@ -285,6 +295,7 @@ pub fn plan_seat_risk(
   monthly_cap? : Int32,
   regret_limit? : Int64,
   scenario_weights? : Array[Int32],
+  tail_weight? : Int32,
 ) -> SeatRiskPlan raise PricingAnalysisError {
   if scenarios.length() < 2 || scenarios.length() > 16 {
     raise InvalidAnalysis("须提供 2 至 16 组席位需求情景")
@@ -306,6 +317,11 @@ pub fn plan_seat_risk(
     if weight_total > 256 {
       raise InvalidAnalysis("情景权重总和不能超过 256")
     }
+  }
+  if tail_weight is Some(tail) && (tail <= 0 || tail > weight_total) {
+    raise InvalidAnalysis(
+      "尾部权重须大于 0 且不超过情景权重总和，并须提供情景权重",
+    )
   }
   let (currency, month, year) = quoted_seat_rates(raw, plan)
   let optima = scenarios.map(demand => {
@@ -380,11 +396,11 @@ pub fn plan_seat_risk(
     }
     { limit, feasible_seats, }
   })
+  let feasible = match allowance {
+    Some(info) => info.feasible_seats
+    None => Some({ minimum: lower_limit, maximum: upper_limit, })
+  }
   let weighted_plan = scenario_weights.bind(weights => {
-    let feasible = match allowance {
-      Some(info) => info.feasible_seats
-      None => Some({ minimum: lower_limit, maximum: upper_limit, })
-    }
     feasible.map(interval => {
       let curve = build_weighted_curve(scenarios, weights, month, year)
       let weighted_cost = reserve => curve.cost_at(reserve)
@@ -434,6 +450,43 @@ pub fn plan_seat_risk(
       }
     })
   })
+  let tail_plan = match (tail_weight, scenario_weights, feasible) {
+    (Some(weight), Some(weights), Some(interval)) => {
+      let tail = reserve => {
+        let ranked = Array::makei(scenarios.length(), i => {
+          (
+            seat_cost_at(scenarios[i], reserve, month, year) - optima[i],
+            weights[i],
+          )
+        })
+        ranked.sort_by((a, b) => b.0.compare(a.0))
+        let mut remaining = weight
+        let mut numerator = 0L
+        for item in ranked {
+          let used = if item.1 < remaining { item.1 } else { remaining }
+          numerator += item.0 * used.to_int64()
+          remaining -= used
+          if remaining == 0 {
+            break
+          }
+        }
+        numerator
+      }
+      // The weighted sum of the largest regret mass is a maximum of convex sums.
+      let annual_seats = first_seat_min(
+        tail,
+        interval.minimum,
+        interval.maximum,
+      )
+      Some({
+        annual_seats,
+        regret_numerator: tail(annual_seats),
+        weight,
+        worst_regret: worst(annual_seats),
+      })
+    }
+    _ => None
+  }
   {
     currency,
     annual_seats: lo,
@@ -442,6 +495,7 @@ pub fn plan_seat_risk(
     worst_regret: best_regret,
     allowance,
     weighted_plan,
+    tail_plan,
     scenarios: Array::makei(scenarios.length(), i => {
       let cost = seat_cost_at(scenarios[i], lo, month, year)
       let requested = peaks[i]

@@ -105,7 +105,7 @@ pub fn plan_classes(String) -> PlanClassReport
 
 pub fn plan_seat_costs(String, String, Array[Int32]) -> SeatCostPlan raise PricingAnalysisError
 
-pub fn plan_seat_risk(String, String, Array[Array[Int32]], annual_budget? : Int64, monthly_cap? : Int32, regret_limit? : Int64, scenario_weights? : Array[Int32]) -> SeatRiskPlan raise PricingAnalysisError
+pub fn plan_seat_risk(String, String, Array[Array[Int32]], annual_budget? : Int64, monthly_cap? : Int32, regret_limit? : Int64, scenario_weights? : Array[Int32], tail_weight? : Int32) -> SeatRiskPlan raise PricingAnalysisError
 
 pub fn recheck_queue(Array[ToolPricing], Int32) -> Array[RecheckItem]
 
@@ -332,6 +332,7 @@ pub(all) struct SeatRiskPlan {
   scenarios : Array[SeatRiskScenario]
   allowance : SeatRiskAllowance?
   weighted_plan : WeightedSeatPlan?
+  tail_plan : TailSeatPlan?
 }
 
 #derive(@json.ToJson)
@@ -340,6 +341,14 @@ pub(all) struct SeatRiskScenario {
   known_demand_optimum : Int64
   peak_monthly_seats : Int32
   regret : Int64
+}
+
+#derive(@json.ToJson)
+pub(all) struct TailSeatPlan {
+  annual_seats : Int32
+  regret_numerator : Int64
+  weight : Int32
+  worst_regret : Int64
 }
 
 pub(all) struct ToolPricing {

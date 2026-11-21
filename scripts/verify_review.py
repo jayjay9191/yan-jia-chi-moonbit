@@ -213,6 +213,39 @@ def main():
             assert result is None
     assert run("seat-risk", "Pro", low, seven, tie_quote, "--scenario-weights", "1,256", success=False) == ""
     print("PASS weighted optimum and both dominance objectives match eight exhaustive integer cases")
+    for weights, tail, limit, budget, cap, demands in [
+        *(([1, 3], tail, 24000, 42000, 7, ([2] * 12, [7] * 12)) for tail in (1, 2, 3, 4)),
+        ([1, 3], 2, 17999, 42000, 7, ([2] * 12, [7] * 12)),
+        ([2, 5], 4, 38000, 42000, 7, mixed),
+        ([1, 3], 3, 24000, 30000, 2, ([2] * 12, [7] * 12)),
+        ([1, 3], 3, 24000, 24000, 2, ([2] * 12, [7] * 12)),
+    ]:
+        costs = [[6000 * reserve + 1000 * sum(max(d - reserve, 0) for d in demand)
+                  for reserve in range(max(map(max, demands)) + 1)] for demand in demands]
+        candidates = []
+        for reserve, totals in enumerate(zip(*costs)):
+            regrets = [total - min(route) for total, route in zip(totals, costs)]
+            worst = max(regrets)
+            if worst <= limit and reserve * 6000 <= budget and max(map(max, demands)) - reserve <= cap:
+                weighted_units = sorted((r for r, w in zip(regrets, weights) for _ in range(w)), reverse=True)
+                candidates.append((sum(weighted_units[:tail]), reserve, worst))
+        inputs = [",".join(map(str, demand)) for demand in demands]
+        command = ("seat-risk", "Pro", *inputs, tie_quote, str(budget), "--monthly-cap", str(cap),
+                   "--regret-limit", str(limit), "--scenario-weights", ",".join(map(str, weights)),
+                   "--tail-weight", str(tail))
+        result = run(*command, success=budget // 6000 >= max(map(max, demands)) - cap)
+        if not result:
+            assert not candidates
+            continue
+        decision = json.loads(result)
+        plan = decision.get("tail_plan")
+        if candidates:
+            assert (int(plan["regret_numerator"]), plan["annual_seats"], int(plan["worst_regret"])) == min(candidates)
+            assert plan["weight"] == tail
+        else:
+            assert plan is None
+    assert run("seat-risk", "Pro", low, seven, tie_quote, "--tail-weight", "2", success=False) == ""
+    print("PASS eight weighted tails against exhaustive seat counts and expanded scenario weights")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

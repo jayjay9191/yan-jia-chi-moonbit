@@ -188,3 +188,33 @@ test "review an empty demand curve has exact zero weighted cost" {
     (0, 0L, 256),
   )
 }
+
+///|
+test "review partial scenario weights change the optimal tail-risk decision" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let demand = [Array::make(12, 2), Array::make(12, 7)]
+  let plan = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    demand,
+    regret_limit=24000L,
+    scenario_weights=[1, 3],
+    tail_weight=2,
+  )
+  guard plan.tail_plan is Some(tail) else { abort("expected tail optimizer") }
+  assert_eq(
+    (tail.annual_seats, tail.regret_numerator, tail.weight, tail.worst_regret),
+    (5, 30000L, 2, 18000L),
+  )
+  assert_eq(plan.weighted_plan.unwrap().annual_seats, 6)
+  let three = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    demand,
+    regret_limit=24000L,
+    scenario_weights=[1, 3],
+    tail_weight=3,
+  )
+  assert_eq(three.tail_plan.unwrap().annual_seats, 6)
+  assert_eq(three.tail_plan.unwrap().regret_numerator, 36000L)
+}

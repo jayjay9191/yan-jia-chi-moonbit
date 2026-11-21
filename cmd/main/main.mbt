@@ -78,7 +78,7 @@ fn print_usage() -> Unit {
     "seat-plan <套餐名> <12个月席位数，英文逗号分隔> <报价原文>：模拟月付和年付组合",
   )
   println(
-    "seat-risk <套餐名> <需求情景1> <需求情景2> <报价原文> [预付预算，百分之一货币单位] [--monthly-cap 月补位上限] [--regret-limit 最坏额外成本上限] [--scenario-weights 情景权重]：最小化最坏情景的额外成本",
+    "seat-risk <套餐名> <需求情景1> <需求情景2> <报价原文> [预付预算，百分之一货币单位] [--monthly-cap 月补位上限] [--regret-limit 最坏额外成本上限] [--scenario-weights 情景权重] [--tail-weight 尾部权重]：计算最坏额外成本，可选加权成本与尾部风险",
   )
   println(
     "compare-quotes <前次报价原文> <本次报价原文>：输出逐套餐差异 JSON",
@@ -508,6 +508,7 @@ fn cmd_seat_plan(args : Array[String]) -> Unit {
     let mut monthly_cap : Int32? = None
     let mut regret_limit : Int64? = None
     let mut scenario_weights : Array[Int32]? = None
+    let mut tail_weight : Int32? = None
     while risk && length >= 7 {
       match args[length - 2] {
         "--monthly-cap" if monthly_cap is None =>
@@ -516,13 +517,15 @@ fn cmd_seat_plan(args : Array[String]) -> Unit {
           regret_limit = Some(@string.parse_int64(args[length - 1]))
         "--scenario-weights" if scenario_weights is None =>
           scenario_weights = Some(parse_seat_demand(args[length - 1]))
+        "--tail-weight" if tail_weight is None =>
+          tail_weight = Some(@string.parse_int(args[length - 1]))
         _ => break
       }
       length -= 2
     }
     if (risk && length != 5 && length != 6) || (!risk && length != 4) {
       fail(
-        "用法：seat-plan <套餐名> <12个月席位数> <报价原文> 或 seat-risk <套餐名> <情景1> <情景2> <报价原文> [预付预算] [--monthly-cap 月补位上限] [--regret-limit 最坏额外成本上限] [--scenario-weights 情景权重]",
+        "用法：seat-plan <套餐名> <12个月席位数> <报价原文> 或 seat-risk <套餐名> <情景1> <情景2> <报价原文> [预付预算] [--monthly-cap 月补位上限] [--regret-limit 最坏额外成本上限] [--scenario-weights 情景权重] [--tail-weight 尾部权重]",
       )
     }
     let seats = parse_seat_demand(args[2])
@@ -542,6 +545,7 @@ fn cmd_seat_plan(args : Array[String]) -> Unit {
             monthly_cap?,
             regret_limit?,
             scenario_weights?,
+            tail_weight?,
           ),
         ).stringify(),
       )
