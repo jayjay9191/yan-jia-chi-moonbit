@@ -153,6 +153,19 @@ def main():
     assert cap_only["annual_seats"] == 4
     assert run("seat-risk", "Pro", low, high, quote, "--monthly-cap", "-1", success=False) == ""
     print("PASS combined cash and capacity limits match exhaustive search at nine constraint pairs")
+    tie_quote = "Pro $10/用户/月；Pro $60/用户/年"
+    seven = ",".join(["7"] * 12)
+    for budget, cap in ((42000, 7), (29999, 7), (42000, 2), (24000, 3)):
+        # Enumerate all feasible integer seats and compare the entire set of minimizers.
+        seats = range(max(7 - cap, 0), min(7, budget // 6000) + 1)
+        regrets = {i: max(max(i - 2, 0), max(7 - i, 0)) * 6000 for i in seats}
+        best = min(regrets.values())
+        winners = [i for i in seats if regrets[i] == best]
+        result = json.loads(run("seat-risk", "Pro", low, seven, tie_quote,
+                                str(budget), "--monthly-cap", str(cap)))
+        assert list(range(result["annual_seats"], result["max_optimal_annual_seats"] + 1)) == winners
+        assert int(result["worst_regret"]) == best
+    print("PASS plateau endpoints and budget-clipped ties match every feasible integer")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

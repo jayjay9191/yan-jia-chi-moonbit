@@ -130,6 +130,7 @@ pub(all) struct SeatRiskScenario {
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
+  max_optimal_annual_seats : Int32
   annual_commitment : Int64
   worst_regret : Int64
   scenarios : Array[SeatRiskScenario]
@@ -193,6 +194,7 @@ pub fn plan_seat_risk(
       "预付预算最多可预留 \{hi} 席；要满足每月补位上限至少需预留 \{lo} 席",
     )
   }
+  let upper_limit = hi
   // The two constraints truncate the integer interval without changing convexity.
   // Maximum of convex scenario regrets is convex. Search the first nonnegative discrete slope.
   while lo < hi {
@@ -203,11 +205,24 @@ pub fn plan_seat_risk(
       lo = mid + 1
     }
   }
+  let best_regret = worst(lo)
+  let mut last = lo
+  hi = upper_limit
+  // To the right of the first minimum the regret cannot decrease.
+  while last < hi {
+    let mid = last + (hi - last + 1) / 2
+    if worst(mid) == best_regret {
+      last = mid
+    } else {
+      hi = mid - 1
+    }
+  }
   {
     currency,
     annual_seats: lo,
+    max_optimal_annual_seats: last,
     annual_commitment: lo.to_int64() * year,
-    worst_regret: worst(lo),
+    worst_regret: best_regret,
     scenarios: Array::makei(scenarios.length(), i => {
       let cost = seat_cost_at(scenarios[i], lo, month, year)
       let requested = peaks[i]

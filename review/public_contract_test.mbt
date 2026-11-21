@@ -82,3 +82,23 @@ test "review enforces monthly overflow and rejects an impossible combination" {
   }
   assert_true(impossible is Err(_))
 }
+
+///|
+test "review retains all tied optimal integer reserves within budget" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let cases = [Array::make(12, 2), Array::make(12, 7)]
+  let tie = @lib.plan_seat_risk(quote, "Pro", cases)
+  assert_eq(
+    (tie.annual_seats, tie.max_optimal_annual_seats, tie.worst_regret),
+    (4, 5, 18000L),
+  )
+  let clipped = @lib.plan_seat_risk(quote, "Pro", cases, annual_budget=29999L)
+  assert_eq(
+    (
+      clipped.annual_seats,
+      clipped.max_optimal_annual_seats,
+      clipped.worst_regret,
+    ),
+    (4, 4, 18000L),
+  )
+}

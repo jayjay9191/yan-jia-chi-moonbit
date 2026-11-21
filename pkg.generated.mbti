@@ -314,6 +314,7 @@ pub(all) struct SeatCostPlan {
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
+  max_optimal_annual_seats : Int32
   annual_commitment : Int64
   worst_regret : Int64
   scenarios : Array[SeatRiskScenario]
