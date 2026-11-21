@@ -141,6 +141,15 @@ pub(all) struct SeatRiskAllowance {
 
 ///|
 #derive(ToJson)
+pub(all) struct WeightedSeatPlan {
+  annual_seats : Int32
+  cost_numerator : Int64
+  weight_total : Int32
+  worst_regret : Int64
+}
+
+///|
+#derive(ToJson)
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
@@ -149,6 +158,27 @@ pub(all) struct SeatRiskPlan {
   worst_regret : Int64
   scenarios : Array[SeatRiskScenario]
   allowance : SeatRiskAllowance?
+  weighted_plan : WeightedSeatPlan?
+}
+
+///|
+/// Find the smallest minimizer of a discrete convex seat cost.
+fn first_seat_min(
+  cost : (Int32) -> Int64,
+  lower : Int32,
+  upper : Int32,
+) -> Int32 {
+  let mut lo = lower
+  let mut hi = upper
+  while lo < hi {
+    let mid = lo + (hi - lo) / 2
+    if cost(mid) <= cost(mid + 1) {
+      hi = mid
+    } else {
+      lo = mid + 1
+    }
+  }
+  lo
 }
 
 ///|
@@ -183,12 +213,28 @@ pub fn plan_seat_risk(
   annual_budget? : Int64,
   monthly_cap? : Int32,
   regret_limit? : Int64,
+  scenario_weights? : Array[Int32],
 ) -> SeatRiskPlan raise PricingAnalysisError {
   if scenarios.length() < 2 || scenarios.length() > 16 {
     raise InvalidAnalysis("须提供 2 至 16 组席位需求情景")
   }
   for demand in scenarios {
     validate_seat_counts(demand)
+  }
+  // A scenario costs at most 12 * Int32::MAX * 1,000,000 hundredths.
+  // Capping the total weight at 256 keeps the exact numerator in Int64.
+  let mut weight_total = 0
+  if scenario_weights is Some(weights) {
+    if weights.length() != scenarios.length() ||
+      weights.any(weight => weight < 1 || weight > 256) {
+      raise InvalidAnalysis(
+        "须为每个需求情景提供一个正整数权重，权重总和不超过 256",
+      )
+    }
+    weight_total = weights.fold(init=0, (sum, weight) => sum + weight)
+    if weight_total > 256 {
+      raise InvalidAnalysis("情景权重总和不能超过 256")
+    }
   }
   let (currency, month, year) = quoted_seat_rates(raw, plan)
   let optima = scenarios.map(demand => {
@@ -216,7 +262,7 @@ pub fn plan_seat_risk(
   if cap < 0 {
     raise InvalidAnalysis("每月补位上限不能为负数")
   }
-  let mut lo = if peak > cap { peak - cap } else { 0 }
+  let lower_limit = if peak > cap { peak - cap } else { 0 }
   let mut hi = peak
   if annual_budget is Some(budget) {
     if budget < 0L {
@@ -226,26 +272,17 @@ pub fn plan_seat_risk(
       hi = (budget / year).to_int()
     }
   }
-  if lo > hi {
+  if lower_limit > hi {
     raise InvalidAnalysis(
-      "预付预算最多可预留 \{hi} 席；要满足每月补位上限至少需预留 \{lo} 席",
+      "预付预算最多可预留 \{hi} 席；要满足每月补位上限至少需预留 \{lower_limit} 席",
     )
   }
   if regret_limit is Some(limit) && limit < 0L {
     raise InvalidAnalysis("最坏额外成本上限不能为负数")
   }
-  let lower_limit = lo
   let upper_limit = hi
-  // The two constraints truncate the integer interval without changing convexity.
-  // Maximum of convex scenario regrets is convex. Search the first nonnegative discrete slope.
-  while lo < hi {
-    let mid = lo + (hi - lo) / 2
-    if worst(mid) <= worst(mid + 1) {
-      hi = mid
-    } else {
-      lo = mid + 1
-    }
-  }
+  // Maximum of the convex scenario regrets is convex, even on the truncated interval.
+  let lo = first_seat_min(worst, lower_limit, upper_limit)
   let best_regret = worst(lo)
   let last = last_seat_at_regret(worst, lo, upper_limit, best_regret)
   let allowance = regret_limit.map(limit => {
@@ -272,6 +309,33 @@ pub fn plan_seat_risk(
     }
     { limit, feasible_seats, }
   })
+  let weighted_plan = scenario_weights.bind(weights => {
+    let feasible = match allowance {
+      Some(info) => info.feasible_seats
+      None => Some({ minimum: lower_limit, maximum: upper_limit, })
+    }
+    feasible.map(interval => {
+      let weighted_cost = reserve => {
+        let mut sum = 0L
+        for i in 0..<scenarios.length() {
+          sum += weights[i].to_int64() *
+            seat_cost_at(scenarios[i], reserve, month, year)
+        }
+        sum
+      }
+      let annual_seats = first_seat_min(
+        weighted_cost,
+        interval.minimum,
+        interval.maximum,
+      )
+      {
+        annual_seats,
+        cost_numerator: weighted_cost(annual_seats),
+        weight_total,
+        worst_regret: worst(annual_seats),
+      }
+    })
+  })
   {
     currency,
     annual_seats: lo,
@@ -279,6 +343,7 @@ pub fn plan_seat_risk(
     annual_commitment: lo.to_int64() * year,
     worst_regret: best_regret,
     allowance,
+    weighted_plan,
     scenarios: Array::makei(scenarios.length(), i => {
       let cost = seat_cost_at(scenarios[i], lo, month, year)
       let requested = peaks[i]

@@ -120,3 +120,34 @@ test "review recovers every seat count within a stated regret limit" {
   assert_true(info.feasible_seats is None)
   assert_eq(impossible.worst_regret, 18000L)
 }
+
+///|
+test "review trades expected cost against the worst-case limit without rounding" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let cases = [Array::make(12, 2), Array::make(12, 7)]
+  let plan = @lib.plan_seat_risk(quote, "Pro", cases, regret_limit=24000L, scenario_weights=[
+    1, 3,
+  ])
+  guard plan.weighted_plan is Some(choice) else {
+    abort("expected weighted choice")
+  }
+  assert_eq(
+    (plan.annual_seats, choice.annual_seats, choice.worst_regret),
+    (4, 6, 24000L),
+  )
+  assert_eq((choice.cost_numerator, choice.weight_total), (180000L, 4))
+  let impossible = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    cases,
+    regret_limit=17999L,
+    scenario_weights=[1, 3],
+  )
+  assert_true(impossible.weighted_plan is None)
+  let invalid = Ok(
+    @lib.plan_seat_risk(quote, "Pro", cases, scenario_weights=[1, 256]),
+  ) catch {
+    err => Err(err)
+  }
+  assert_true(invalid is Err(_))
+}

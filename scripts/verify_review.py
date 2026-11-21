@@ -177,6 +177,27 @@ def main():
         assert interval == (dict(minimum=valid[0], maximum=valid[-1]) if valid else None)
     assert run("seat-risk", "Pro", low, seven, tie_quote, "--regret-limit", "-1", success=False) == ""
     print("PASS regret limit feasibility and both endpoints match six exhaustive integer cases")
+    for weights, limit, budget in [
+        ((1, 3), 24000, 42000), ((3, 1), 24000, 42000), ((1, 1), 24000, 42000),
+        ((1, 3), 24000, 29999), ((1, 3), 17999, 42000), ((1, 255), 42000, 42000),
+    ]:
+        choices = []
+        for seats in range(8):
+            costs = [seats * 6000 + max(demand - seats, 0) * 12000 for demand in (2, 7)]
+            worst = max(costs[0] - 12000, costs[1] - 42000)
+            if seats * 6000 <= budget and worst <= limit:
+                choices.append((sum(w * c for w, c in zip(weights, costs)), seats, worst))
+        value = json.loads(run("seat-risk", "Pro", low, seven, tie_quote, str(budget),
+                               "--regret-limit", str(limit), "--scenario-weights", ",".join(map(str, weights))))
+        result = value.get("weighted_plan")
+        if choices:
+            cost, seats, worst = min(choices)
+            assert (int(result["cost_numerator"]), result["annual_seats"], int(result["worst_regret"])) == (cost, seats, worst)
+            assert result["weight_total"] == sum(weights)
+        else:
+            assert result is None
+    assert run("seat-risk", "Pro", low, seven, tie_quote, "--scenario-weights", "1,256", success=False) == ""
+    print("PASS weighted expected cost within risk matches six exhaustive integer cases")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),
