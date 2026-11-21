@@ -4,7 +4,7 @@
 
 ## 初审核对
 
-在仓库根目录运行 `moon test review`。十一个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
+在仓库根目录运行 `moon test review`。十二个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
 
 运行 `moon run cmd/main -- classes Midjourney --json`。MoonBit 按套餐名和付款周期对齐两次独立复核的原文，逐项核对币种、席位口径和原始年费用。Midjourney 的 R3、R5 四档八种付款选项金额与口径一致。R1 缺少原文，整段历史仍标为证据不完整。这里复查的是台账保存的报价。
 
@@ -75,6 +75,16 @@ moon run cmd/main -- seat-risk Pro "2,2,2,2,2,2,2,2,2,2,2,2" "7,7,7,7,7,7,7,7,7,
 ```
 
 `optimal_seats` 给出所有并列最优席位的闭区间，本例为 [5, 6]。代表解 5 席的 `contributions` 分别计入情景 0 的 180 美元和情景 1 的 120 美元，各用一个权重。相同额外成本按输入顺序分配尾部权重，便于复算。
+
+## 两套需求权重下的压力测试
+
+两套权重必须有相同总量，才能比较同一段尾部。模型在每个席位上取两套尾部风险的较大值，再在预算和补位约束内求最小值及全部并列席位。
+
+```powershell
+moon run cmd/main -- seat-risk Pro "2,2,2,2,2,2,2,2,2,2,2,2" "7,7,7,7,7,7,7,7,7,7,7,7" 'Pro $10/用户/月；Pro $60/用户/年' --regret-limit 24000 --scenario-weights "1,3" --tail-weight 3 --stress-weights "3,1"
+```
+
+基准权重单独选 6 席。两套权重一起考虑后，`stress_tail_plan.optimal_seats` 为 [4,5]，代表解 4 席对应两套尾部均值 180 和 140 美元。按基准单独选 6 席时，压力情景下的尾部均值是 240 美元。独立脚本逐席展开两套权重并核对风险并列区间。
 
 ## v0.1.4：先跑轨迹、套餐与复核队列
 

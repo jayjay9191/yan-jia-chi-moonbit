@@ -261,3 +261,42 @@ test "review tail attribution exposes both tied reserves and a partial scenario 
   assert_eq(equal_regrets.annual_seats, 4)
   assert_eq(equal_regrets.contributions[0].scenario_index, 0)
 }
+
+///|
+test "review stress weights reverse the preferred tail plan but preserve a joint optimum" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let scenarios = [Array::make(12, 2), Array::make(12, 7)]
+  let plan = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    scenarios,
+    regret_limit=24000L,
+    scenario_weights=[1, 3],
+    tail_weight=3,
+    stress_weights=[3, 1],
+  )
+  assert_eq(plan.tail_plan.unwrap().annual_seats, 6)
+  let stress = plan.stress_tail_plan.unwrap()
+  assert_eq((stress.annual_seats, stress.optimal_seats.maximum), (4, 5))
+  assert_eq(
+    (stress.baseline_numerator, stress.stress_numerator, stress.weight),
+    (54000L, 42000L, 3),
+  )
+  let identical = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    scenarios,
+    regret_limit=24000L,
+    scenario_weights=[1, 3],
+    tail_weight=3,
+    stress_weights=[1, 3],
+  ).stress_tail_plan.unwrap()
+  assert_eq(
+    (
+      identical.annual_seats,
+      identical.baseline_numerator,
+      identical.stress_numerator,
+    ),
+    (6, 36000L, 36000L),
+  )
+}

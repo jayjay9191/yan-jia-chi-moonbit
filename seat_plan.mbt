@@ -170,6 +170,16 @@ pub(all) struct TailSeatPlan {
 
 ///|
 #derive(ToJson)
+pub(all) struct StressTailSeatPlan {
+  annual_seats : Int32
+  optimal_seats : SeatReserveInterval
+  baseline_numerator : Int64
+  stress_numerator : Int64
+  weight : Int32
+}
+
+///|
+#derive(ToJson)
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
@@ -180,6 +190,7 @@ pub(all) struct SeatRiskPlan {
   allowance : SeatRiskAllowance?
   weighted_plan : WeightedSeatPlan?
   tail_plan : TailSeatPlan?
+  stress_tail_plan : StressTailSeatPlan?
 }
 
 ///|
@@ -306,6 +317,7 @@ pub fn plan_seat_risk(
   regret_limit? : Int64,
   scenario_weights? : Array[Int32],
   tail_weight? : Int32,
+  stress_weights? : Array[Int32],
 ) -> SeatRiskPlan raise PricingAnalysisError {
   if scenarios.length() < 2 || scenarios.length() > 16 {
     raise InvalidAnalysis("须提供 2 至 16 组席位需求情景")
@@ -315,23 +327,24 @@ pub fn plan_seat_risk(
   }
   // A scenario costs at most 12 * Int32::MAX * 1,000,000 hundredths.
   // Capping the total weight at 256 keeps the exact numerator in Int64.
-  let mut weight_total = 0
-  if scenario_weights is Some(weights) {
-    if weights.length() != scenarios.length() ||
-      weights.any(weight => weight < 1 || weight > 256) {
-      raise InvalidAnalysis(
-        "须为每个需求情景提供一个正整数权重，权重总和不超过 256",
-      )
-    }
-    weight_total = weights.fold(init=0, (sum, weight) => sum + weight)
-    if weight_total > 256 {
-      raise InvalidAnalysis("情景权重总和不能超过 256")
-    }
+  let weight_total = match scenario_weights {
+    Some(weights) => validate_scenario_weights(weights, scenarios.length())
+    None => 0
   }
   if tail_weight is Some(tail) && (tail <= 0 || tail > weight_total) {
     raise InvalidAnalysis(
       "尾部权重须大于 0 且不超过情景权重总和，并须提供情景权重",
     )
+  }
+  if stress_weights is Some(profile) {
+    if tail_weight is None {
+      raise InvalidAnalysis(
+        "压力权重须与情景权重、尾部权重一起提供",
+      )
+    }
+    if validate_scenario_weights(profile, scenarios.length()) != weight_total {
+      raise InvalidAnalysis("基准与压力权重的总和须相同")
+    }
   }
   let (currency, month, year) = quoted_seat_rates(raw, plan)
   let optima = scenarios.map(demand => {
@@ -460,38 +473,24 @@ pub fn plan_seat_risk(
       }
     })
   })
+  let rank_at = reserve => {
+    let ranked = Array::makei(scenarios.length(), i => {
+      (seat_cost_at(scenarios[i], reserve, month, year) - optima[i], i)
+    })
+    ranked.sort_by((a, b) => {
+      if a.0 == b.0 {
+        a.1.compare(b.1)
+      } else {
+        b.0.compare(a.0)
+      }
+    })
+    ranked
+  }
   let tail_plan = match (tail_weight, scenario_weights, feasible) {
     (Some(weight), Some(weights), Some(interval)) => {
-      fn tail_at(
-        reserve : Int32,
-        trace : Array[TailSeatContribution]?,
-      ) -> Int64 {
-        let ranked = Array::makei(scenarios.length(), i => {
-          (seat_cost_at(scenarios[i], reserve, month, year) - optima[i], i)
-        })
-        ranked.sort_by((a, b) => {
-          if a.0 == b.0 {
-            a.1.compare(b.1)
-          } else {
-            b.0.compare(a.0)
-          }
-        })
-        let mut remaining = weight
-        let mut numerator = 0L
-        for (regret, index) in ranked {
-          let used = weights[index].min(remaining)
-          if trace is Some(items) {
-            items.push({ scenario_index: index, regret, used_weight: used, })
-          }
-          numerator += regret * used.to_int64()
-          remaining -= used
-          if remaining == 0 {
-            break
-          }
-        }
-        numerator
+      let tail = reserve => {
+        weighted_tail_total(rank_at(reserve), weights, weight, None)
       }
-      let tail = reserve => tail_at(reserve, None)
       // The weighted sum of the largest regret mass is a maximum of convex sums.
       let annual_seats = first_seat_min(
         tail,
@@ -499,7 +498,12 @@ pub fn plan_seat_risk(
         interval.maximum,
       )
       let contributions = []
-      let numerator = tail_at(annual_seats, Some(contributions))
+      let numerator = weighted_tail_total(
+        rank_at(annual_seats),
+        weights,
+        weight,
+        Some(contributions),
+      )
       Some({
         annual_seats,
         optimal_seats: {
@@ -519,6 +523,45 @@ pub fn plan_seat_risk(
     }
     _ => None
   }
+  let stress_tail_plan = match
+    (tail_weight, scenario_weights, stress_weights, feasible) {
+    (Some(weight), Some(baseline), Some(stress), Some(interval)) => {
+      let robust = reserve => {
+        let ranked = rank_at(reserve)
+        weighted_tail_total(ranked, baseline, weight, None).max(
+          weighted_tail_total(ranked, stress, weight, None),
+        )
+      }
+      // Maximum of the two weighted tails is still discrete convex.
+      let annual_seats = first_seat_min(
+        robust,
+        interval.minimum,
+        interval.maximum,
+      )
+      let ranked = rank_at(annual_seats)
+      let baseline_numerator = weighted_tail_total(
+        ranked,
+        baseline,
+        weight,
+        None,
+      )
+      let stress_numerator = weighted_tail_total(ranked, stress, weight, None)
+      let maximum = last_seat_at_level(
+        robust,
+        annual_seats,
+        interval.maximum,
+        baseline_numerator.max(stress_numerator),
+      )
+      Some({
+        annual_seats,
+        optimal_seats: { minimum: annual_seats, maximum, },
+        baseline_numerator,
+        stress_numerator,
+        weight,
+      })
+    }
+    _ => None
+  }
   {
     currency,
     annual_seats: lo,
@@ -528,6 +571,7 @@ pub fn plan_seat_risk(
     allowance,
     weighted_plan,
     tail_plan,
+    stress_tail_plan,
     scenarios: Array::makei(scenarios.length(), i => {
       let cost = seat_cost_at(scenarios[i], lo, month, year)
       let requested = peaks[i]
@@ -543,4 +587,45 @@ pub fn plan_seat_risk(
       }
     }),
   }
+}
+
+///|
+fn validate_scenario_weights(
+  weights : Array[Int32],
+  scenario_count : Int32,
+) -> Int32 raise PricingAnalysisError {
+  if weights.length() != scenario_count ||
+    weights.any(weight => weight < 1 || weight > 256) {
+    raise InvalidAnalysis(
+      "须为每个需求情景提供一个正整数权重，权重总和不超过 256",
+    )
+  }
+  let total = weights.fold(init=0, (sum, weight) => sum + weight)
+  if total > 256 {
+    raise InvalidAnalysis("情景权重总和不能超过 256")
+  }
+  total
+}
+
+///|
+fn weighted_tail_total(
+  ranked : Array[(Int64, Int32)],
+  weights : Array[Int32],
+  weight : Int32,
+  trace : Array[TailSeatContribution]?,
+) -> Int64 {
+  let mut remaining = weight
+  let mut numerator = 0L
+  for (regret, index) in ranked {
+    let used = weights[index].min(remaining)
+    if trace is Some(items) {
+      items.push({ scenario_index: index, regret, used_weight: used, })
+    }
+    numerator += regret * used.to_int64()
+    remaining -= used
+    if remaining == 0 {
+      break
+    }
+  }
+  numerator
 }

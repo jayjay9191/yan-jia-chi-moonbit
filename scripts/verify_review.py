@@ -222,21 +222,27 @@ def main():
     ]:
         costs = [[6000 * reserve + 1000 * sum(max(d - reserve, 0) for d in demand)
                   for reserve in range(max(map(max, demands)) + 1)] for demand in demands]
-        candidates = []
+        candidates, robust_candidates = [], []
+        stress_weights = weights[::-1]
         for reserve, totals in enumerate(zip(*costs)):
             regrets = [total - min(route) for total, route in zip(totals, costs)]
             worst = max(regrets)
             if worst <= limit and reserve * 6000 <= budget and max(map(max, demands)) - reserve <= cap:
                 weighted_units = sorted((-regret, index) for index, (regret, weight)
                                         in enumerate(zip(regrets, weights)) for _ in range(weight))[:tail]
-                candidates.append((-sum(loss for loss, _ in weighted_units), reserve, worst, weighted_units))
+                baseline_sum = -sum(loss for loss, _ in weighted_units)
+                candidates.append((baseline_sum, reserve, worst, weighted_units))
+                stress_units = sorted((regret for regret, weight in zip(regrets, stress_weights)
+                                       for _ in range(weight)), reverse=True)
+                stress_sum = sum(stress_units[:tail])
+                robust_candidates.append((max(baseline_sum, stress_sum), reserve, baseline_sum, stress_sum))
         inputs = [",".join(map(str, demand)) for demand in demands]
         command = ("seat-risk", "Pro", *inputs, tie_quote, str(budget), "--monthly-cap", str(cap),
                    "--regret-limit", str(limit), "--scenario-weights", ",".join(map(str, weights)),
                    "--tail-weight", str(tail))
         result = run(*command, success=budget // 6000 >= max(map(max, demands)) - cap)
         if not result:
-            assert not candidates
+            assert not candidates and not robust_candidates
             continue
         decision = json.loads(result)
         plan = decision.get("tail_plan")
@@ -250,6 +256,20 @@ def main():
             assert plan["weight"] == tail and expanded == units
         else:
             assert plan is None
+        stressed = json.loads(run(*command, "--stress-weights", ",".join(map(str, stress_weights))))
+        robust = stressed.get("stress_tail_plan")
+        if robust_candidates:
+            worst_tail, reserve, baseline_sum, stress_sum = min(robust_candidates)
+            tied = [seats for amount, seats, _, _ in robust_candidates if amount == worst_tail]
+            assert robust["annual_seats"] == reserve and robust["weight"] == tail
+            assert robust["optimal_seats"] == dict(minimum=min(tied), maximum=max(tied))
+            assert (int(robust["baseline_numerator"]), int(robust["stress_numerator"])) == (baseline_sum, stress_sum)
+        else:
+            assert robust is None
+    for flags in (("--stress-weights", "3,1"), ("--tail-weight", "3", "--stress-weights", "1,1"),
+                  ("--tail-weight", "3", "--stress-weights", "0,4"), ("--tail-weight", "3", "--stress-weights", "4")):
+        assert run("seat-risk", "Pro", low, seven, tie_quote, "--scenario-weights", "1,3", *flags, success=False) == ""
+    print("PASS stress tails and tied reserves against independent exhaustive weight profiles")
     assert run("seat-risk", "Pro", low, seven, tie_quote, "--tail-weight", "2", success=False) == ""
     print("PASS eight weighted tails, tied intervals and scenario attribution against exhaustive seats")
     queue = run("recheck-queue", "2026-11-20")
