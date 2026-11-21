@@ -151,11 +151,21 @@ pub(all) struct WeightedSeatPlan {
 
 ///|
 #derive(ToJson)
+pub(all) struct TailSeatContribution {
+  scenario_index : Int32
+  regret : Int64
+  used_weight : Int32
+}
+
+///|
+#derive(ToJson)
 pub(all) struct TailSeatPlan {
   annual_seats : Int32
+  optimal_seats : SeatReserveInterval
   regret_numerator : Int64
   weight : Int32
   worst_regret : Int64
+  contributions : Array[TailSeatContribution]
 }
 
 ///|
@@ -452,19 +462,28 @@ pub fn plan_seat_risk(
   })
   let tail_plan = match (tail_weight, scenario_weights, feasible) {
     (Some(weight), Some(weights), Some(interval)) => {
-      let tail = reserve => {
+      fn tail_at(
+        reserve : Int32,
+        trace : Array[TailSeatContribution]?,
+      ) -> Int64 {
         let ranked = Array::makei(scenarios.length(), i => {
-          (
-            seat_cost_at(scenarios[i], reserve, month, year) - optima[i],
-            weights[i],
-          )
+          (seat_cost_at(scenarios[i], reserve, month, year) - optima[i], i)
         })
-        ranked.sort_by((a, b) => b.0.compare(a.0))
+        ranked.sort_by((a, b) => {
+          if a.0 == b.0 {
+            a.1.compare(b.1)
+          } else {
+            b.0.compare(a.0)
+          }
+        })
         let mut remaining = weight
         let mut numerator = 0L
-        for item in ranked {
-          let used = if item.1 < remaining { item.1 } else { remaining }
-          numerator += item.0 * used.to_int64()
+        for (regret, index) in ranked {
+          let used = weights[index].min(remaining)
+          if trace is Some(items) {
+            items.push({ scenario_index: index, regret, used_weight: used, })
+          }
+          numerator += regret * used.to_int64()
           remaining -= used
           if remaining == 0 {
             break
@@ -472,17 +491,30 @@ pub fn plan_seat_risk(
         }
         numerator
       }
+      let tail = reserve => tail_at(reserve, None)
       // The weighted sum of the largest regret mass is a maximum of convex sums.
       let annual_seats = first_seat_min(
         tail,
         interval.minimum,
         interval.maximum,
       )
+      let contributions = []
+      let numerator = tail_at(annual_seats, Some(contributions))
       Some({
         annual_seats,
-        regret_numerator: tail(annual_seats),
+        optimal_seats: {
+          minimum: annual_seats,
+          maximum: last_seat_at_level(
+            tail,
+            annual_seats,
+            interval.maximum,
+            numerator,
+          ),
+        },
+        regret_numerator: numerator,
         weight,
         worst_regret: worst(annual_seats),
+        contributions,
       })
     }
     _ => None

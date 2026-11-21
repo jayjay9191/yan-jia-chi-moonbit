@@ -4,7 +4,7 @@
 
 ## 初审核对
 
-在仓库根目录运行 `moon test review`。十个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
+在仓库根目录运行 `moon test review`。十一个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
 
 运行 `moon run cmd/main -- classes Midjourney --json`。MoonBit 按套餐名和付款周期对齐两次独立复核的原文，逐项核对币种、席位口径和原始年费用。Midjourney 的 R3、R5 四档八种付款选项金额与口径一致。R1 缺少原文，整段历史仍标为证据不完整。这里复查的是台账保存的报价。
 
@@ -69,6 +69,12 @@ moon run cmd/main -- seat-risk Pro '2,2,2,2,2,2,2,2,2,2,2,2' '8,8,8,8,8,8,8,8,8,
 在 `seat-risk` 中同时提供 `--scenario-weights 1,3 --tail-weight 2` 计算最差 2 个权重单位。每个情景的额外成本以事后最优成本为基准。排序后，边界情景只按所需权重计入。预付预算、月补位上限与最坏额外成本上限都会先限制可行区间。输出 `tail_plan.regret_numerator / tail_plan.weight` 是以百分之一货币单位计的尾部平均额外成本。
 
 在两种需求恒为 2 席和 7 席、月付 10 美元、年付 60 美元、最坏额外成本上限 240 美元的案例中，5 个年付席位的最差半数平均额外成本是 150 美元。Python 将情景权重逐一展开并遍历全部可能席位，核对 8 组结果，包括预算与补位上限把候选压缩为一席或排除全部候选。
+
+```powershell
+moon run cmd/main -- seat-risk Pro "2,2,2,2,2,2,2,2,2,2,2,2" "7,7,7,7,7,7,7,7,7,7,7,7" 'Pro $10/用户/月；Pro $60/用户/年' --regret-limit 24000 --scenario-weights 1,3 --tail-weight 2
+```
+
+`optimal_seats` 给出所有并列最优席位的闭区间，本例为 [5, 6]。代表解 5 席的 `contributions` 分别计入情景 0 的 180 美元和情景 1 的 120 美元，各用一个权重。相同额外成本按输入顺序分配尾部权重，便于复算。
 
 ## v0.1.4：先跑轨迹、套餐与复核队列
 

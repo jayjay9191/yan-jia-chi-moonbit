@@ -218,3 +218,46 @@ test "review partial scenario weights change the optimal tail-risk decision" {
   assert_eq(three.tail_plan.unwrap().annual_seats, 6)
   assert_eq(three.tail_plan.unwrap().regret_numerator, 36000L)
 }
+
+///|
+test "review tail attribution exposes both tied reserves and a partial scenario weight" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let cases = [Array::make(12, 2), Array::make(12, 7)]
+  let plan = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    cases,
+    regret_limit=24000L,
+    scenario_weights=[1, 3],
+    tail_weight=2,
+  )
+  let tail = plan.tail_plan.unwrap()
+  assert_eq((tail.optimal_seats.minimum, tail.optimal_seats.maximum), (5, 6))
+  assert_eq(
+    tail.contributions.map(item => {
+      (item.scenario_index, item.regret, item.used_weight)
+    }),
+    [(0, 18000L, 1), (1, 12000L, 1)],
+  )
+  let clipped = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    cases,
+    annual_budget=30000L,
+    scenario_weights=[1, 3],
+    tail_weight=2,
+  ).tail_plan.unwrap()
+  assert_eq(
+    (clipped.optimal_seats.minimum, clipped.optimal_seats.maximum),
+    (5, 5),
+  )
+  let equal_regrets = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    [cases[0], Array::make(12, 6)],
+    scenario_weights=[1, 1],
+    tail_weight=1,
+  ).tail_plan.unwrap()
+  assert_eq(equal_regrets.annual_seats, 4)
+  assert_eq(equal_regrets.contributions[0].scenario_index, 0)
+}

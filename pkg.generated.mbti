@@ -344,11 +344,20 @@ pub(all) struct SeatRiskScenario {
 }
 
 #derive(@json.ToJson)
+pub(all) struct TailSeatContribution {
+  scenario_index : Int32
+  regret : Int64
+  used_weight : Int32
+}
+
+#derive(@json.ToJson)
 pub(all) struct TailSeatPlan {
   annual_seats : Int32
+  optimal_seats : SeatReserveInterval
   regret_numerator : Int64
   weight : Int32
   worst_regret : Int64
+  contributions : Array[TailSeatContribution]
 }
 
 pub(all) struct ToolPricing {

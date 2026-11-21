@@ -227,8 +227,9 @@ def main():
             regrets = [total - min(route) for total, route in zip(totals, costs)]
             worst = max(regrets)
             if worst <= limit and reserve * 6000 <= budget and max(map(max, demands)) - reserve <= cap:
-                weighted_units = sorted((r for r, w in zip(regrets, weights) for _ in range(w)), reverse=True)
-                candidates.append((sum(weighted_units[:tail]), reserve, worst))
+                weighted_units = sorted((-regret, index) for index, (regret, weight)
+                                        in enumerate(zip(regrets, weights)) for _ in range(weight))[:tail]
+                candidates.append((-sum(loss for loss, _ in weighted_units), reserve, worst, weighted_units))
         inputs = [",".join(map(str, demand)) for demand in demands]
         command = ("seat-risk", "Pro", *inputs, tie_quote, str(budget), "--monthly-cap", str(cap),
                    "--regret-limit", str(limit), "--scenario-weights", ",".join(map(str, weights)),
@@ -240,12 +241,17 @@ def main():
         decision = json.loads(result)
         plan = decision.get("tail_plan")
         if candidates:
-            assert (int(plan["regret_numerator"]), plan["annual_seats"], int(plan["worst_regret"])) == min(candidates)
-            assert plan["weight"] == tail
+            numerator, reserve, worst, units = min(candidates)
+            assert (int(plan["regret_numerator"]), plan["annual_seats"], int(plan["worst_regret"])) == (numerator, reserve, worst)
+            tied = [seats for amount, seats, _, _ in candidates if amount == numerator]
+            assert plan["optimal_seats"] == dict(minimum=min(tied), maximum=max(tied))
+            expanded = [(-int(line["regret"]), line["scenario_index"])
+                        for line in plan["contributions"] for _ in range(line["used_weight"])]
+            assert plan["weight"] == tail and expanded == units
         else:
             assert plan is None
     assert run("seat-risk", "Pro", low, seven, tie_quote, "--tail-weight", "2", success=False) == ""
-    print("PASS eight weighted tails against exhaustive seat counts and expanded scenario weights")
+    print("PASS eight weighted tails, tied intervals and scenario attribution against exhaustive seats")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),
