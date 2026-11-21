@@ -166,6 +166,17 @@ def main():
         assert list(range(result["annual_seats"], result["max_optimal_annual_seats"] + 1)) == winners
         assert int(result["worst_regret"]) == best
     print("PASS plateau endpoints and budget-clipped ties match every feasible integer")
+    for budget, cap, limit in ((42000, 7, 24000), (29999, 7, 24000), (42000, 2, 24000),
+                               (42000, 7, 18000), (42000, 7, 17999), (42000, 7, 42000)):
+        valid = [i for i in range(8) if i * 6000 <= budget and 7 - i <= cap
+                 and max(max(i - 2, 0), 7 - i) * 6000 <= limit]
+        checked = json.loads(run("seat-risk", "Pro", low, seven, tie_quote,
+                                 str(budget), "--monthly-cap", str(cap), "--regret-limit", str(limit)))
+        assert int(checked["allowance"]["limit"]) == limit
+        interval = checked["allowance"].get("feasible_seats")
+        assert interval == (dict(minimum=valid[0], maximum=valid[-1]) if valid else None)
+    assert run("seat-risk", "Pro", low, seven, tie_quote, "--regret-limit", "-1", success=False) == ""
+    print("PASS regret limit feasibility and both endpoints match six exhaustive integer cases")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

@@ -127,6 +127,20 @@ pub(all) struct SeatRiskScenario {
 
 ///|
 #derive(ToJson)
+pub(all) struct SeatReserveInterval {
+  minimum : Int32
+  maximum : Int32
+}
+
+///|
+#derive(ToJson)
+pub(all) struct SeatRiskAllowance {
+  limit : Int64
+  feasible_seats : SeatReserveInterval?
+}
+
+///|
+#derive(ToJson)
 pub(all) struct SeatRiskPlan {
   currency : String
   annual_seats : Int32
@@ -134,6 +148,28 @@ pub(all) struct SeatRiskPlan {
   annual_commitment : Int64
   worst_regret : Int64
   scenarios : Array[SeatRiskScenario]
+  allowance : SeatRiskAllowance?
+}
+
+///|
+/// Find the right endpoint of a regret level set, starting at a feasible minimizer.
+fn last_seat_at_regret(
+  worst : (Int32) -> Int64,
+  first : Int32,
+  upper : Int32,
+  limit : Int64,
+) -> Int32 {
+  let mut lo = first
+  let mut hi = upper
+  while lo < hi {
+    let mid = lo + (hi - lo + 1) / 2
+    if worst(mid) <= limit {
+      lo = mid
+    } else {
+      hi = mid - 1
+    }
+  }
+  lo
 }
 
 ///|
@@ -146,6 +182,7 @@ pub fn plan_seat_risk(
   scenarios : Array[Array[Int32]],
   annual_budget? : Int64,
   monthly_cap? : Int32,
+  regret_limit? : Int64,
 ) -> SeatRiskPlan raise PricingAnalysisError {
   if scenarios.length() < 2 || scenarios.length() > 16 {
     raise InvalidAnalysis("须提供 2 至 16 组席位需求情景")
@@ -194,6 +231,10 @@ pub fn plan_seat_risk(
       "预付预算最多可预留 \{hi} 席；要满足每月补位上限至少需预留 \{lo} 席",
     )
   }
+  if regret_limit is Some(limit) && limit < 0L {
+    raise InvalidAnalysis("最坏额外成本上限不能为负数")
+  }
+  let lower_limit = lo
   let upper_limit = hi
   // The two constraints truncate the integer interval without changing convexity.
   // Maximum of convex scenario regrets is convex. Search the first nonnegative discrete slope.
@@ -206,23 +247,38 @@ pub fn plan_seat_risk(
     }
   }
   let best_regret = worst(lo)
-  let mut last = lo
-  hi = upper_limit
-  // To the right of the first minimum the regret cannot decrease.
-  while last < hi {
-    let mid = last + (hi - last + 1) / 2
-    if worst(mid) == best_regret {
-      last = mid
+  let last = last_seat_at_regret(worst, lo, upper_limit, best_regret)
+  let allowance = regret_limit.map(limit => {
+    let feasible_seats = if limit < best_regret {
+      None
+    } else if limit == best_regret {
+      Some({ minimum: lo, maximum: last, })
     } else {
-      hi = mid - 1
+      // The sublevel set is an interval around an optimal reservation.
+      let mut first = lower_limit
+      let mut right = lo
+      while first < right {
+        let mid = first + (right - first) / 2
+        if worst(mid) <= limit {
+          right = mid
+        } else {
+          first = mid + 1
+        }
+      }
+      Some({
+        minimum: first,
+        maximum: last_seat_at_regret(worst, lo, upper_limit, limit),
+      })
     }
-  }
+    { limit, feasible_seats, }
+  })
   {
     currency,
     annual_seats: lo,
     max_optimal_annual_seats: last,
     annual_commitment: lo.to_int64() * year,
     worst_regret: best_regret,
+    allowance,
     scenarios: Array::makei(scenarios.length(), i => {
       let cost = seat_cost_at(scenarios[i], lo, month, year)
       let requested = peaks[i]

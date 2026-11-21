@@ -102,3 +102,21 @@ test "review retains all tied optimal integer reserves within budget" {
     (4, 4, 18000L),
   )
 }
+
+///|
+test "review recovers every seat count within a stated regret limit" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let cases = [Array::make(12, 2), Array::make(12, 7)]
+  let allowed = @lib.plan_seat_risk(quote, "Pro", cases, regret_limit=24000L)
+  guard allowed.allowance is Some(allowance) &&
+    allowance.feasible_seats is Some(seats) else {
+    abort("expected feasible seat interval")
+  }
+  assert_eq((seats.minimum, seats.maximum), (3, 6))
+  let impossible = @lib.plan_seat_risk(quote, "Pro", cases, regret_limit=17999L)
+  guard impossible.allowance is Some(info) else {
+    abort("expected assessed limit")
+  }
+  assert_true(info.feasible_seats is None)
+  assert_eq(impossible.worst_regret, 18000L)
+}
