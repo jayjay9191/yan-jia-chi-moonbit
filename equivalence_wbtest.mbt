@@ -630,3 +630,21 @@ test "robust seat planning agrees with integer enumeration for mixed demand and 
   }
   assert_true(invalid is Err(_))
 }
+
+///|
+test "weighted breakpoints match direct monthly sums even at million-seat endpoints" {
+  let scenarios = [
+    [0, 5, 7, 5, 0, 3, 3, 2, 5, 5, 1, 7],
+    Array::make(12, 1000000),
+  ]
+  let weights = [1, 255]
+  let month = 2147483647L
+  let year = 25769803764L
+  let curve = build_weighted_curve(scenarios, weights, month, year)
+  assert_eq(curve.knots.map(knot => knot.demand), [1000000, 7, 5, 3, 2, 1])
+  for reserve in [0, 1, 2, 3, 4, 5, 6, 7, 8, 999999, 1000000] {
+    let expected = seat_cost_at(scenarios[0], reserve, month, year) +
+      255L * seat_cost_at(scenarios[1], reserve, month, year)
+    assert_eq(curve.cost_at(reserve), expected)
+  }
+}

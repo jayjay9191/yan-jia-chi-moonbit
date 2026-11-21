@@ -163,6 +163,76 @@ pub(all) struct SeatRiskPlan {
 }
 
 ///|
+priv struct WeightedDemandKnot {
+  demand : Int32
+  weight : Int64
+  weighted_demand : Int64
+}
+
+///|
+priv struct WeightedDemandCurve {
+  knots : Array[WeightedDemandKnot]
+  month : Int64
+  annual_weighted : Int64
+}
+
+///|
+fn build_weighted_curve(
+  scenarios : Array[Array[Int32]],
+  weights : Array[Int32],
+  month : Int64,
+  year : Int64,
+) -> WeightedDemandCurve {
+  let observations : Array[(Int32, Int64)] = []
+  let mut weight_total = 0L
+  for i, scenario in scenarios {
+    let weight = weights[i].to_int64()
+    weight_total += weight
+    for seats in scenario {
+      if seats > 0 {
+        observations.push((seats, weight))
+      }
+    }
+  }
+  observations.sort_by((a, b) => b.0.compare(a.0))
+  let knots : Array[WeightedDemandKnot] = []
+  let mut weight = 0L
+  let mut weighted_demand = 0L
+  for i, item in observations {
+    weight += item.1
+    weighted_demand += item.0.to_int64() * item.1
+    if i + 1 == observations.length() || observations[i + 1].0 != item.0 {
+      knots.push({ demand: item.0, weight, weighted_demand, })
+    }
+  }
+  { knots, month, annual_weighted: year * weight_total, }
+}
+
+///|
+fn WeightedDemandCurve::cost_at(
+  self : WeightedDemandCurve,
+  reserve : Int32,
+) -> Int64 {
+  let mut lo = 0
+  let mut hi = self.knots.length()
+  while lo < hi {
+    let mid = lo + (hi - lo) / 2
+    if self.knots[mid].demand > reserve {
+      lo = mid + 1
+    } else {
+      hi = mid
+    }
+  }
+  let annual = reserve.to_int64() * self.annual_weighted
+  if lo == 0 {
+    return annual
+  }
+  let knot = self.knots[lo - 1]
+  annual +
+  self.month * (knot.weighted_demand - reserve.to_int64() * knot.weight)
+}
+
+///|
 /// Find the smallest minimizer of a discrete convex seat cost.
 fn first_seat_min(
   cost : (Int32) -> Int64,
@@ -316,14 +386,8 @@ pub fn plan_seat_risk(
       None => Some({ minimum: lower_limit, maximum: upper_limit, })
     }
     feasible.map(interval => {
-      let weighted_cost = reserve => {
-        let mut sum = 0L
-        for i in 0..<scenarios.length() {
-          sum += weights[i].to_int64() *
-            seat_cost_at(scenarios[i], reserve, month, year)
-        }
-        sum
-      }
+      let curve = build_weighted_curve(scenarios, weights, month, year)
+      let weighted_cost = reserve => curve.cost_at(reserve)
       let weighted_first = first_seat_min(
         weighted_cost,
         interval.minimum,

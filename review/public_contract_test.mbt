@@ -170,3 +170,21 @@ test "review detects dominated seats and risk-tiebreaks an identical expected co
   assert_eq((tied.pareto_seats.minimum, tied.pareto_seats.maximum), (4, 5))
   assert_eq((tied.annual_seats, tied.worst_regret), (4, 18000L))
 }
+
+///|
+test "review an empty demand curve has exact zero weighted cost" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let plan = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    [Array::make(12, 0), Array::make(12, 0)],
+    scenario_weights=[1, 255],
+  )
+  guard plan.weighted_plan is Some(weighted) else {
+    abort("expected a zero-seat plan")
+  }
+  assert_eq(
+    (weighted.annual_seats, weighted.cost_numerator, weighted.weight_total),
+    (0, 0L, 256),
+  )
+}
