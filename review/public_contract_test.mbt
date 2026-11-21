@@ -151,3 +151,22 @@ test "review trades expected cost against the worst-case limit without rounding"
   }
   assert_true(invalid is Err(_))
 }
+
+///|
+test "review detects dominated seats and risk-tiebreaks an identical expected cost" {
+  let quote = "Pro $10/用户/月；Pro $60/用户/年"
+  let cases = [Array::make(12, 2), Array::make(12, 7)]
+  let biased = @lib.plan_seat_risk(quote, "Pro", cases, regret_limit=24000L, scenario_weights=[
+    1, 3,
+  ])
+  guard biased.weighted_plan is Some(choice) else {
+    abort("expected weighted plan")
+  }
+  assert_eq((choice.pareto_seats.minimum, choice.pareto_seats.maximum), (5, 6))
+  let flat = @lib.plan_seat_risk(quote, "Pro", cases, regret_limit=24000L, scenario_weights=[
+    1, 1,
+  ])
+  guard flat.weighted_plan is Some(tied) else { abort("expected flat plan") }
+  assert_eq((tied.pareto_seats.minimum, tied.pareto_seats.maximum), (4, 5))
+  assert_eq((tied.annual_seats, tied.worst_regret), (4, 18000L))
+}

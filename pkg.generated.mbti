@@ -385,6 +385,7 @@ pub(all) struct TrajectorySummary {
 pub(all) struct WeightedSeatPlan {
   annual_seats : Int32
   cost_numerator : Int64
+  pareto_seats : SeatReserveInterval
   weight_total : Int32
   worst_regret : Int64
 }

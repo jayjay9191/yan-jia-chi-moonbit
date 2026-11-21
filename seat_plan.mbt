@@ -144,6 +144,7 @@ pub(all) struct SeatRiskAllowance {
 pub(all) struct WeightedSeatPlan {
   annual_seats : Int32
   cost_numerator : Int64
+  pareto_seats : SeatReserveInterval
   weight_total : Int32
   worst_regret : Int64
 }
@@ -182,8 +183,8 @@ fn first_seat_min(
 }
 
 ///|
-/// Find the right endpoint of a regret level set, starting at a feasible minimizer.
-fn last_seat_at_regret(
+/// Find the right endpoint of a convex level set, starting at a feasible minimizer.
+fn last_seat_at_level(
   worst : (Int32) -> Int64,
   first : Int32,
   upper : Int32,
@@ -284,7 +285,7 @@ pub fn plan_seat_risk(
   // Maximum of the convex scenario regrets is convex, even on the truncated interval.
   let lo = first_seat_min(worst, lower_limit, upper_limit)
   let best_regret = worst(lo)
-  let last = last_seat_at_regret(worst, lo, upper_limit, best_regret)
+  let last = last_seat_at_level(worst, lo, upper_limit, best_regret)
   let allowance = regret_limit.map(limit => {
     let feasible_seats = if limit < best_regret {
       None
@@ -304,7 +305,7 @@ pub fn plan_seat_risk(
       }
       Some({
         minimum: first,
-        maximum: last_seat_at_regret(worst, lo, upper_limit, limit),
+        maximum: last_seat_at_level(worst, lo, upper_limit, limit),
       })
     }
     { limit, feasible_seats, }
@@ -323,14 +324,47 @@ pub fn plan_seat_risk(
         }
         sum
       }
-      let annual_seats = first_seat_min(
+      let weighted_first = first_seat_min(
         weighted_cost,
         interval.minimum,
         interval.maximum,
       )
+      let cost_numerator = weighted_cost(weighted_first)
+      let weighted_last = last_seat_at_level(
+        weighted_cost,
+        weighted_first,
+        interval.maximum,
+        cost_numerator,
+      )
+      // Outside the nearest ends of the two minimizing plateaus, a solution is dominated.
+      // If the plateaus intersect, all seats in the intersection minimize both objectives.
+      let pareto_seats : SeatReserveInterval = if weighted_last < lo {
+        { minimum: weighted_last, maximum: lo, }
+      } else if weighted_first > last {
+        { minimum: last, maximum: weighted_first, }
+      } else {
+        {
+          minimum: if lo > weighted_first {
+            lo
+          } else {
+            weighted_first
+          },
+          maximum: if last < weighted_last {
+            last
+          } else {
+            weighted_last
+          },
+        }
+      }
+      let annual_seats = if weighted_first > last {
+        pareto_seats.maximum
+      } else {
+        pareto_seats.minimum
+      }
       {
         annual_seats,
-        cost_numerator: weighted_cost(annual_seats),
+        pareto_seats,
+        cost_numerator,
         weight_total,
         worst_regret: worst(annual_seats),
       }
