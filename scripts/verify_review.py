@@ -132,6 +132,27 @@ def main():
         assert limited["worst_regret"] == str(expected_regret)
     assert run("seat-risk", "Pro", low, high, quote, "-1", success=False) == ""
     print("PASS robust seat planning matches enumeration at eight upfront budget limits")
+    for budget in (38399, 38400, 76800):
+        for cap in (0, 4, 8):
+            feasible = [reserve for reserve in range(9)
+                        if reserve * 9600 <= budget and max(8 - reserve, 0) <= cap]
+            args = ("seat-risk", "Pro", low, high, quote, str(budget), "--monthly-cap", str(cap))
+            if not feasible:
+                assert run(*args, success=False) == ""
+                continue
+            expected_regret, expected_reserve = min(
+                (max(row[reserve] - optimum for row, optimum in zip(costs, optima)), reserve)
+                for reserve in feasible
+            )
+            limited = json.loads(run(*args))
+            assert limited["annual_seats"] == expected_reserve
+            assert int(limited["worst_regret"]) == expected_regret
+            assert [x["peak_monthly_seats"] for x in limited["scenarios"]] == [
+                max(2 - expected_reserve, 0), max(8 - expected_reserve, 0)]
+    cap_only = json.loads(run("seat-risk", "Pro", low, high, quote, "--monthly-cap", "4"))
+    assert cap_only["annual_seats"] == 4
+    assert run("seat-risk", "Pro", low, high, quote, "--monthly-cap", "-1", success=False) == ""
+    print("PASS combined cash and capacity limits match exhaustive search at nine constraint pairs")
     queue = run("recheck-queue", "2026-11-20")
     assert len([line for line in queue.splitlines() if line.startswith("APV-")]) == 20
     for args in (("unknown-review-command",), ("trajectory",), ("trajectory", "missing"),

@@ -121,6 +121,7 @@ pub fn plan_seat_costs(
 pub(all) struct SeatRiskScenario {
   cost : Int64
   known_demand_optimum : Int64
+  peak_monthly_seats : Int32
   regret : Int64
 }
 
@@ -136,12 +137,14 @@ pub(all) struct SeatRiskPlan {
 
 ///|
 /// Minimize the largest excess cost over each scenario's unconstrained optimum.
-/// An optional upfront budget limits annual seats in the quoted currency's hundredths.
+/// An upfront budget limits annual seats in the quoted currency's hundredths.
+/// A monthly cap limits the number of overflow seats that can be bought each month.
 pub fn plan_seat_risk(
   raw : String,
   plan : String,
   scenarios : Array[Array[Int32]],
   annual_budget? : Int64,
+  monthly_cap? : Int32,
 ) -> SeatRiskPlan raise PricingAnalysisError {
   if scenarios.length() < 2 || scenarios.length() > 16 {
     raise InvalidAnalysis("须提供 2 至 16 组席位需求情景")
@@ -163,15 +166,20 @@ pub fn plan_seat_risk(
     }
     largest
   }
-  let mut lo = 0
-  let mut hi = scenarios.fold(init=0, (peak, demand) => {
-    let maximum = seat_peak(demand)
-    if maximum > peak {
-      maximum
+  let peaks = scenarios.map(seat_peak)
+  let peak = peaks.fold(init=0, (largest, requested) => {
+    if requested > largest {
+      requested
     } else {
-      peak
+      largest
     }
   })
+  let cap = monthly_cap.unwrap_or(peak)
+  if cap < 0 {
+    raise InvalidAnalysis("每月补位上限不能为负数")
+  }
+  let mut lo = if peak > cap { peak - cap } else { 0 }
+  let mut hi = peak
   if annual_budget is Some(budget) {
     if budget < 0L {
       raise InvalidAnalysis("年付预付预算不能为负数")
@@ -180,7 +188,12 @@ pub fn plan_seat_risk(
       hi = (budget / year).to_int()
     }
   }
-  // The budget truncates the integer interval without changing convexity.
+  if lo > hi {
+    raise InvalidAnalysis(
+      "预付预算最多可预留 \{hi} 席；要满足每月补位上限至少需预留 \{lo} 席",
+    )
+  }
+  // The two constraints truncate the integer interval without changing convexity.
   // Maximum of convex scenario regrets is convex. Search the first nonnegative discrete slope.
   while lo < hi {
     let mid = lo + (hi - lo) / 2
@@ -197,7 +210,17 @@ pub fn plan_seat_risk(
     worst_regret: worst(lo),
     scenarios: Array::makei(scenarios.length(), i => {
       let cost = seat_cost_at(scenarios[i], lo, month, year)
-      { cost, known_demand_optimum: optima[i], regret: cost - optima[i], }
+      let requested = peaks[i]
+      {
+        cost,
+        known_demand_optimum: optima[i],
+        regret: cost - optima[i],
+        peak_monthly_seats: if requested > lo {
+          requested - lo
+        } else {
+          0
+        },
+      }
     }),
   }
 }

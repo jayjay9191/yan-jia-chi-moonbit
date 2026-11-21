@@ -52,3 +52,33 @@ test "review respects the upfront budget before minimizing regret" {
   }
   assert_true(invalid is Err(_))
 }
+
+///|
+test "review enforces monthly overflow and rejects an impossible combination" {
+  let quote = "Pro $10/用户/月；Pro $96/用户/年"
+  let cases = [Array::make(12, 2), Array::make(12, 8)]
+  let capacity = @lib.plan_seat_risk(
+    quote,
+    "Pro",
+    cases,
+    annual_budget=38400L,
+    monthly_cap=4,
+  )
+  assert_eq(
+    (capacity.annual_seats, capacity.annual_commitment, capacity.worst_regret),
+    (4, 38400L, 19200L),
+  )
+  assert_eq(capacity.scenarios.map(row => row.peak_monthly_seats), [0, 4])
+  let impossible = Ok(
+    @lib.plan_seat_risk(
+      quote,
+      "Pro",
+      cases,
+      annual_budget=38399L,
+      monthly_cap=4,
+    ),
+  ) catch {
+    err => Err(err)
+  }
+  assert_true(impossible is Err(_))
+}

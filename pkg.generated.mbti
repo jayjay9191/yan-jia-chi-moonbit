@@ -105,7 +105,7 @@ pub fn plan_classes(String) -> PlanClassReport
 
 pub fn plan_seat_costs(String, String, Array[Int32]) -> SeatCostPlan raise PricingAnalysisError
 
-pub fn plan_seat_risk(String, String, Array[Array[Int32]], annual_budget? : Int64) -> SeatRiskPlan raise PricingAnalysisError
+pub fn plan_seat_risk(String, String, Array[Array[Int32]], annual_budget? : Int64, monthly_cap? : Int32) -> SeatRiskPlan raise PricingAnalysisError
 
 pub fn recheck_queue(Array[ToolPricing], Int32) -> Array[RecheckItem]
 
@@ -323,6 +323,7 @@ pub(all) struct SeatRiskPlan {
 pub(all) struct SeatRiskScenario {
   cost : Int64
   known_demand_optimum : Int64
+  peak_monthly_seats : Int32
   regret : Int64
 }
 
