@@ -382,8 +382,14 @@ fn diff_plan_options(
   before : Array[PlanClass],
   after : Array[PlanClass],
 ) -> Array[QuoteChange] {
-  let old = session_options(before)
-  let current = session_options(after)
+  diff_option_maps(session_options(before), session_options(after)).0
+}
+
+///|
+fn diff_option_maps(
+  old : Map[(String, Bool), (NormalizedPrice, String)],
+  current : Map[(String, Bool), (NormalizedPrice, String)],
+) -> (Array[QuoteChange], Int32) {
   let keys = old.keys().collect()
   for key in current.keys() {
     if !old.contains(key) {
@@ -392,6 +398,7 @@ fn diff_plan_options(
   }
   keys.sort()
   let differences : Array[QuoteChange] = []
+  let mut comparable = 0
   for key in keys {
     let (plan, annual) = key
     let old_option = old.get(key)
@@ -404,6 +411,7 @@ fn diff_plan_options(
           left.per_seat != right.per_seat {
           ("basis-changed", None, None)
         } else {
+          comparable += 1
           let (_, old_cost) = subscription_cost(left, 1)
           let (_, new_cost) = subscription_cost(right, 1)
           if old_cost == new_cost {
@@ -435,7 +443,7 @@ fn diff_plan_options(
       },
     })
   }
-  differences
+  (differences, comparable)
 }
 
 ///|
@@ -490,15 +498,7 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
     }
     let cannot_observe = event.change == "下架" ||
       event.change == "未看到价"
-    let quote = if cannot_observe {
-      ""
-    } else if event.new_price != "" {
-      event.new_price
-    } else if event.change == "无变化" {
-      event.old_price
-    } else {
-      ""
-    }
+    let quote = observed_quote_text(event)
     let report = plan_classes(quote)
     let valid = independent &&
       quote != "" &&
@@ -557,4 +557,138 @@ pub fn class_stability(tool : ToolPricing) -> ClassStability {
     observed += 1
   }
   { sessions, complete, observed_stable: observed_stable && observed >= 2, }
+}
+
+///|
+fn observed_quote_text(event : HistoryEntry) -> String {
+  if event.change == "下架" || event.change == "未看到价" {
+    ""
+  } else if event.new_price != "" {
+    event.new_price
+  } else if event.change == "无变化" {
+    event.old_price
+  } else {
+    ""
+  }
+}
+
+///|
+#derive(ToJson)
+pub(all) struct QuoteEvidenceSession {
+  session : String
+  date : String
+  available : Bool
+}
+
+///|
+#derive(ToJson)
+pub(all) struct QuoteEvidenceLink {
+  kind : String
+  before_session : String
+  after_session : String
+  status : String
+  comparable_options : Int32
+  changes : Array[QuoteChange]
+}
+
+///|
+#derive(ToJson)
+pub(all) struct QuoteEvidenceChain {
+  key : String
+  source_url : String
+  sessions : Array[QuoteEvidenceSession]
+  links : Array[QuoteEvidenceLink]
+}
+
+///|
+fn fixed_quote_options(
+  raw : String,
+) -> Map[(String, Bool), (NormalizedPrice, String)]? {
+  let row = plan_classes(raw)
+  if row.issues.is_empty() && !row.classes.is_empty() {
+    Some(session_options(row.classes))
+  } else {
+    None
+  }
+}
+
+///|
+fn make_quote_evidence_link(
+  kind : String,
+  before_session : String,
+  after_session : String,
+  before : Map[(String, Bool), (NormalizedPrice, String)]?,
+  after : Map[(String, Bool), (NormalizedPrice, String)]?,
+) -> QuoteEvidenceLink {
+  let (status, changes, comparable_options) = match (before, after) {
+    (Some(a), Some(b)) => {
+      let (changes, matched) = diff_option_maps(a, b)
+      (
+        if changes.is_empty() {
+          "unchanged"
+        } else {
+          "changed"
+        },
+        changes,
+        matched,
+      )
+    }
+    _ => ("gap", [], 0)
+  }
+  { kind, before_session, after_session, status, comparable_options, changes, }
+}
+
+///|
+/// Link adjacent observations without skipping gaps. Keep comparisons written
+/// inside a single session distinct from independent observations across sessions.
+pub fn quote_evidence_chain(tool : ToolPricing) -> QuoteEvidenceChain {
+  let sessions = []
+  let links = []
+  let seen : Map[String, Bool] = Map([])
+  let mut previous_id = ""
+  let mut previous : Map[(String, Bool), (NormalizedPrice, String)]? = None
+  for index in observation_order(tool.history) {
+    let event = tool.history[index]
+    let id = event.session.trim().to_owned()
+    let independent = id != "" &&
+      !seen.contains(id) &&
+      is_valid_date(event.date) &&
+      is_valid_change(event.change)
+    let quote = observed_quote_text(event)
+    let current = if independent {
+      seen[id] = true
+      fixed_quote_options(quote)
+    } else {
+      None
+    }
+    if !sessions.is_empty() {
+      links.push(
+        make_quote_evidence_link(
+          "adjacent-sessions", previous_id, id, previous, current,
+        ),
+      )
+    }
+    if independent &&
+      observed_quote_text(event) != "" &&
+      event.old_price != "" &&
+      event.new_price != "" {
+      links.push(
+        make_quote_evidence_link(
+          "within-session",
+          id,
+          id,
+          fixed_quote_options(event.old_price),
+          current,
+        ),
+      )
+    }
+    sessions.push({
+      session: id,
+      date: event.date,
+      available: current is Some(_),
+    })
+    previous = current
+    previous_id = id
+  }
+  { key: tool.key, source_url: tool.pricing_url, sessions, links, }
 }

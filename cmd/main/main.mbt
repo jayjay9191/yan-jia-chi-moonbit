@@ -32,6 +32,13 @@ fn main {
     "budget" => cmd_budget(args)
     "seat-plan" | "seat-risk" => cmd_seat_plan(args)
     "reprice" => cmd_reprice(args)
+    "quote-chain" =>
+      if args.length() == 2 && @lib.tool_by_name(args[1]) is Some(tool) {
+        println(Json(@lib.quote_evidence_chain(tool)).stringify())
+      } else {
+        eprintln("用法：quote-chain <台账工具名>")
+        @env.exit(2)
+      }
     "compare-quotes" => {
       if args.length() != 3 {
         eprintln(
@@ -106,6 +113,9 @@ fn print_usage() -> Unit {
   )
   println(
     "reprice <席位数> <旧标准报价> <新标准报价>：复核同付款周期调价",
+  )
+  println(
+    "quote-chain <台账工具名>：按会话追溯保存的价格证据",
   )
   println("help：显示本帮助")
   println(

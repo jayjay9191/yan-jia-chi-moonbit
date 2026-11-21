@@ -300,3 +300,33 @@ test "review stress weights reverse the preferred tail plan but preserve a joint
     (6, 36000L, 36000L),
   )
 }
+
+///|
+test "review real price evidence keeps a gap separate from a documented reduction" {
+  let tana = @lib.tool_by_name("Tana").unwrap()
+  let trace = @lib.quote_evidence_chain(tana)
+  assert_eq(trace.sessions.map(row => row.available), [false, true, true])
+  let bridge = trace.links.filter(link => link.kind == "adjacent-sessions")
+  assert_eq(bridge.map(link => (link.status, link.comparable_options)), [
+    ("gap", 0),
+    ("unchanged", 1),
+  ])
+  let changed = trace.links
+    .iter()
+    .find_first(link => {
+      link.kind == "within-session" && link.after_session == "20261115-R3"
+    })
+    .unwrap()
+  assert_eq(changed.changes[0].year_delta, Some(-4800L))
+  assert_true(changed.changes[0].after_source.unwrap().contains("$15"))
+  let midjourney = @lib.quote_evidence_chain(
+    @lib.tool_by_name("Midjourney").unwrap(),
+  )
+  assert_true(
+    midjourney.links.any(link => {
+      link.kind == "adjacent-sessions" &&
+      link.comparable_options == 8 &&
+      link.status == "unchanged"
+    }),
+  )
+}

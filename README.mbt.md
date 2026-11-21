@@ -4,7 +4,7 @@
 
 ## 初审核对
 
-在仓库根目录运行 `moon test review`。十二个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
+在仓库根目录运行 `moon test review`。十三个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
 
 运行 `moon run cmd/main -- classes Midjourney --json`。MoonBit 按套餐名和付款周期对齐两次独立复核的原文，逐项核对币种、席位口径和原始年费用。Midjourney 的 R3、R5 四档八种付款选项金额与口径一致。R1 缺少原文，整段历史仍标为证据不完整。这里复查的是台账保存的报价。
 
@@ -75,6 +75,17 @@ moon run cmd/main -- seat-risk Pro "2,2,2,2,2,2,2,2,2,2,2,2" "7,7,7,7,7,7,7,7,7,
 ```
 
 `optimal_seats` 给出所有并列最优席位的闭区间，本例为 [5, 6]。代表解 5 席的 `contributions` 分别计入情景 0 的 180 美元和情景 1 的 120 美元，各用一个权重。相同额外成本按输入顺序分配尾部权重，便于复算。
+
+## 历史报价的会话证据链
+
+```powershell
+moon run cmd/main -- quote-chain Tana
+moon run cmd/main -- quote-chain Midjourney
+```
+
+逐会话按套餐和付款周期建立报价索引。币种或按席位口径变化时只记录可查的来源。缺证会话保留 `gap`，后续有报价时也不会跨过它补造比较。原文同时记录前后报价时，输出独立的 `within-session`，与相邻会话的 `adjacent-sessions` 区分。
+
+Tana 的 R2 未取得明确报价，R3 的会话原文记为月付每席 19 → 15 美元，按该口径年化减少 **48 美元/席**。R3 → R4 保存的报价一致。Midjourney 的 R1 缺原文，R3 → R5 的四档套餐共 **8 个**可比较付款选项一致。独立 Python 从 `data/pricing.json` 读取保存的原文并用 Decimal 复算。同一次会话内记载的两份原文代表该会话的证据，不能当成两次独立的网页观测。
 
 ## 两套需求权重下的压力测试
 

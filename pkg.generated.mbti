@@ -107,6 +107,8 @@ pub fn plan_seat_costs(String, String, Array[Int32]) -> SeatCostPlan raise Prici
 
 pub fn plan_seat_risk(String, String, Array[Array[Int32]], annual_budget? : Int64, monthly_cap? : Int32, regret_limit? : Int64, scenario_weights? : Array[Int32], tail_weight? : Int32, stress_weights? : Array[Int32]) -> SeatRiskPlan raise PricingAnalysisError
 
+pub fn quote_evidence_chain(ToolPricing) -> QuoteEvidenceChain
+
 pub fn recheck_queue(Array[ToolPricing], Int32) -> Array[RecheckItem]
 
 pub fn rechecked_tools_count(Array[ToolPricing]) -> Int32
@@ -289,6 +291,31 @@ pub(all) struct QuoteComparison {
   before_issues : Array[String]
   after_issues : Array[String]
   changes : Array[QuoteChange]
+}
+
+#derive(@json.ToJson)
+pub(all) struct QuoteEvidenceChain {
+  key : String
+  source_url : String
+  sessions : Array[QuoteEvidenceSession]
+  links : Array[QuoteEvidenceLink]
+}
+
+#derive(@json.ToJson)
+pub(all) struct QuoteEvidenceLink {
+  kind : String
+  before_session : String
+  after_session : String
+  status : String
+  comparable_options : Int32
+  changes : Array[QuoteChange]
+}
+
+#derive(@json.ToJson)
+pub(all) struct QuoteEvidenceSession {
+  session : String
+  date : String
+  available : Bool
 }
 
 pub(all) struct RecheckItem {

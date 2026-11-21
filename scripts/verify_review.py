@@ -1,5 +1,7 @@
 """Exercise the public CLI and measured second-review cases."""
 import json
+from decimal import Decimal
+import re
 from pathlib import Path
 import subprocess
 
@@ -13,7 +15,51 @@ def run(*args, success=True):
     return result.stdout
 
 
+def verify_real_quote_chain():
+    tools = {entry["name"]: entry for entry in
+             json.loads((ROOT / "data/pricing.json").read_text(encoding="utf-8"))["tools"]}
+    for name in ("Tana", "Midjourney"):
+        source = tools[name]
+        history = source["history"]
+        chain = json.loads(run("quote-chain", name))
+        assert (chain["key"], chain["source_url"]) == (source["key"], source["pricing_url"])
+        assert [row["session"] for row in chain["sessions"]] == [row["session"] for row in history]
+        assert [row["date"] for row in chain["sessions"]] == [row["date"] for row in history]
+        assert [row["available"] for row in chain["sessions"]] == [False, True, True]
+        adjacent = [link for link in chain["links"] if link["kind"] == "adjacent-sessions"]
+        assert len(adjacent) == 2
+        assert all((link["before_session"], link["after_session"]) == (a["session"], b["session"])
+                   for link, a, b in zip(adjacent, history, history[1:]))
+        assert (adjacent[0]["status"], adjacent[0]["comparable_options"], adjacent[0]["changes"]) == ("gap", 0, [])
+        if name == "Tana":
+            assert history[0]["change"] == "未看到价" and not history[0]["new_price"]
+            a, b = history[1]["old_price"], history[1]["new_price"]
+            assert b == history[2]["new_price"]
+            delta = int((Decimal(re.search(r"\$([\d.]+)", b)[1]) -
+                         Decimal(re.search(r"\$([\d.]+)", a)[1])) * 1200)
+            change_edge = next(link for link in chain["links"] if link["before_session"] == history[1]["session"]
+                               and link["after_session"] == history[1]["session"])
+            assert change_edge["kind"] == "within-session" and change_edge["comparable_options"] == 1
+            assert change_edge["status"] == "changed"
+            change, = change_edge["changes"]
+            assert int(change["year_delta"]) == delta == -4800
+            assert (change["before_source"], change["after_source"]) == (a, b)
+            comparable = 1
+        else:
+            assert not history[0]["old_price"] and not history[0]["new_price"]
+            def tariffs(raw):
+                return [(plan, Decimal(month), Decimal(annual))
+                        for plan, month, annual in re.findall(r"(Basic|Standard|Pro|Mega) \$([\d.]+)(?:/月按月、|/)\$([\d.]+)", raw)]
+            first, last = tariffs(history[1]["old_price"]), tariffs(history[2]["new_price"])
+            assert first == last and len(first) == 4
+            comparable = 2 * len(first)
+        assert (adjacent[1]["status"], adjacent[1]["comparable_options"], adjacent[1]["changes"]) == (
+            "unchanged", comparable, [])
+    print("PASS real quote chains recomputed from Tana and Midjourney source snapshots")
+
+
 def main():
+    verify_real_quote_chain()
     assert "用法" in run("help")
     tana = run("trajectory", "Tana")
     assert "-21%" in tana and "降价" in tana
