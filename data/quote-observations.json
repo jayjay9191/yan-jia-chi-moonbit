@@ -1,0 +1,422 @@
+[
+  {
+    "label": "Midjourney Basic Monthly",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Basic",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 1000
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Basic",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 1000
+    }
+  },
+  {
+    "label": "Midjourney Basic Annual",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Basic",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 9600
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Basic",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 9600
+    }
+  },
+  {
+    "label": "Midjourney Standard Monthly",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Standard",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 3000
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Standard",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 3000
+    }
+  },
+  {
+    "label": "Midjourney Standard Annual",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Standard",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 28800
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Standard",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 28800
+    }
+  },
+  {
+    "label": "Midjourney Pro Monthly",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Pro",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 6000
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Pro",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 6000
+    }
+  },
+  {
+    "label": "Midjourney Pro Annual",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Pro",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 57600
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Pro",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 57600
+    }
+  },
+  {
+    "label": "Midjourney Mega Monthly",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Mega",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 12000
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Mega",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 12000
+    }
+  },
+  {
+    "label": "Midjourney Mega Annual",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0015:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Mega",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 115200
+    },
+    "after": {
+      "capture": "APV-0015:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+      "product": "midjourney",
+      "plan": "Mega",
+      "currency": "USD",
+      "unit": "Account",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 115200
+    }
+  },
+  {
+    "label": "Tana historical monthly quote and currently labelled annual meeting quote",
+    "expected": "evidence-gap",
+    "before": {
+      "capture": "APV-0178:20261116-R4",
+      "observed_on": "2026-11-16",
+      "source": "https://tana.inc/pricing",
+      "product": "",
+      "plan": "Pro",
+      "currency": "USD",
+      "unit": "Seat",
+      "billing": "Monthly",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 1500
+    },
+    "after": {
+      "capture": "APV-0178:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://tana.inc/pricing",
+      "product": "tana-meetings",
+      "plan": "Pro",
+      "currency": "USD",
+      "unit": "Seat",
+      "billing": "Annual",
+      "tier": "flat",
+      "scope": "public-standard",
+      "amount_minor": 18000
+    }
+  },
+  {
+    "label": "GLM-5.1 input-length-[0,32K) MillionInputTokens",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0011:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionInputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[0,32K)",
+      "scope": "public-standard",
+      "amount_minor": 600
+    },
+    "after": {
+      "capture": "APV-0011:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionInputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[0,32K)",
+      "scope": "public-standard",
+      "amount_minor": 600
+    }
+  },
+  {
+    "label": "GLM-5.1 input-length-[0,32K) MillionOutputTokens",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0011:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionOutputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[0,32K)",
+      "scope": "public-standard",
+      "amount_minor": 2400
+    },
+    "after": {
+      "capture": "APV-0011:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionOutputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[0,32K)",
+      "scope": "public-standard",
+      "amount_minor": 2400
+    }
+  },
+  {
+    "label": "GLM-5.1 input-length-[32K,infinity) MillionInputTokens",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0011:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionInputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[32K,infinity)",
+      "scope": "public-standard",
+      "amount_minor": 800
+    },
+    "after": {
+      "capture": "APV-0011:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionInputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[32K,infinity)",
+      "scope": "public-standard",
+      "amount_minor": 800
+    }
+  },
+  {
+    "label": "GLM-5.1 input-length-[32K,infinity) MillionOutputTokens",
+    "expected": "comparable",
+    "before": {
+      "capture": "APV-0011:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionOutputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[32K,infinity)",
+      "scope": "public-standard",
+      "amount_minor": 2800
+    },
+    "after": {
+      "capture": "APV-0011:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionOutputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[32K,infinity)",
+      "scope": "public-standard",
+      "amount_minor": 2800
+    }
+  },
+  {
+    "label": "GLM-5.1 input tiers cannot be compared as a price change",
+    "expected": "scope-mismatch",
+    "before": {
+      "capture": "APV-0011:20261118-R5",
+      "observed_on": "2026-11-18",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionInputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[0,32K)",
+      "scope": "public-standard",
+      "amount_minor": 600
+    },
+    "after": {
+      "capture": "APV-0011:20261123-R6",
+      "observed_on": "2026-11-23",
+      "source": "https://docs.bigmodel.cn/cn/guide/start/pricing",
+      "product": "bigmodel-api",
+      "plan": "GLM-5.1",
+      "currency": "CNY",
+      "unit": "MillionInputTokens",
+      "billing": "Usage",
+      "tier": "input-length-[32K,infinity)",
+      "scope": "public-standard",
+      "amount_minor": 800
+    }
+  }
+]

@@ -39,6 +39,7 @@ fn main {
         eprintln("用法：quote-chain <台账工具名>")
         @env.exit(2)
       }
+    "compare-observations" => cmd_compare_observations(args)
     "compare-quotes" => {
       if args.length() != 3 {
         eprintln(
@@ -116,6 +117,9 @@ fn print_usage() -> Unit {
   )
   println(
     "quote-chain <台账工具名>：按会话追溯保存的价格证据",
+  )
+  println(
+    "compare-observations <旧观测JSON> <新观测JSON>：核对可比性与最小货币单位差额",
   )
   println("help：显示本帮助")
   println(
@@ -671,5 +675,27 @@ fn cmd_reprice(args : Array[String]) -> Unit {
       "用法：reprice slack <席位数> 或 reprice <席位数> <旧标准报价> <新标准报价>",
     )
     @env.exit(2)
+  }
+}
+
+///|
+fn cmd_compare_observations(args : Array[String]) -> Unit {
+  if args.length() != 3 {
+    eprintln("用法：compare-observations <旧观测JSON> <新观测JSON>")
+    @env.exit(2)
+  }
+  try {
+    let before : @lib.QuoteObservation = @json.from_json(@json.parse(args[1]))
+    let after : @lib.QuoteObservation = @json.from_json(@json.parse(args[2]))
+    println(Json(@lib.compare_quote_observations(before, after)).stringify())
+  } catch {
+    @lib.InvalidObservation(message) => {
+      eprintln("INVALID QUOTE OBSERVATION: \{message}")
+      @env.exit(2)
+    }
+    err => {
+      eprintln("INVALID QUOTE OBSERVATION: \{err}")
+      @env.exit(2)
+    }
   }
 }

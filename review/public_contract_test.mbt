@@ -332,3 +332,44 @@ test "review real price evidence keeps a gap separate from a documented reductio
     }),
   )
 }
+
+///|
+test "structured quote scope forbids numeric deltas on ambiguous evidence" {
+  let before : @lib.QuoteObservation = {
+    capture: "a",
+    observed_on: "2026-11-18",
+    source: "https://example.com/price",
+    product: "Example",
+    plan: "Standard",
+    currency: "USD",
+    unit: Some(Seat),
+    billing: Some(Annual),
+    tier: "flat",
+    scope: "public",
+    amount_minor: Some(12000L),
+  }
+  let after = {
+    ..before,
+    capture: "b",
+    observed_on: "2026-11-23",
+    amount_minor: Some(11500L),
+  }
+  let match_scope = @lib.compare_quote_observations(before, after)
+  assert_eq(
+    (match_scope.status, match_scope.delta_minor),
+    ("comparable", Some(-500L)),
+  )
+  let mismatch = @lib.compare_quote_observations(before, {
+    ..after,
+    billing: Some(Monthly),
+  })
+  assert_eq((mismatch.status, mismatch.delta_minor), ("scope-mismatch", None))
+  assert_eq(mismatch.reasons, ["billing"])
+  let gap = @lib.compare_quote_observations(before, {
+    ..after,
+    product: "",
+    amount_minor: None,
+  })
+  assert_eq((gap.status, gap.delta_minor), ("evidence-gap", None))
+  assert_eq(gap.reasons, ["product", "amount_minor"])
+}

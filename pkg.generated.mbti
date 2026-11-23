@@ -35,6 +35,8 @@ pub fn class_stability(ToolPricing) -> ClassStability
 
 pub fn compare_budget(String, String, Int32) -> Result[BudgetComparison, String]
 
+pub fn compare_quote_observations(QuoteObservation, QuoteObservation) -> QuoteScopeVerdict raise QuoteObservationError
+
 pub fn compare_quote_snapshots(String, String) -> QuoteComparison
 
 pub fn compare_repricing(String, String, Int32) -> Result[BudgetComparison, String]
@@ -145,11 +147,22 @@ pub suberror PricingAnalysisError {
   InvalidAnalysis(String)
 }
 
+pub suberror QuoteObservationError {
+  InvalidObservation(String)
+}
+
 // Types and methods
 pub enum AlignResult {
   Same
   Different(String)
   CannotAlign(String)
+}
+
+#derive(Eq, @json.FromJson, @json.ToJson)
+pub(all) enum BillingCycle {
+  Monthly
+  Annual
+  Usage
 }
 
 pub(all) struct BudgetComparison {
@@ -316,6 +329,38 @@ pub(all) struct QuoteEvidenceSession {
   session : String
   date : String
   available : Bool
+}
+
+#derive(@json.FromJson, @json.ToJson)
+pub(all) struct QuoteObservation {
+  capture : String
+  observed_on : String
+  source : String
+  product : String
+  plan : String
+  currency : String
+  unit : QuoteUnit?
+  billing : BillingCycle?
+  tier : String
+  scope : String
+  amount_minor : Int64?
+}
+
+#derive(@json.ToJson)
+pub(all) struct QuoteScopeVerdict {
+  before_capture : String
+  after_capture : String
+  status : String
+  reasons : Array[String]
+  delta_minor : Int64?
+}
+
+#derive(Eq, @json.FromJson, @json.ToJson)
+pub(all) enum QuoteUnit {
+  Account
+  Seat
+  MillionInputTokens
+  MillionOutputTokens
 }
 
 pub(all) struct RecheckItem {

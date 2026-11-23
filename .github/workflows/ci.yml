@@ -45,3 +45,7 @@ jobs:
         run: |
           export PATH="$HOME/.moon/bin:$PATH"
           python3 scripts/verify_review.py
+      - name: Verify structured quote observations
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          python3 scripts/verify_quote_scope.py

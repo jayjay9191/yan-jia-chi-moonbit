@@ -1,5 +1,6 @@
 import {
   "moonbitlang/core/string",
+  "moonbitlang/core/json",
   "jayjay9191/yan-jia-chi-moonbit" @lib,
   "moonbitlang/core/env",
 }

@@ -33,9 +33,23 @@ python scripts/verify_review.py
 | 证据复查 | 重新查找旧页面并对齐套餐 | 按记录键回读来源、原文、会话、复核状态与页面 |
 | 独立核对 | 人工重算可比较选项 | Python Decimal 复算与 MoonBit CLI 核对，缺证据时显示缺口 |
 
+## 结构化报价对照
+
+每次观测记录产品、套餐、币种、计价单位、付款周期、用量分档、适用范围、观测日期和来源。MoonBit 核对两条独立观测。结果为 `comparable`（可比）、`scope-mismatch`（口径不同）或 `evidence-gap`（证据不足），后两种返回原因而不产生差额。
+
+```sh
+python scripts/verify_quote_scope.py
+```
+
+命令从[可复跑观测](data/quote-observations.json)读取案例并调用 `compare-observations`。Midjourney 八个付款选项逐项验证，智谱 GLM-5.1 分开核对两个长度档和输入、输出计价，交叉比较不同用量档会返回口径差异。Tana 历史记录缺少与当前会议产品一致的身份凭证，当前官网 15 美元为年付折算月费，因此复跑返回证据缺口。
+
+`compare-observations <旧观测JSON> <新观测JSON>` 接受两个 JSON 对象。金额 `amount_minor` 以最小货币单位记录，CLI 用十进制字符串保留 Int64 精度。年付填写一次续订的金额，按量填写每计价单位的金额。例如每人每月 15 美元、按年支付，填 `Annual`、`Seat` 和 `"18000"`。缺证据可留空或给 `null`。库接口为 `compare_quote_observations`。历史轨迹仍由 `quote-chain` 查询。
+
+[Midjourney 价目](https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans) · [智谱 API 价目](https://docs.bigmodel.cn/cn/guide/start/pricing) · [Tana 价目](https://tana.inc/pricing)
+
 ## 初审核对
 
-在仓库根目录运行 `moon test review`。十三个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
+在仓库根目录运行 `moon test review`。十四个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
 
 运行 `moon run cmd/main -- classes Midjourney --json`。MoonBit 按套餐名和付款周期对齐两次独立复核的原文，逐项核对币种、席位口径和原始年费用。Midjourney 的 R3、R5 四档八种付款选项金额与口径一致。R1 缺少原文，整段历史仍标为证据不完整。这里复查的是台账保存的报价。
 
