@@ -171,7 +171,7 @@ test "generated: 智谱清言 / GLM status" {
       assert_eq(t.currency, "CNY")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "按量")
-      assert_eq(t.verified_at, "2026-11-18")
+      assert_eq(t.verified_at, "2026-11-23")
       assert_eq(t.key, "APV-0011")
       assert_eq(t.session, "20261108-LXM")
     }
@@ -235,7 +235,7 @@ test "generated: Midjourney status" {
       assert_eq(t.currency, "USD")
       assert_eq(t.reachable, "能打开")
       assert_eq(@yan-jia-chi-moonbit.billing_category(t.billing), "月/年")
-      assert_eq(t.verified_at, "2026-11-18")
+      assert_eq(t.verified_at, "2026-11-23")
       assert_eq(t.key, "APV-0015")
       assert_eq(t.session, "20261108-LXM")
     }

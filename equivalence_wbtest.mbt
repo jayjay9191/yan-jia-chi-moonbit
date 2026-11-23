@@ -76,16 +76,14 @@ test "manual conflicting membership is diagnosed across classes" {
 }
 
 ///|
-test "actual Midjourney sessions expose R1 evidence gap and verify R3 R5 identities" {
+test "actual Midjourney sessions expose R1 evidence gap and verify R3 R5 R6 identities" {
   let report = class_stability(trajectory_tool("Midjourney"))
-  assert_eq(report.sessions.length(), 3)
+  assert_eq(report.sessions.length(), 4)
   assert_false(report.complete)
   assert_true(report.observed_stable)
   assert_eq(report.sessions[0].class_count, 0)
   assert_true(report.sessions[0].detail.contains("缺少"))
-  assert_eq([report.sessions[1].class_count, report.sessions[2].class_count], [
-    4, 4,
-  ])
+  assert_eq(report.sessions.map(session => session.class_count), [0, 4, 4, 4])
 }
 
 ///|

@@ -171,8 +171,8 @@ test "calendar validation observes month length and century leap rules" {
 ///|
 test "full history classification matches the six measured category counts" {
   let summary = trajectory_summary(all_tools())
-  assert_eq(summary.counts, [368, 160, 1, 3, 6, 404])
-  assert_eq(summary.counts.fold(init=0, (n, count) => n + count), 942)
+  assert_eq(summary.counts, [370, 160, 1, 3, 6, 405])
+  assert_eq(summary.counts.fold(init=0, (n, count) => n + count), 945)
 }
 
 ///|

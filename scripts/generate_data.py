@@ -124,13 +124,17 @@ def main() -> int:
         data = json.load(f)
     tools = data["tools"]
     parts = [HEADER.rstrip("\n"), ""]
-    parts.append("///|")
-    parts.append("pub fn all_tools() -> Array[ToolPricing] {")
-    parts.append("  [")
-    parts.extend(emit_tool(t) for t in tools)
-    parts.append("  ]")
-    parts.append("}")
-    parts.append("")
+    # Split the generated source into blocks for the compiler's text segment limit.
+    blocks = [tools[offset:offset + 200] for offset in range(0, len(tools), 200)]
+    parts.extend(["///|", "pub fn all_tools() -> Array[ToolPricing] {",
+                  f"  let tools = Array(capacity={len(tools)})"])
+    for index in range(len(blocks)):
+        parts.append(f"  tools.append(pricing_chunk_{index}()[:])")
+    parts.extend(["  tools", "}", ""])
+    for index, block in enumerate(blocks):
+        parts.extend(["///|", f"fn pricing_chunk_{index}() -> Array[ToolPricing] {{", "  ["])
+        parts.extend(emit_tool(tool) for tool in block)
+        parts.extend(["  ]", "}", ""])
     OUT_PATH.write_text("\n".join(parts), encoding="utf-8")
     print(f"已生成 {OUT_PATH}：{len(tools)} 个工具")
     return 0

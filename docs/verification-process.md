@@ -279,3 +279,23 @@
 - 诚实备注：JetBrains AI 页已改版为 JetBrains Air 产品页、v0 订阅价
   已下架、Tableau 分档价未列出、Zilliz 计划起价须从主定价页复核——
   这 4 条下轮复核须换页面或换口径，不能照抄本轮的“未看到价”。
+
+## R6 复核（2026-11-23）
+
+本轮按旧记录的商品与计费口径逐条核对，新增 3 条会话记录。两条在已跟踪范围内无变化，一条未拿到同口径报价。历史 R1–R5 保留。
+
+| 记录 | 本轮官网观察 | 记录决策 |
+| --- | --- | --- |
+| APV-0015 Midjourney | Basic、Standard、Pro、Mega 的月付仍为 10、30、60、120 美元，年付折算月费为 8、24、48、96 美元 | 八个付款选项一致，更新核验日期。[官方档位对照](https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans) |
+| APV-0011 智谱 GLM | 5.1 的两档输入为 6/8 元、输出为 24/28 元每百万 Tokens，已跟踪的 5.3 和 5.3-Flash 输入、输出也一致 | 更新核验日期，新出现的其他型号不计入这个旧快照的比较。[官方 API 价目](https://docs.bigmodel.cn/cn/guide/start/pricing) |
+| APV-0178 Tana | 主页的会议产品 Pro 为每成员月均 15 美元，按年付费。Outliner 另有独立价目表 | 缺少原记录同产品、同周期的可比报价。保留历史价与上次核验日，报价证据链标记缺口。[会议产品](https://tana.inc/pricing) · [Outliner](https://outliner.tana.inc/pricing) |
+
+Tabnine 的旧价目 URL 本次仍跳转至 Tricentis 联系页。既有「下架」分类保留，含义为旧公开价目撤下。该项不恢复常规复核，未追加重复轨迹。
+
+```sh
+moon run cmd/main -- quote-chain Midjourney
+moon run cmd/main -- quote-chain Tana
+moon run cmd/main -- trajectory-summary
+```
+
+Midjourney 的 R5 → R6 比较 8 个报价选项，结果均一致。Tana 的 R4 → R6 返回 `gap`，保留 R3 会话内的历史对照。六类总计 945 条，比 R5 多 3 条。

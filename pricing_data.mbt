@@ -14,6 +14,17 @@
 
 ///|
 pub fn all_tools() -> Array[ToolPricing] {
+  let tools = Array(capacity=1000)
+  tools.append(pricing_chunk_0()[:])
+  tools.append(pricing_chunk_1()[:])
+  tools.append(pricing_chunk_2()[:])
+  tools.append(pricing_chunk_3()[:])
+  tools.append(pricing_chunk_4()[:])
+  tools
+}
+
+///|
+fn pricing_chunk_0() -> Array[ToolPricing] {
   [
     {
       key: "APV-0001",
@@ -340,7 +351,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "按量",
       student_discount: "未见",
       reachable: "能打开",
-      verified_at: "2026-11-18",
+      verified_at: "2026-11-23",
       note: "只有API定价，无消费订阅价",
       status: PriceStatus::Verified,
       history: [
@@ -359,6 +370,14 @@ pub fn all_tools() -> Array[ToolPricing] {
           old_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8",
           new_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8",
           note: "复核：复核：https://docs.bigmodel.cn/cn/guide/start/pricing 今日重开，GLM-5.3 输入 ¥8、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8，与记录一致，无变化。",
+        },
+        {
+          date: "2026-11-23",
+          session: "20261123-R6",
+          change: "无变化",
+          old_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8",
+          new_price: "API按量：GLM-5.3 输入 ¥8/1M tokens、缓存命中 ¥2、输出 ¥28；GLM-5.1 输入 ¥6/1M tokens（<32K）/¥8（≥32K）、输出 ¥24/¥28；GLM-5.3-Flash 输入 ¥0.8、输出 ¥2.8",
+          note: "官方 API 价目表 https://docs.bigmodel.cn/cn/guide/start/pricing；已跟踪的 5.3、5.1 两档与 5.3-Flash 的记录价一致。",
         },
       ],
     },
@@ -464,7 +483,7 @@ pub fn all_tools() -> Array[ToolPricing] {
       billing: "月/年",
       student_discount: "未见",
       reachable: "能打开",
-      verified_at: "2026-11-18",
+      verified_at: "2026-11-23",
       note: "无免费档",
       status: PriceStatus::Verified,
       history: [
@@ -491,6 +510,14 @@ pub fn all_tools() -> Array[ToolPricing] {
           old_price: "Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%",
           new_price: "Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%",
           note: "复核：复核：https://www.midjourney.com/pricing 今日重开，Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%，与记录一致，无变化。",
+        },
+        {
+          date: "2026-11-23",
+          session: "20261123-R6",
+          change: "无变化",
+          old_price: "Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%",
+          new_price: "Basic $10/月按月、$8/月按年；Standard $30/$24；Pro $60/$48；Mega $120/$96；年付约省20%",
+          note: "官方档位对照 https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans；四档共八个付款选项一致。",
         },
       ],
     },
@@ -5823,6 +5850,14 @@ pub fn all_tools() -> Array[ToolPricing] {
           new_price: "Pro $15/用户/月（按月计费）",
           note: "复核：复核：https://tana.inc/pricing 今日重开，官网页面文本中仍可见记录价所含金额，与记录价（Pro $15/用户/月（按月计费））一致，无变化；记录价为官网完整价目表的一部分（非完整价目表），维持部分核验。",
         },
+        {
+          date: "2026-11-23",
+          session: "20261123-R6",
+          change: "未看到价",
+          old_price: "Pro $15/用户/月（按月计费）",
+          new_price: "",
+          note: "https://tana.inc/pricing 只取得会议产品 Pro 年付折算价每成员月均 15 美元。https://outliner.tana.inc/pricing 单列 Outliner 价目。缺少原记录的同口径报价，保留旧记录。",
+        },
       ],
     },
     {
@@ -6511,6 +6546,12 @@ pub fn all_tools() -> Array[ToolPricing] {
         },
       ],
     },
+  ]
+}
+
+///|
+fn pricing_chunk_1() -> Array[ToolPricing] {
+  [
     {
       key: "APV-0201",
       session: "20261115-I",
@@ -11152,6 +11193,12 @@ pub fn all_tools() -> Array[ToolPricing] {
         },
       ],
     },
+  ]
+}
+
+///|
+fn pricing_chunk_2() -> Array[ToolPricing] {
+  [
     {
       key: "APV-0401",
       session: "20261115-J",
@@ -15359,6 +15406,12 @@ pub fn all_tools() -> Array[ToolPricing] {
         },
       ],
     },
+  ]
+}
+
+///|
+fn pricing_chunk_3() -> Array[ToolPricing] {
+  [
     {
       key: "APV-0601",
       session: "20261115-T",
@@ -19873,6 +19926,12 @@ pub fn all_tools() -> Array[ToolPricing] {
       status: PriceStatus::Verified,
       history: [],
     },
+  ]
+}
+
+///|
+fn pricing_chunk_4() -> Array[ToolPricing] {
+  [
     {
       key: "APV-0801",
       session: "20261115-AB",

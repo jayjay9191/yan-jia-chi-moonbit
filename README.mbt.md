@@ -2,6 +2,37 @@
 
 量一量 AI 工具的真实定价。
 
+## 验收快速入口
+
+在现有 MoonBit 工程中安装 [Mooncakes 发布包](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)。下面的命令从 GitHub 源码仓库根目录运行，可复跑完整证据链。
+
+```sh
+moon add jayjay9191/yan-jia-chi-moonbit
+```
+
+```sh
+moon run cmd/main -- trajectory "智谱清言 / GLM"
+moon run cmd/main -- trajectory Tana
+moon run cmd/main -- quote-chain Tana
+moon run cmd/main -- trajectory Tabnine
+moon run cmd/main -- verify
+python scripts/verify_review.py
+```
+
+| 代表案例 | 历史记录 | 复跑时查看 |
+| --- | --- | --- |
+| 智谱 GLM-5.1 | R1 记录涨价，旧报价为单值，新报价按上下文分档 | 轨迹保留涨价分类，要求逐档复核 |
+| Tana Pro | R3 会话把旧、新两份报价记为月付 19 和 15 美元 | 历史轨迹可复算，现有官网年付折算价的口径见 [R6 复核](docs/verification-process.md#r6-复核2026-11-23) |
+| Tabnine | R4 记录原公开定价页撤下，历史档位保留 | 输出停止常规复核，仍可查历史记录 |
+
+历史轨迹的分类来自当次记录。可比较的时点和报价口径由 `quote-chain` 单独检查，缺原文或无法解析时会显式输出证据缺口。历史 R1–R5 的 942 条记录中，涨价 1 条、降价 3 条、下架 6 条、首次核验到价 160 条、无变化 368 条、未看到价 404 条。R6 复核增量见[核验流程](docs/verification-process.md#r6-复核2026-11-23)。
+
+| 核对步骤 | 手工逐页查价 | 验价尺 |
+| --- | --- | --- |
+| 记录范围 | 逐页提取价格，判断席位、币种和付款周期 | 保存 1,000 条记录，保留来源、口径和历史 |
+| 证据复查 | 重新查找旧页面并对齐套餐 | 按记录键回读来源、原文、会话、复核状态与页面 |
+| 独立核对 | 人工重算可比较选项 | Python Decimal 复算与 MoonBit CLI 核对，缺证据时显示缺口 |
+
 ## 初审核对
 
 在仓库根目录运行 `moon test review`。十三个 [公开接口案例](review/public_contract_test.mbt) 核对报价原文回溯、冲突输入、年付预算及月补位限制。
@@ -307,6 +338,15 @@ MoonBit 参赛作品，目前没有外部用户。MoonBit 报名表 2026-11-16 �
 Tana 的判定过程见设计手记 §9：R2 时页面 $15 未注明计费周期、疑似年付价，
 先记“未看到价”留白；R3 两组独立核验一致后才记降价，歧义保留在 note 里。
 
+## 1,000 条记录的验证基准
+
+2026-11-23 在 Windows、AMD Ryzen 9 8940HX、MoonBit 0.1.20261117 上连续运行 release 构建的 Windows CLI 7 次。单次扫描 1,000 条，包含进程启动和汇总输出，排除编译。中位数约 25 ms，范围 24–31 ms，验证结果为 0 项数据问题。
+
+```powershell
+moon build --release --target native
+.\_build\native\release\build\cmd\main\main.exe verify
+```
+
 ## Benchmark（1000 条数据，2026-11-18 实测）
 
 测试方法：本机（4 核 CPU，MoonBit 0.1.20261104）上用 Python
@@ -455,6 +495,8 @@ Standard $30 vs $24、Pro $60 vs $48、Mega $120 vs $96，均为 20%。
 - 货币不同不换算。C$、A$、NT$、HK$、R$ 等目前归到 Other，归一化仍能算本币数值，自动对齐和选低价均拒绝比较。
 
 ## 分工：人工 / Python / MoonBit
+
+AI 辅助产生边界用例和整理报价差异。取价以可打开的官网价目表为准。记录经生成器、MoonBit 验证规则和独立 Python 复算核对，人工检查币种、付款周期及产品是否属于同一口径。
 
 | 步骤 | 人工 | Python | MoonBit |
 | --- | --- | --- | --- |

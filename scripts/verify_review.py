@@ -25,9 +25,9 @@ def verify_real_quote_chain():
         assert (chain["key"], chain["source_url"]) == (source["key"], source["pricing_url"])
         assert [row["session"] for row in chain["sessions"]] == [row["session"] for row in history]
         assert [row["date"] for row in chain["sessions"]] == [row["date"] for row in history]
-        assert [row["available"] for row in chain["sessions"]] == [False, True, True]
+        assert [row["available"] for row in chain["sessions"]] == [False, True, True, name == "Midjourney"]
         adjacent = [link for link in chain["links"] if link["kind"] == "adjacent-sessions"]
-        assert len(adjacent) == 2
+        assert len(adjacent) == 3
         assert all((link["before_session"], link["after_session"]) == (a["session"], b["session"])
                    for link, a, b in zip(adjacent, history, history[1:]))
         assert (adjacent[0]["status"], adjacent[0]["comparable_options"], adjacent[0]["changes"]) == ("gap", 0, [])
@@ -55,6 +55,8 @@ def verify_real_quote_chain():
             comparable = 2 * len(first)
         assert (adjacent[1]["status"], adjacent[1]["comparable_options"], adjacent[1]["changes"]) == (
             "unchanged", comparable, [])
+        expected = ("gap", 0, []) if name == "Tana" else ("unchanged", comparable, [])
+        assert (adjacent[2]["status"], adjacent[2]["comparable_options"], adjacent[2]["changes"]) == expected
     print("PASS real quote chains recomputed from Tana and Midjourney source snapshots")
 
 
@@ -67,8 +69,8 @@ def main():
     assert "逐档核对" in glm and "71%" not in glm and "129%" not in glm
     assert "已下架，停止复核，保留历史" in run("trajectory", "Tabnine")
     summary = run("trajectory-summary")
-    for label, count in (("无变化", 368), ("新档位", 160), ("涨价", 1),
-                         ("降价", 3), ("下架", 6), ("未看到价", 404)):
+    for label, count in (("无变化", 370), ("新档位", 160), ("涨价", 1),
+                         ("降价", 3), ("下架", 6), ("未看到价", 405)):
         assert f"{label}：{count}" in summary
     classes = run("classes", "Midjourney")
     assert "Midjourney：4类" in classes and classes.count("年付节省20%") == 4
@@ -325,7 +327,7 @@ def main():
                  ("recheck-queue", "2026-02-30"),
                  ("trajectory-summary", "unexpected")):
         run(*args, success=False)
-    print("PASS measured trajectories, 942 category counts, four plan classes, R1 evidence gap and top20 queue")
+    print("PASS measured trajectories, 945 category counts, four plan classes, R1 evidence gap and top20 queue")
 
 
 if __name__ == "__main__":

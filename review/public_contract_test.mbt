@@ -305,11 +305,12 @@ test "review stress weights reverse the preferred tail plan but preserve a joint
 test "review real price evidence keeps a gap separate from a documented reduction" {
   let tana = @lib.tool_by_name("Tana").unwrap()
   let trace = @lib.quote_evidence_chain(tana)
-  assert_eq(trace.sessions.map(row => row.available), [false, true, true])
+  assert_eq(trace.sessions.map(row => row.available), [false, true, true, false])
   let bridge = trace.links.filter(link => link.kind == "adjacent-sessions")
   assert_eq(bridge.map(link => (link.status, link.comparable_options)), [
     ("gap", 0),
     ("unchanged", 1),
+    ("gap", 0),
   ])
   let changed = trace.links
     .iter()
@@ -325,6 +326,7 @@ test "review real price evidence keeps a gap separate from a documented reductio
   assert_true(
     midjourney.links.any(link => {
       link.kind == "adjacent-sessions" &&
+      link.after_session == "20261123-R6" &&
       link.comparable_options == 8 &&
       link.status == "unchanged"
     }),

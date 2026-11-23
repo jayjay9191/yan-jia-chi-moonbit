@@ -11,7 +11,7 @@
 
 name = "jayjay9191/yan-jia-chi-moonbit"
 
-version = "0.1.4"
+version = "0.1.5"
 
 repository = "https://github.com/jayjay9191/yan-jia-chi-moonbit"
 
@@ -19,7 +19,7 @@ readme = "README.mbt.md"
 
 license = "Apache-2.0"
 
-keywords = [ ]
+keywords = [ "pricing", "subscriptions", "audit", "provenance" ]
 
 preferred_target = "native"
 
