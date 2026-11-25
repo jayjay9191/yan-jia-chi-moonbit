@@ -40,7 +40,8 @@ fn main {
         @env.exit(2)
       }
     "compare-observations" => cmd_compare_observations(args)
-    "estimate-token-cost" => cmd_estimate_token_cost(args)
+    "estimate-token-cost" | "estimate-token-windows" =>
+      cmd_estimate_token_cost(args)
     "compare-quotes" => {
       if args.length() != 3 {
         eprintln(
@@ -124,6 +125,9 @@ fn print_usage() -> Unit {
   )
   println(
     "estimate-token-cost <费率档位JSON> <请求用量JSON>：按输入长度分档估算",
+  )
+  println(
+    "estimate-token-windows <费率区间JSON> <请求用量JSON>：按输入和输出长度共同选档",
   )
   println("help：显示本帮助")
   println(
@@ -707,15 +711,18 @@ fn cmd_compare_observations(args : Array[String]) -> Unit {
 ///|
 fn cmd_estimate_token_cost(args : Array[String]) -> Unit {
   if args.length() != 3 {
-    eprintln("usage: estimate-token-cost <rate-bands-json> <usage-json>")
+    eprintln("usage: \{args[0]} <rates-json> <usage-json>")
     @env.exit(2)
   }
   try {
-    let bands : Array[@lib.TokenRateBand] = @json.from_json(
-      @json.parse(args[1]),
-    )
+    let rates = @json.parse(args[1])
     let usage : Array[@lib.TokenUsage] = @json.from_json(@json.parse(args[2]))
-    println(Json(@lib.estimate_token_cost(bands, usage)).stringify())
+    let result = if args[0] == "estimate-token-cost" {
+      @lib.estimate_token_cost(@json.from_json(rates), usage)
+    } else {
+      @lib.estimate_token_window_cost(@json.from_json(rates), usage)
+    }
+    println(Json(result).stringify())
   } catch {
     @lib.InvalidObservation(message) => {
       eprintln("INVALID TOKEN QUOTE: \{message}")

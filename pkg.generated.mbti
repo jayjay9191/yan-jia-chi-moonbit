@@ -61,6 +61,8 @@ pub fn days_to_date(Int32) -> String
 
 pub fn estimate_token_cost(Array[TokenRateBand], Array[TokenUsage]) -> TokenCostEstimate raise QuoteObservationError
 
+pub fn estimate_token_window_cost(Array[TokenRateWindow], Array[TokenUsage]) -> TokenCostEstimate raise QuoteObservationError
+
 pub fn evidence_lines(ToolPricing) -> Array[String]
 
 pub fn format_monthly(NormalizedPrice) -> String
@@ -466,6 +468,16 @@ pub(all) struct TokenCostLine {
 #derive(@json.FromJson)
 pub(all) struct TokenRateBand {
   min_input_tokens : Int64
+  input : QuoteObservation
+  output : QuoteObservation
+}
+
+#derive(@json.FromJson)
+pub(all) struct TokenRateWindow {
+  min_input_tokens : Int64
+  max_input_tokens : Int64?
+  min_output_tokens : Int64
+  max_output_tokens : Int64?
   input : QuoteObservation
   output : QuoteObservation
 }

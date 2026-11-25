@@ -22,6 +22,17 @@ def compare(before, after, ok=True):
     return json.loads(result.stdout) if ok else result.stderr
 
 
+def estimate(rates, usage, ok=True, command="estimate-token-cost"):
+    args = [json.dumps(obj, ensure_ascii=True, separators=(",", ":")) for obj in (rates, usage)]
+    result = subprocess.run(
+        ["moon", "run", "cmd/main", "--", command, *args],
+        cwd=ROOT, capture_output=True, encoding="utf-8", timeout=60)
+    assert result.returncode == (0 if ok else 2), result.stdout + result.stderr
+    return json.loads(result.stdout) if ok else result.stderr
+
+def group(inputs, outputs, requests):
+    return dict(input_tokens=str(inputs), output_tokens=str(outputs), requests=str(requests))
+
 def verify_token_cost(rows):
     # Reuse the recorded GLM price evidence. 32,000 is the example's
     # configured interpretation of 32K; 31,000 and 33,000 avoid that ambiguity.
@@ -32,17 +43,6 @@ def verify_token_cost(rows):
         bands.append(dict(min_input_tokens=str(cutoff),
                           input=json.loads(as_json(quotes[tier, "MillionInputTokens"])),
                           output=json.loads(as_json(quotes[tier, "MillionOutputTokens"]))))
-
-    def estimate(rates, usage, ok=True):
-        args = [json.dumps(obj, ensure_ascii=True, separators=(",", ":")) for obj in (rates, usage)]
-        result = subprocess.run(
-            ["moon", "run", "cmd/main", "--", "estimate-token-cost", *args],
-            cwd=ROOT, capture_output=True, encoding="utf-8", timeout=60)
-        assert result.returncode == (0 if ok else 2), result.stdout + result.stderr
-        return json.loads(result.stdout) if ok else result.stderr
-
-    def group(inputs, outputs, requests):
-        return dict(input_tokens=str(inputs), output_tokens=str(outputs), requests=str(requests))
 
     workloads = [group(31000, 1000, 1000), group(33000, 1000, 1000)]
     actual = estimate(bands, workloads)
@@ -68,6 +68,58 @@ def verify_token_cost(rows):
         [dict(bands[1], output=dict(bands[1]["output"], observed_on="2026-11-18"))], workloads, ok=False)
     assert estimate(bands, [])["cost_millionths_minor"] == "0"
     print("PASS GLM-5.1 mixed workload CNY 502.00; configured cutoff and large integer costs verified")
+
+
+def verify_token_windows():
+    # Public GLM-4.7 uncached rates observed 2026-11-25. K is configured
+    # as decimal here; the three example workloads avoid ambiguous cutoffs.
+    source = "https://docs.bigmodel.cn/cn/guide/start/pricing"
+    quote = dict(capture="glm-4.7-pricing-20261125", observed_on="2026-11-25",
+                 source=source, product="bigmodel-api", plan="GLM-4.7",
+                 currency="CNY", billing="Usage", scope="public-standard")
+    short, long_output, long_input = "short", "long-output", "long-input"
+
+    def rate(tier, in_min, in_max, out_min, out_max, input_minor, output_minor):
+        window = dict(min_input_tokens=str(in_min), max_input_tokens=str(in_max),
+                      min_output_tokens=str(out_min),
+                      input=dict(quote, unit="MillionInputTokens", tier=tier,
+                                 amount_minor=str(input_minor)),
+                      output=dict(quote, unit="MillionOutputTokens", tier=tier,
+                                  amount_minor=str(output_minor)))
+        if out_max is not None:
+            window["max_output_tokens"] = str(out_max)
+        return window
+
+    rates = [rate(long_output, 0, 32000, 200, None, 300, 1400),
+             rate(long_input, 32000, 200000, 0, None, 400, 1600),
+             rate(short, 0, 32000, 0, 200, 200, 800)]
+    command = "estimate-token-windows"
+    cases = [(31000, 100), (31000, 300), (33000, 1000),
+             (31999, 199), (31999, 200), (32000, 199), (199999, 300)]
+
+    def independent(inputs, outputs):
+        if inputs >= 32000:
+            return long_input, inputs * 400 + outputs * 1600
+        if outputs >= 200:
+            return long_output, inputs * 300 + outputs * 1400
+        return short, inputs * 200 + outputs * 800
+
+    for ordering in (rates, list(reversed(rates))):
+        result = estimate(ordering, [group(i, o, 1000) for i, o in cases], command=command)
+        expected = [independent(i, o) for i, o in cases]
+        assert result["source"] == source
+        assert [(line["tier"], int(line["cost_millionths_minor"]))
+                for line in result["lines"]] == [(tier, 1000 * cost) for tier, cost in expected]
+        assert int(result["cost_millionths_minor"]) == 1000 * sum(cost for _, cost in expected)
+        assert 1000 * sum(cost for _, cost in expected[:3]) == 30_800_000_000
+    assert "overlap" in estimate([dict(rates[0], min_output_tokens="199"), *rates[1:]],
+                                 [], ok=False, command=command)
+    assert "nonempty" in estimate([dict(rates[2], max_output_tokens="0")],
+                                  [], ok=False, command=command)
+    assert "no token rate" in estimate(rates, [group(1, 0, 1), group(200000, 1, 1)],
+                                       ok=False, command=command)
+    print("PASS GLM-4.7 input/output rate card: CNY 308 for the three workload groups; "
+          "configured boundaries, reordered windows, overlap and coverage gap verified")
 
 
 def main():
@@ -104,6 +156,7 @@ def main():
     assert compare(first["before"], monthly)["reasons"] == ["billing"]
     print(f"PASS {len(rows)} public quote pairs and seven validation boundaries")
     verify_token_cost(rows)
+    verify_token_windows()
 
 
 if __name__ == "__main__":

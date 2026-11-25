@@ -59,3 +59,71 @@ test "usage cost applies the selected whole-request band and sums exact sub-mino
     },
   )
 }
+
+///|
+test "token rate rectangles separate both lengths and expose overlaps and gaps" {
+  let base : QuoteObservation = {
+    capture: "synthetic-capture",
+    observed_on: "2026-11-23",
+    source: "https://example.com/pricing",
+    product: "test-api",
+    plan: "test-model",
+    currency: "CNY",
+    unit: Some(MillionInputTokens),
+    billing: Some(Usage),
+    tier: "short",
+    scope: "standard",
+    amount_minor: Some(200L),
+  }
+  let short : TokenRateWindow = {
+    min_input_tokens: 0L,
+    max_input_tokens: Some(32000L),
+    min_output_tokens: 0L,
+    max_output_tokens: Some(200L),
+    input: base,
+    output: {
+      ..base,
+      unit: Some(MillionOutputTokens),
+      amount_minor: Some(800L),
+    },
+  }
+  let longer = {
+    ..short,
+    min_output_tokens: 200L,
+    max_output_tokens: None,
+    input: { ..base, tier: "long-output", amount_minor: Some(300L), },
+    output: { ..short.output, tier: "long-output", amount_minor: Some(1400L), },
+  }
+  let rows : Array[TokenUsage] = [
+    { input_tokens: 1000L, output_tokens: 199L, requests: 1L, },
+    { input_tokens: 1000L, output_tokens: 200L, requests: 1L, },
+  ]
+  let actual = estimate_token_window_cost([longer, short], rows)
+  assert_eq(actual.lines.map(row => row.tier), ["short", "long-output"])
+  assert_eq(actual.cost_millionths_minor, "939200")
+  assert_true(
+    try {
+      ignore(
+        estimate_token_window_cost(
+          [short, { ..longer, min_output_tokens: 199L, }],
+          [],
+        ),
+      )
+      false
+    } catch {
+      InvalidObservation(message) => message.contains("overlap")
+    },
+  )
+  assert_true(
+    try {
+      ignore(
+        estimate_token_window_cost([short, longer], [
+          { ..rows[0], input_tokens: 32000L, },
+        ]),
+      )
+      false
+    } catch {
+      InvalidObservation(message) => message.contains("no token rate")
+    },
+  )
+}
