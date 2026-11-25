@@ -276,6 +276,27 @@ def verify_precise_token_rates(check_js=False):
           "one million cache hits USD 0.005; exact rate and JSON boundaries checked")
 
 
+def verify_optional_observation_fields(rows):
+    # Keep the Tana history and source, then mask optional fields to check the CLI contract.
+    case = next(case for case in rows if case["after"]["product"] == "tana-meetings")
+    before = as_json(case["before"])
+    after = json.loads(as_json(case["after"]))
+    fields = ("unit", "billing", "amount_minor")
+    masked = dict(after, **dict.fromkeys(fields))
+    omitted = {key: value for key, value in after.items() if key not in fields}
+    for target in ("native", "js"):
+        command = "compare-observations"
+        result = run_json(command, before, json.dumps(masked), target=target)
+        assert result == run_json(command, before, json.dumps(omitted), target=target)
+        assert result["status"] == "evidence-gap" and result.get("delta_minor") is None
+        assert set(result["reasons"]) == {"product", *fields}
+        required_null = json.dumps(dict(after, product=None))
+        run_json(command, before, required_null, ok=False, target=target)
+        repeated = json.dumps(masked).replace('"unit": null', '"unit": null, "unit": "Seat"', 1)
+        assert "duplicate" in run_json(command, before, repeated, ok=False, target=target).lower()
+    print("PASS optional observation nulls match omitted keys on Native and JavaScript")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--quick", action="store_true", help="verify GLM-4.7 windows, cache hits and OpenAI fractional rates")
@@ -325,6 +346,7 @@ def main():
     monthly = dict(after, billing="Annual")
     assert compare(first["before"], monthly)["reasons"] == ["billing"]
     print(f"PASS {len(rows)} public quote pairs and quote evidence boundaries")
+    verify_optional_observation_fields(rows)
     verify_token_cost(rows)
     verify_token_windows(full=True)
     verify_precise_token_rates(check_js=True)

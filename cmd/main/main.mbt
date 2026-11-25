@@ -704,18 +704,28 @@ fn cmd_reprice(args : Array[String]) -> Unit {
 }
 
 ///|
+fn decode_quote_observation(raw : String) -> @lib.QuoteObservation raise {
+  let json = @json.parse(raw, reject_duplicate_keys=true)
+  // The observation CLI accepts null as an omitted optional field.
+  if json is Object(fields) {
+    for name in ["unit", "billing", "amount_minor"] {
+      if fields.get(name) is Some(Null) {
+        fields.remove(name)
+      }
+    }
+  }
+  @json.from_json(json)
+}
+
+///|
 fn cmd_compare_observations(args : Array[String]) -> Unit {
   if args.length() != 3 {
     eprintln("用法：compare-observations <旧观测JSON> <新观测JSON>")
     @env.exit(2)
   }
   try {
-    let before : @lib.QuoteObservation = @json.from_json(
-      @json.parse(args[1], reject_duplicate_keys=true),
-    )
-    let after : @lib.QuoteObservation = @json.from_json(
-      @json.parse(args[2], reject_duplicate_keys=true),
-    )
+    let before = decode_quote_observation(args[1])
+    let after = decode_quote_observation(args[2])
     println(Json(@lib.compare_quote_observations(before, after)).stringify())
   } catch {
     @lib.InvalidObservation(message) => {

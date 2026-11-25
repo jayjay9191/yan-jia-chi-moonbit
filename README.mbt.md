@@ -138,7 +138,7 @@ python scripts/verify_quote_scope.py
 
 命令从[可复跑观测](data/quote-observations.json)读取案例并调用 `compare-observations`。Midjourney 八个付款选项逐项验证，智谱 GLM-5.1 分开核对两个长度档和输入、输出计价，交叉比较不同用量档会返回口径差异。Tana 历史记录缺少与当前会议产品一致的身份凭证，当前官网 15 美元为年付折算月费，因此复跑返回证据缺口。
 
-`compare-observations <旧观测JSON> <新观测JSON>` 接受两个 JSON 对象。金额 `amount_minor` 以最小货币单位记录，CLI 用十进制字符串保留 Int64 精度。年付填写一次续订的金额，按量填写每计价单位的金额。例如每人每月 15 美元、按年支付，填 `Annual`、`Seat` 和 `"18000"`。缺证据可留空或给 `null`。库接口为 `compare_quote_observations`。历史轨迹仍由 `quote-chain` 查询。
+`compare-observations <旧观测JSON> <新观测JSON>` 接受两个 JSON 对象。金额 `amount_minor` 以最小货币单位记录，CLI 用十进制字符串保留 Int64 精度。年付填写一次续订的金额，按量填写每计价单位的金额。例如每人每月 15 美元、按年支付，填 `Annual`、`Seat` 和 `"18000"`。缺少金额、计价单位或付款周期时，可省略对应键或给 `null`，结果为证据缺口。字符串字段可填空字符串。库接口为 `compare_quote_observations`。历史轨迹仍由 `quote-chain` 查询。
 
 [Midjourney 价目](https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans) · [智谱 API 价目](https://docs.bigmodel.cn/cn/guide/start/pricing) · [Tana 价目](https://tana.inc/pricing)
 
