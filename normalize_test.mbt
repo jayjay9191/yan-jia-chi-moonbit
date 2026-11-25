@@ -775,3 +775,27 @@ test "conflicting billing basis is rejected while annual payment of a monthly ra
   assert_eq(norm_cents("USD 20/月（按年付）"), 2000)
   assert_eq(norm_cents("USD 240/year billed annually"), 2000)
 }
+
+///|
+test "monthly display rate cannot hide quarterly payment terms" {
+  let monthly = "$30 USD/member/month"
+  let annual = "$144 USD/member/year"
+  for
+    quote in [
+      "$20 USD/member/month billed QUARTERLY", "$60 USD/member/three months", "$20 USD/member/month (quarterly)",
+      "$20 USD/用户/月（按季度付）", "$20 USD/用户/月，每3个月扣款",
+    ] {
+    assert_eq(norm_kind(quote), "cannot_normalize")
+    assert_true(norm_reason(quote).contains("季度"))
+    assert_true(
+      @yan-jia-chi-moonbit.compare_budget(quote, monthly, 2) is Err(_),
+    )
+  }
+  match @yan-jia-chi-moonbit.compare_budget(monthly, annual, 2) {
+    Ok(cost) => {
+      assert_eq((cost.first_charge_a, cost.first_charge_b), (6000L, 28800L))
+      assert_eq((cost.year_a, cost.year_b), (72000L, 28800L))
+    }
+    Err(reason) => fail(reason)
+  }
+}

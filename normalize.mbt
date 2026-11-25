@@ -421,6 +421,9 @@ fn currency_from_code(code : String) -> Currency {
 /// "$8/月按年"含 "/月" 也含 "按年"：金额已是月费率，月均价即 $8，
 /// billed_annually 记 true（按年付的月费率）。
 fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
+  if has_quarterly_billing(s) {
+    return CannotNormalize("季度计费：仅支持月付和年付订阅")
+  }
   let cents = parse_amount_cents(s.to_array())
   if cents < 0 {
     return CannotNormalize(
@@ -463,6 +466,21 @@ fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
     billed_annually: yearly,
     original: s,
   })
+}
+
+///|
+fn has_quarterly_billing(s : String) -> Bool {
+  let text = s.to_lower()
+  [
+    "billed quarterly", "paid quarterly", "charged quarterly", "quarterly subscription",
+    "quarterly billing", "(quarterly)", "every quarter", "per quarter", "/quarter",
+    "/three months", "per three months", "every three months", "/3 months", "per 3 months",
+    "every 3 months", "季付", "季度付", "按季计费", "按季度计费", "/季度",
+    "每季扣款", "每季度扣款", "每三个月扣款", "每3个月扣款",
+    "/三个月", "/3个月",
+  ]
+  .iter()
+  .any(marker => text.contains(marker))
 }
 
 ///|

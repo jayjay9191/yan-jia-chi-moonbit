@@ -95,6 +95,20 @@ def main():
     assert "计费周期冲突" in ambiguous_cycle and "输入报价：0类" in ambiguous_cycle
     real_cycle = run("classes-quote", "Basic USD 25/month; Basic USD 20/month billed annually")
     assert "年付节省20%" in real_cycle and "矛盾/待核对：0" in real_cycle
+    # Grammarly Support lists $60 per member per quarter, equivalent to $20 a month.
+    month = "Grammarly Pro USD 30/member/month"
+    quarter = "USD 20/member/month billed quarterly"
+    for quote in ("Grammarly Pro " + quarter,
+                  "Grammarly Pro quarterly subscription USD 20/member/month",
+                  "Grammarly Pro USD 20/用户/月（按季度付）"):
+        change = json.loads(run("compare-quotes", month, quote))
+        assert "季度计费" in change["after_issues"][0]
+        assert change["before_issues"] == change["changes"] == []
+    assert "季度计费" in run("normalize", quarter)
+    budget = run("budget", "2", "USD 30/member/month", quarter)
+    assert "季度计费" in budget and "首次扣款" not in budget
+    assert "季度计费" in run("reprice", "2", "USD 30/member/month", quarter, success=False)
+    print("PASS quarterly display rates are withheld from monthly/annual subscription comparisons")
     starting = run("classes-quote", "Basic from $10/月; Basic $96/年")
     assert "报价下限" in starting and "Basic | 1种写法" in starting and "年付节省20%" not in starting
     sign = run("classes-quote", "Basic -USD $10/month; Basic $96/year")
