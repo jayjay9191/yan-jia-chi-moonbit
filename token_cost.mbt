@@ -283,6 +283,7 @@ pub(all) struct CachedTokenUsage {
 
 ///|
 /// All fields encode millionths of the currency's minor unit as decimal strings.
+/// Precise rates can yield a fractional part in that unit.
 #derive(ToJson)
 pub(all) struct TokenCostBreakdown {
   uncached_input : String
@@ -382,5 +383,108 @@ pub fn estimate_cached_token_window_cost(
     source: quote.source,
     cost: token_cost_breakdown(total_input, total_cache, total_output),
     lines,
+  }
+}
+
+///|
+/// Quote observations in the window describe evidence and units.
+/// Put prices in the three decimal rate fields instead of amount_minor.
+#derive(FromJson)
+pub(all) struct PreciseCachedTokenRateWindow {
+  window : TokenRateWindow
+  input_rate_minor : String
+  cache_hit_rate_minor : String
+  output_rate_minor : String
+}
+
+///|
+const RATE_FRACTION_DIGITS : Int32 = 6
+
+///|
+fn precise_token_rate(value : String) -> Int64 raise QuoteObservationError {
+  let (whole, fraction) = match value.split_once(".") {
+    Some((whole, fraction)) if !fraction.is_empty() => (whole, fraction)
+    Some(_) =>
+      raise InvalidObservation(
+        "token rate requires digits after the decimal point",
+      )
+    None => (value.clamped_view(), "".clamped_view())
+  }
+  if whole.is_empty() ||
+    whole.iter().any(c => !c.is_ascii_digit()) ||
+    fraction.length() > RATE_FRACTION_DIGITS ||
+    fraction.iter().any(c => !c.is_ascii_digit()) {
+    raise InvalidObservation(
+      "token rates must be nonnegative decimals with at most six fractional digits",
+    )
+  }
+  let coefficient = whole.to_owned() +
+    fraction.pad_end(RATE_FRACTION_DIGITS, '0')
+  @string.parse_int64(coefficient) catch {
+    _ => raise InvalidObservation("token rate exceeds the fixed-point range")
+  }
+}
+
+///|
+fn unscale_token_cost(coefficient : String) -> String {
+  let digits = coefficient.pad_start(RATE_FRACTION_DIGITS + 1, '0')
+  let point = digits.length() - RATE_FRACTION_DIGITS
+  let whole = digits.clamped_view(end=point).to_owned()
+  let fraction = digits.clamped_view(start=point).trim_end(chars="0")
+  if fraction.is_empty() {
+    whole
+  } else {
+    whole + "." + fraction.to_owned()
+  }
+}
+
+///|
+fn unscale_token_breakdown(cost : TokenCostBreakdown) -> TokenCostBreakdown {
+  {
+    uncached_input: unscale_token_cost(cost.uncached_input),
+    cache_hit: unscale_token_cost(cost.cache_hit),
+    output: unscale_token_cost(cost.output),
+    total: unscale_token_cost(cost.total),
+  }
+}
+
+///|
+/// Price decimal rates per million tokens as exact fixed-point coefficients.
+/// Return amounts in millionths of a minor unit without rounding.
+pub fn estimate_precise_cached_token_window_cost(
+  windows : Array[PreciseCachedTokenRateWindow],
+  usage : Array[CachedTokenUsage],
+) -> CachedTokenCostEstimate raise QuoteObservationError {
+  let scaled = windows.map(row => {
+    let window = row.window
+    if window.input.amount_minor is Some(_) ||
+      window.output.amount_minor is Some(_) {
+      raise InvalidObservation(
+        "omit amount_minor when using decimal rate fields",
+      )
+    }
+    {
+      window: {
+        ..window,
+        input: {
+          ..window.input,
+          amount_minor: Some(precise_token_rate(row.input_rate_minor)),
+        },
+        output: {
+          ..window.output,
+          amount_minor: Some(precise_token_rate(row.output_rate_minor)),
+        },
+      },
+      cache_hit_minor: precise_token_rate(row.cache_hit_rate_minor),
+    }
+  })
+  let estimate = estimate_cached_token_window_cost(scaled, usage)
+  {
+    ..estimate,
+    cost: unscale_token_breakdown(estimate.cost),
+    lines: estimate.lines.map(line => {
+      ..line,
+      cost: unscale_token_breakdown(line.cost),
+    }),
   }
 }

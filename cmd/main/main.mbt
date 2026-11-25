@@ -40,8 +40,10 @@ fn main {
         @env.exit(2)
       }
     "compare-observations" => cmd_compare_observations(args)
-    "estimate-token-cost" | "estimate-token-windows" | "estimate-token-cache" =>
-      cmd_estimate_token_cost(args)
+    "estimate-token-cost"
+    | "estimate-token-windows"
+    | "estimate-token-cache"
+    | "estimate-token-cache-precise" => cmd_estimate_token_cost(args)
     "compare-quotes" => {
       if args.length() != 3 {
         eprintln(
@@ -131,6 +133,9 @@ fn print_usage() -> Unit {
   )
   println(
     "estimate-token-cache <含缓存费率区间JSON> <含命中量JSON>：分别计算未命中输入、命中输入和输出",
+  )
+  println(
+    "estimate-token-cache-precise <小数费率区间JSON> <含命中量JSON>：精确计算最小货币单位以下的费率",
   )
   println("help：显示本帮助")
   println(
@@ -696,8 +701,12 @@ fn cmd_compare_observations(args : Array[String]) -> Unit {
     @env.exit(2)
   }
   try {
-    let before : @lib.QuoteObservation = @json.from_json(@json.parse(args[1]))
-    let after : @lib.QuoteObservation = @json.from_json(@json.parse(args[2]))
+    let before : @lib.QuoteObservation = @json.from_json(
+      @json.parse(args[1], reject_duplicate_keys=true),
+    )
+    let after : @lib.QuoteObservation = @json.from_json(
+      @json.parse(args[2], reject_duplicate_keys=true),
+    )
     println(Json(@lib.compare_quote_observations(before, after)).stringify())
   } catch {
     @lib.InvalidObservation(message) => {
@@ -718,8 +727,8 @@ fn cmd_estimate_token_cost(args : Array[String]) -> Unit {
     @env.exit(2)
   }
   try {
-    let rates = @json.parse(args[1])
-    let usage = @json.parse(args[2])
+    let rates = @json.parse(args[1], reject_duplicate_keys=true)
+    let usage = @json.parse(args[2], reject_duplicate_keys=true)
     let result = match args[0] {
       "estimate-token-cost" =>
         Json(
@@ -731,6 +740,13 @@ fn cmd_estimate_token_cost(args : Array[String]) -> Unit {
       "estimate-token-windows" =>
         Json(
           @lib.estimate_token_window_cost(
+            @json.from_json(rates),
+            @json.from_json(usage),
+          ),
+        )
+      "estimate-token-cache-precise" =>
+        Json(
+          @lib.estimate_precise_cached_token_window_cost(
             @json.from_json(rates),
             @json.from_json(usage),
           ),

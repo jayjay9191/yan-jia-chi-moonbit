@@ -61,6 +61,8 @@ pub fn days_to_date(Int32) -> String
 
 pub fn estimate_cached_token_window_cost(Array[CachedTokenRateWindow], Array[CachedTokenUsage]) -> CachedTokenCostEstimate raise QuoteObservationError
 
+pub fn estimate_precise_cached_token_window_cost(Array[PreciseCachedTokenRateWindow], Array[CachedTokenUsage]) -> CachedTokenCostEstimate raise QuoteObservationError
+
 pub fn estimate_token_cost(Array[TokenRateBand], Array[TokenUsage]) -> TokenCostEstimate raise QuoteObservationError
 
 pub fn estimate_token_window_cost(Array[TokenRateWindow], Array[TokenUsage]) -> TokenCostEstimate raise QuoteObservationError
@@ -271,6 +273,14 @@ pub(all) struct PlanOffer {
   plan : String
   quote : String
   source : String
+}
+
+#derive(@json.FromJson)
+pub(all) struct PreciseCachedTokenRateWindow {
+  window : TokenRateWindow
+  input_rate_minor : String
+  cache_hit_rate_minor : String
+  output_rate_minor : String
 }
 
 pub enum PriceStatus {

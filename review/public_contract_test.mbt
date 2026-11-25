@@ -373,3 +373,48 @@ test "structured quote scope forbids numeric deltas on ambiguous evidence" {
   assert_eq((gap.status, gap.delta_minor), ("evidence-gap", None))
   assert_eq(gap.reasons, ["product", "amount_minor"])
 }
+
+///|
+test "precise token costing preserves a fractional total beyond Int64 coefficients" {
+  let input : @lib.QuoteObservation = {
+    capture: "synthetic-scaled",
+    observed_on: "2026-11-25",
+    source: "https://example.com/pricing",
+    product: "Synthetic Provider",
+    plan: "Text",
+    currency: "USD",
+    unit: Some(MillionInputTokens),
+    billing: Some(Usage),
+    tier: "flat",
+    scope: "standard",
+    amount_minor: None,
+  }
+  let quote : @lib.PreciseCachedTokenRateWindow = {
+    window: {
+      min_input_tokens: 0L,
+      max_input_tokens: None,
+      min_output_tokens: 0L,
+      max_output_tokens: None,
+      input,
+      output: { ..input, unit: Some(MillionOutputTokens), },
+    },
+    input_rate_minor: "0.000001",
+    cache_hit_rate_minor: "0.000009",
+    output_rate_minor: "0.5",
+  }
+  let bill = @lib.estimate_precise_cached_token_window_cost([quote], [
+    {
+      usage: {
+        input_tokens: 2L,
+        output_tokens: 0L,
+        requests: 9223372036854775807L,
+      },
+      cached_input_tokens: 1L,
+    },
+  ])
+  assert_eq(bill.cost.total, "92233720368547.75807")
+  assert_eq(bill.cost.cache_hit, "83010348331692.982263")
+  assert_eq(bill.cost.uncached_input, "9223372036854.775807")
+  assert_eq(bill.cost.output, "0")
+  assert_eq(bill.lines[0].cost.total, bill.cost.total)
+}

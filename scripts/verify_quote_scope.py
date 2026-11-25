@@ -1,5 +1,6 @@
 """Independently check quote identity and signed price deltas against public observations."""
 import argparse
+from decimal import Decimal
 from itertools import product
 import json
 from pathlib import Path
@@ -15,22 +16,24 @@ def as_json(row):
                            else str(row["amount_minor"])), ensure_ascii=True, separators=(",", ":"))
 
 
-def compare(before, after, ok=True):
+def run_json(command, left, right, ok=True):
     result = subprocess.run(
-        ["moon", "run", "cmd/main", "--", "compare-observations",
-         as_json(before), as_json(after)],
+        ["moon", "run", "cmd/main", "--", command, left, right],
         cwd=ROOT, capture_output=True, encoding="utf-8", timeout=60)
     assert result.returncode == (0 if ok else 2), result.stdout + result.stderr
-    return json.loads(result.stdout) if ok else result.stderr
+    if ok:
+        return json.loads(result.stdout)
+    assert not result.stdout, result.stdout
+    return result.stderr
+
+
+def compare(before, after, ok=True):
+    return run_json("compare-observations", as_json(before), as_json(after), ok=ok)
 
 
 def estimate(rates, usage, ok=True, command="estimate-token-cost"):
     args = [json.dumps(obj, ensure_ascii=True, separators=(",", ":")) for obj in (rates, usage)]
-    result = subprocess.run(
-        ["moon", "run", "cmd/main", "--", command, *args],
-        cwd=ROOT, capture_output=True, encoding="utf-8", timeout=60)
-    assert result.returncode == (0 if ok else 2), result.stdout + result.stderr
-    return json.loads(result.stdout) if ok else result.stderr
+    return run_json(command, *args, ok=ok)
 
 def group(inputs, outputs, requests):
     return dict(input_tokens=str(inputs), output_tokens=str(outputs), requests=str(requests))
@@ -160,7 +163,21 @@ def verify_token_windows(full=False):
     assert int(enormous["cost"]["cache_hit"]) == max_i64**2 * 80
     assert int(enormous["cost"]["output"]) == max_i64**2 * 1600
     assert int(enormous["cost"]["total"]) == max_i64**2 * 1680
-    print("PASS GLM-4.7 cache split: CNY 170.40; all-hit, zero-hit, mixed and overflow-of-input checked")
+    precise_rates = []
+    for row in cache_rates:
+        window = row["window"]
+        input_rate, output_rate = window["input"].copy(), window["output"].copy()
+        precise_rates.append(dict(
+            window=dict(window, input=input_rate, output=output_rate),
+            input_rate_minor=input_rate.pop("amount_minor"),
+            output_rate_minor=output_rate.pop("amount_minor"),
+            cache_hit_rate_minor=row["cache_hit_minor"],
+        ))
+    assert estimate(precise_rates, workloads, command="estimate-token-cache-precise") == cache
+
+    duplicate_usage = json.dumps(workloads).replace('"requests":', '"requests":"1", "requests":', 1)
+    assert "duplicate" in run_json(cache_command, json.dumps(cache_rates), duplicate_usage, ok=False).lower()
+    print("PASS GLM-4.7 cache split: CNY 170.40; legacy and precise outputs match exactly")
 
     if full:
         generated, expected, tiers = [], [], []
@@ -187,14 +204,83 @@ def verify_token_windows(full=False):
         print(f"PASS {len(generated)} synthetic rate-boundary and cache workloads against integer arithmetic")
 
 
+def verify_precise_token_rates():
+    # OpenAI's rates are per million text tokens. Quotations below use USD cents.
+    source = "https://developers.openai.com/api/docs/pricing.md"
+    quote = dict(capture="openai-pricing-20261125", observed_on="2026-11-25",
+                 source=source, product="OpenAI API", plan="gpt-6-luna",
+                 currency="USD", billing="Usage", scope="Batch text")
+
+    def rate(tier, lo, hi, input_minor, cache_minor, output_minor):
+        window = dict(min_input_tokens=str(lo), min_output_tokens="0",
+                      input=dict(quote, tier=tier, unit="MillionInputTokens"),
+                      output=dict(quote, tier=tier, unit="MillionOutputTokens"))
+        if hi is not None:
+            window["max_input_tokens"] = str(hi)
+        return dict(window=window, input_rate_minor=input_minor,
+                    cache_hit_rate_minor=cache_minor, output_rate_minor=output_minor)
+
+    # The fixture configures the official 272K boundary as 272,000 tokens.
+    short, long = "short-context", "long-context"
+    rates = [rate(long, 272001, None, "10", "1", "37.5"),
+             rate(short, 0, 272001, "5", "0.5", "25")]
+    samples = [(12000, 500, 10001, 101), (272000, 128, 271997, 3),
+               (272001, 127, 271999, 1)]
+    usage = [dict(usage=group(i, o, count), cached_input_tokens=str(hits))
+             for i, o, hits, count in samples]
+    command = "estimate-token-cache-precise"
+    estimate_result = estimate(rates, usage, command=command)
+    assert estimate_result["source"] == source and estimate_result["plan"] == "gpt-6-luna"
+    expected = []
+    for inputs, output, hits, count in samples:
+        prices = ("0.05", "0.005", "0.25") if inputs <= 272000 else ("0.10", "0.01", "0.375")
+        priced_tokens = (inputs - hits, hits, output)
+        # USD per million tokens becomes millionths of a cent after multiplying by 100.
+        expected.append(tuple(Decimal(price) * tokens * count * 100
+                              for price, tokens in zip(prices, priced_tokens, strict=True)))
+    assert [line["tier"] for line in estimate_result["lines"]] == [short, short, long]
+
+    def breakdown(cost):
+        parsed = tuple(Decimal(cost[key]) for key in ("uncached_input", "cache_hit", "output"))
+        assert Decimal(cost["total"]) == sum(parsed)
+        return parsed
+
+    assert [breakdown(line["cost"]) for line in estimate_result["lines"]] == expected
+    assert breakdown(estimate_result["cost"]) == tuple(map(sum, zip(*expected)))
+    assert estimate_result["lines"][0]["cost"]["cache_hit"] == "505050.5"
+    total_usd = Decimal(estimate_result["cost"]["total"]) / 100_000_000
+
+    quote.update(plan="gpt-5-nano", scope="Standard text")
+    nano = rate("flat", 0, None, "5", "0.5", "40")
+    million = [dict(usage=group(5000, 0, 200), cached_input_tokens="5000")]
+    assert estimate([nano], million, command=command)["cost"]["total"] == "500000"
+    one_cached = [dict(usage=group(1, 0, 1), cached_input_tokens="1")]
+    for price, total in (("0", "0"), ("0.000001", "0.000001"),
+                         ("9223372036854.775807", "9223372036854.775807")):
+        assert estimate([dict(nano, cache_hit_rate_minor=price)], one_cached,
+                        command=command)["cost"]["total"] == total
+    for bad in ("", "-0.5", " 0.5", "0.0000001", "0.5.1", "5.", "5e-1", "9223372036854.775808"):
+        assert "rate" in estimate([dict(nano, cache_hit_rate_minor=bad)], one_cached,
+                                  ok=False, command=command).lower()
+    conflict = dict(nano, window=dict(nano["window"], input=dict(nano["window"]["input"],
+                                                               amount_minor="1")))
+    assert "amount_minor" in estimate([conflict], one_cached, ok=False, command=command)
+    # A nested repeated field used to replace the earlier, materially different rate.
+    serialized = json.dumps([nano]).replace('"cache_hit_rate_minor":', '"cache_hit_rate_minor":"0", "cache_hit_rate_minor":', 1)
+    assert "duplicate" in run_json(command, serialized, json.dumps(one_cached), ok=False).lower()
+    print(f"PASS OpenAI GPT-6 Luna Batch USD {total_usd}; GPT-5 nano Standard "
+          "one million cache hits USD 0.005; exact rate and JSON boundaries checked")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--quick", action="store_true", help="verify the GLM-4.7 rate windows and cache case")
+    parser.add_argument("--quick", action="store_true", help="verify GLM-4.7 windows, cache hits and OpenAI fractional rates")
     args = parser.parse_args()
     if not __debug__:
         parser.error("enable Python assertions (remove -O or PYTHONOPTIMIZE)")
     if args.quick:
         verify_token_windows()
+        verify_precise_token_rates()
         return
     rows = json.loads(DATA.read_bytes())
     for case in rows:
@@ -225,6 +311,8 @@ def main():
         assert "source" in compare(dict(base, source=source), right, ok=False), source
     valid_source = "https://example.com:443/pricing?contact=team@example.com#rates"
     assert compare(dict(base, source=valid_source), dict(base, capture="second"))["status"] == "comparable"
+    duplicate = as_json(base).replace('"amount_minor":', '"amount_minor":"0","amount_minor":', 1)
+    assert "duplicate" in run_json("compare-observations", duplicate, as_json(right), ok=False).lower()
     assert compare(dict(base, capture=right["capture"]), right)["status"] == "evidence-gap"
     first = rows[0]
     after = first["after"]
@@ -235,6 +323,7 @@ def main():
     print(f"PASS {len(rows)} public quote pairs and quote evidence boundaries")
     verify_token_cost(rows)
     verify_token_windows(full=True)
+    verify_precise_token_rates()
 
 
 if __name__ == "__main__":
