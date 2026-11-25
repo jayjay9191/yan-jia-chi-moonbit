@@ -145,7 +145,7 @@ fn compact_billing_order(fragments : Array[String]) -> Bool? {
     if plan.is_empty() ||
       starting_prefix(plan) ||
       first_term_prefix(plan) ||
-      has_quarterly_billing(plan) ||
+      has_unsupported_billing(plan) ||
       plan.has_suffix("-") ||
       plan.has_suffix("−") {
       continue
@@ -231,8 +231,10 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       issues.push("无法确认有效价格：\{fragment}")
       continue
     }
-    if has_quarterly_billing(plan) {
-      issues.push("季度计费：仅支持月付和年付订阅：\{fragment}")
+    if has_unsupported_billing(plan) {
+      issues.push(
+        "不支持该付款周期：仅支持月付和年付订阅：\{fragment}",
+      )
       continue
     }
     if starting_prefix(plan) {

@@ -421,8 +421,10 @@ fn currency_from_code(code : String) -> Currency {
 /// "$8/月按年"含 "/月" 也含 "按年"：金额已是月费率，月均价即 $8，
 /// billed_annually 记 true（按年付的月费率）。
 fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
-  if has_quarterly_billing(s) {
-    return CannotNormalize("季度计费：仅支持月付和年付订阅")
+  if has_unsupported_billing(s) {
+    return CannotNormalize(
+      "不支持该付款周期：仅支持月付和年付订阅",
+    )
   }
   let cents = parse_amount_cents(s.to_array())
   if cents < 0 {
@@ -469,15 +471,49 @@ fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
 }
 
 ///|
-fn has_quarterly_billing(s : String) -> Bool {
+fn has_unsupported_billing_word(text : String) -> Bool {
+  let chars = text.to_array()
+  let mut i = 0
+  let mut previous = ""
+  while i < chars.length() {
+    let char = chars[i]
+    if !char.is_ascii_alphabetic() {
+      if !char.is_whitespace() && char != '-' {
+        previous = ""
+      }
+      i += 1
+      continue
+    }
+    let start = i
+    while i < chars.length() && chars[i].is_ascii_alphabetic() {
+      i += 1
+    }
+    let word = String::from_array(chars[start:i])
+    if word == "quarterly" ||
+      word == "semiannual" ||
+      word == "bimonthly" ||
+      (previous == "semi" && word == "annual") ||
+      (previous == "bi" && word == "monthly") {
+      return true
+    }
+    previous = word
+  }
+  false
+}
+
+///|
+fn has_unsupported_billing(s : String) -> Bool {
   let text = s.to_lower()
+  if has_unsupported_billing_word(text) {
+    return true
+  }
   [
-    "billed quarterly", "paid quarterly", "charged quarterly", "quarterly subscription",
-    "quarterly billing", "(quarterly)", "every quarter", "per quarter", "/quarter",
-    "/three months", "per three months", "every three months", "/3 months", "per 3 months",
-    "every 3 months", "季付", "季度付", "按季计费", "按季度计费", "/季度",
-    "每季扣款", "每季度扣款", "每三个月扣款", "每3个月扣款",
-    "/三个月", "/3个月",
+    "every quarter", "per quarter", "/quarter", "/three months", "per three months",
+    "every three months", "/3 months", "per 3 months", "every 3 months", "季付",
+    "季度付", "按季计费", "按季度计费", "/季度", "每季扣款", "每季度扣款",
+    "每季支付", "每季度支付", "每三个月扣款", "每3个月扣款",
+    "/三个月", "/3个月", "半年付", "半年计费", "每半年扣款", "每半年支付",
+    "/半年",
   ]
   .iter()
   .any(marker => text.contains(marker))

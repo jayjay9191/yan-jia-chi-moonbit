@@ -777,16 +777,19 @@ test "conflicting billing basis is rejected while annual payment of a monthly ra
 }
 
 ///|
-test "monthly display rate cannot hide quarterly payment terms" {
+test "nominal monthly and yearly rates cannot hide unsupported payment terms" {
   let monthly = "$30 USD/member/month"
   let annual = "$144 USD/member/year"
   for
     quote in [
-      "$20 USD/member/month billed QUARTERLY", "$60 USD/member/three months", "$20 USD/member/month (quarterly)",
+      "$20 USD/member/month quarterly", "$20 USD/member/month billed  quarterly",
+      "$20 USD/member/month billed QUARTERLY", "$20 USD/用户/月（每季度支付）",
+      "$60 USD semiannual", "$60 USD semi-annual", "$60 USD semi annual", "$60 USD semi  annual",
+      "$20 USD bimonthly", "$20 USD bi-monthly", "$60 USD/member/three months", "$20 USD/member/month (quarterly)",
       "$20 USD/用户/月（按季度付）", "$20 USD/用户/月，每3个月扣款",
     ] {
     assert_eq(norm_kind(quote), "cannot_normalize")
-    assert_true(norm_reason(quote).contains("季度"))
+    assert_true(norm_reason(quote).contains("不支持该付款周期"))
     assert_true(
       @yan-jia-chi-moonbit.compare_budget(quote, monthly, 2) is Err(_),
     )

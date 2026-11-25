@@ -100,15 +100,20 @@ def main():
     quarter = "USD 20/member/month billed quarterly"
     for quote in ("Grammarly Pro " + quarter,
                   "Grammarly Pro quarterly subscription USD 20/member/month",
-                  "Grammarly Pro USD 20/用户/月（按季度付）"):
+                  "Grammarly Pro USD 20/member/month quarterly",
+                  "Grammarly Pro USD 20/member/month billed  quarterly",
+                  "Grammarly Pro USD 20/用户/月（按季度付）",
+                  "Grammarly Pro USD 20/用户/月（每季度支付）",
+                  "Grammarly Pro USD 60 semiannual",
+                  "Grammarly Pro USD 20 bimonthly"):
         change = json.loads(run("compare-quotes", month, quote))
-        assert "季度计费" in change["after_issues"][0]
+        assert "不支持该付款周期" in change["after_issues"][0]
         assert change["before_issues"] == change["changes"] == []
-    assert "季度计费" in run("normalize", quarter)
+    assert "不支持该付款周期" in run("normalize", quarter)
     budget = run("budget", "2", "USD 30/member/month", quarter)
-    assert "季度计费" in budget and "首次扣款" not in budget
-    assert "季度计费" in run("reprice", "2", "USD 30/member/month", quarter, success=False)
-    print("PASS quarterly display rates are withheld from monthly/annual subscription comparisons")
+    assert "不支持该付款周期" in budget and "首次扣款" not in budget
+    assert "不支持该付款周期" in run("reprice", "2", "USD 30/member/month", quarter, success=False)
+    print("PASS unsupported billing periods are withheld from monthly/annual subscription comparisons")
     starting = run("classes-quote", "Basic from $10/月; Basic $96/年")
     assert "报价下限" in starting and "Basic | 1种写法" in starting and "年付节省20%" not in starting
     sign = run("classes-quote", "Basic -USD $10/month; Basic $96/year")

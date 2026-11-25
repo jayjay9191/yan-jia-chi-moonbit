@@ -678,7 +678,7 @@ moon run cmd/main -- reprice slack 10
 
 `reprice <席位数> <旧标准报价> <新标准报价>` 用于复核同一套餐调价。项目按币种、计费单位和实际付款周期校验，带促销标记、只明确起价、列有备选付款条件或周期不同的报价会返回退出码 2。调用者需要从来源确认两条确为同一套餐的标准报价。
 
-只比较月付和年付的订阅。原文标明季度扣款时，即使同时提供月均价也会保留为待核对。
+只比较月付和年付的订阅。原文标明季度、半年或双月扣款时，即使同时提供月均价也会保留为待核对。
 Grammarly Pro 公布的每席季度收费 USD 60 相当于月均 USD 20，首次扣款仍是 USD 60。 [Grammarly 官方价格说明](https://support.grammarly.com/hc/en-us/articles/115000090011-How-much-does-Grammarly-Pro-cost)
 
 
