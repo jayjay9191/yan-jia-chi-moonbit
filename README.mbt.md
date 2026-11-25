@@ -2,6 +2,23 @@
 
 量一量 AI 工具的真实定价。
 
+## 十一月验收复跑
+
+从源码仓库根目录运行，使用 MoonBit CLI 和 Python 3.10+。
+
+```sh
+python scripts/verify_quote_scope.py --quick
+```
+
+命令使用智谱 GLM-4.7 的公开价目运行 MoonBit 计费程序，并用 Python 整数独立复算。
+三组共 3,000 次模拟请求，缓存命中时合计 **170.40 元**，零命中时合计 **308.00 元**。
+还会核对选档边界、费率重叠、未定价请求和超额缓存命中。
+用量为模拟输入，估算范围为价目中的普通输入、命中输入和输出。
+
+v0.3.0 本期新增输入输出双条件选档、缓存命中拆账及精确金额输出。
+去掉 `--quick` 可复跑历史结构化报价及 GLM-5.1 案例。
+[发布记录](https://github.com/jayjay9191/yan-jia-chi-moonbit/releases/tag/v0.3.0) · [报价验证](https://github.com/jayjay9191/yan-jia-chi-moonbit/actions/workflows/ci.yml) · [官方价目](https://docs.bigmodel.cn/cn/guide/start/pricing) · [许可证](LICENSE)
+
 ## 输入和输出共同选档
 
 `estimate_token_window_cost` 同时按输入长度和输出长度选费率。每档的两个
@@ -60,7 +77,7 @@ python scripts/verify_quote_scope.py
 模拟用量避开 32,000 至 32,767 这一约定差异区。支持只依据输入长度选档的
 未缓存请求，估算采用价目原值，未纳入折扣、税费和账单取整。
 
-## 验收快速入口
+## 历史报价与全量验证
 
 在现有 MoonBit 工程中安装 [Mooncakes 发布包](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)。下面的命令从 GitHub 源码仓库根目录运行，可复跑完整证据链。
 

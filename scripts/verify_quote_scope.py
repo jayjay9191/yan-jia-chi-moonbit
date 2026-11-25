@@ -1,4 +1,5 @@
 """Independently check quote identity and signed price deltas against public observations."""
+import argparse
 import json
 from pathlib import Path
 import subprocess
@@ -162,6 +163,14 @@ def verify_token_windows():
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--quick", action="store_true", help="verify the GLM-4.7 rate windows and cache case")
+    args = parser.parse_args()
+    if not __debug__:
+        parser.error("enable Python assertions (remove -O or PYTHONOPTIMIZE)")
+    if args.quick:
+        verify_token_windows()
+        return
     rows = json.loads(DATA.read_bytes())
     for case in rows:
         before, after = case["before"], case["after"]
