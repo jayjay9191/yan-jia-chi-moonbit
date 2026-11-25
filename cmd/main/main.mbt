@@ -68,12 +68,21 @@ fn main {
 }
 
 ///|
-/// 命令行参数：去掉 argv[0]（程序路径）和可能出现的前导 "--"。
+// Node includes both its executable and the script path in @env.args().
+#cfg(target="js")
+const CLI_PREFIX : Int32 = 2
+
+///|
+#cfg(not(target="js"))
+const CLI_PREFIX : Int32 = 1
+
+///|
+/// 去掉运行时前缀和可能出现的前导 "--"。
 fn user_args() -> Array[String] {
   let raw = @env.args()
   let out : Array[String] = []
-  for i in 1..<raw.length() {
-    if i == 1 && raw[i] == "--" {
+  for i in CLI_PREFIX..<raw.length() {
+    if i == CLI_PREFIX && raw[i] == "--" {
       continue
     }
     out.push(raw[i])

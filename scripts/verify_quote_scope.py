@@ -16,9 +16,10 @@ def as_json(row):
                            else str(row["amount_minor"])), ensure_ascii=True, separators=(",", ":"))
 
 
-def run_json(command, left, right, ok=True):
+def run_json(command, left, right, ok=True, target=None):
+    backend = ["--target", target] if target else []
     result = subprocess.run(
-        ["moon", "run", "cmd/main", "--", command, left, right],
+        ["moon", "run", *backend, "cmd/main", "--", command, left, right],
         cwd=ROOT, capture_output=True, encoding="utf-8", timeout=60)
     assert result.returncode == (0 if ok else 2), result.stdout + result.stderr
     if ok:
@@ -31,9 +32,9 @@ def compare(before, after, ok=True):
     return run_json("compare-observations", as_json(before), as_json(after), ok=ok)
 
 
-def estimate(rates, usage, ok=True, command="estimate-token-cost"):
+def estimate(rates, usage, ok=True, command="estimate-token-cost", target=None):
     args = [json.dumps(obj, ensure_ascii=True, separators=(",", ":")) for obj in (rates, usage)]
-    return run_json(command, *args, ok=ok)
+    return run_json(command, *args, ok=ok, target=target)
 
 def group(inputs, outputs, requests):
     return dict(input_tokens=str(inputs), output_tokens=str(outputs), requests=str(requests))
@@ -204,7 +205,7 @@ def verify_token_windows(full=False):
         print(f"PASS {len(generated)} synthetic rate-boundary and cache workloads against integer arithmetic")
 
 
-def verify_precise_token_rates():
+def verify_precise_token_rates(check_js=False):
     # OpenAI's rates are per million text tokens. Quotations below use USD cents.
     source = "https://developers.openai.com/api/docs/pricing.md"
     quote = dict(capture="openai-pricing-20261125", observed_on="2026-11-25",
@@ -230,6 +231,9 @@ def verify_precise_token_rates():
              for i, o, hits, count in samples]
     command = "estimate-token-cache-precise"
     estimate_result = estimate(rates, usage, command=command)
+    if check_js:
+        assert estimate(rates, usage, command=command, target="js") == estimate_result
+        print("PASS JavaScript and Native structured cost CLI outputs agree exactly")
     assert estimate_result["source"] == source and estimate_result["plan"] == "gpt-6-luna"
     expected = []
     for inputs, output, hits, count in samples:
@@ -323,7 +327,7 @@ def main():
     print(f"PASS {len(rows)} public quote pairs and quote evidence boundaries")
     verify_token_cost(rows)
     verify_token_windows(full=True)
-    verify_precise_token_rates()
+    verify_precise_token_rates(check_js=True)
 
 
 if __name__ == "__main__":

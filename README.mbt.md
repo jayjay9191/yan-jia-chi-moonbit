@@ -16,7 +16,7 @@ python scripts/verify_quote_scope.py --quick
 用量为模拟输入，估算范围为价目中的普通输入、命中输入和输出。
 
 v0.3.0 本期新增输入输出双条件选档、缓存命中拆账及精确金额输出。
-去掉 `--quick` 可复跑历史结构化报价及 GLM-5.1 案例。
+去掉 `--quick` 可复跑历史结构化报价、GLM-5.1 案例，并使用 Node.js 比对 JavaScript 与原生 CLI 输出。
 [发布记录](https://github.com/jayjay9191/yan-jia-chi-moonbit/releases/tag/v0.3.0) · [报价验证](https://github.com/jayjay9191/yan-jia-chi-moonbit/actions/workflows/ci.yml) · [官方价目](https://docs.bigmodel.cn/cn/guide/start/pricing) · [许可证](LICENSE)
 
 ## 输入和输出共同选档
