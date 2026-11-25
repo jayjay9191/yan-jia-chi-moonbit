@@ -1,5 +1,6 @@
 """Independently check quote identity and signed price deltas against public observations."""
 import argparse
+from itertools import product
 import json
 from pathlib import Path
 import subprocess
@@ -71,7 +72,7 @@ def verify_token_cost(rows):
     print("PASS GLM-5.1 mixed workload CNY 502.00; configured cutoff and large integer costs verified")
 
 
-def verify_token_windows():
+def verify_token_windows(full=False):
     # Public GLM-4.7 uncached rates observed 2026-11-25. K is configured
     # as decimal here; the three example workloads avoid ambiguous cutoffs.
     source = "https://docs.bigmodel.cn/cn/guide/start/pricing"
@@ -161,6 +162,30 @@ def verify_token_windows():
     assert int(enormous["cost"]["total"]) == max_i64**2 * 1680
     print("PASS GLM-4.7 cache split: CNY 170.40; all-hit, zero-hit, mixed and overflow-of-input checked")
 
+    if full:
+        generated, expected, tiers = [], [], []
+        for i, o, cache_mode, requests in product(
+                (3, 31999, 32000, 199999), (0, 199, 200, 1024), (0, 1, 2), (1, 1001)):
+            hits = i * cache_mode // 2
+            generated.append(dict(usage=group(i, o, requests), cached_input_tokens=str(hits)))
+            if i >= 32000:
+                tier, ri, rc, ro = long_input, 400, 80, 1600
+            elif o >= 200:
+                tier, ri, rc, ro = long_output, 300, 60, 1400
+            else:
+                tier, ri, rc, ro = short, 200, 40, 800
+            cost = dict(uncached_input=(i - hits) * ri * requests, cache_hit=hits * rc * requests,
+                        output=o * ro * requests)
+            expected.append(dict(cost, total=sum(cost.values())))
+            tiers.append(tier)
+        batch = estimate(list(reversed(cache_rates)), generated, command=cache_command)
+        assert [line["tier"] for line in batch["lines"]] == tiers
+        assert [{key: int(value) for key, value in line["cost"].items()}
+                for line in batch["lines"]] == expected
+        assert {key: int(value) for key, value in batch["cost"].items()} == {
+            key: sum(row[key] for row in expected) for key in expected[0]}
+        print(f"PASS {len(generated)} synthetic rate-boundary and cache workloads against integer arithmetic")
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -204,7 +229,7 @@ def main():
     assert compare(first["before"], monthly)["reasons"] == ["billing"]
     print(f"PASS {len(rows)} public quote pairs and seven validation boundaries")
     verify_token_cost(rows)
-    verify_token_windows()
+    verify_token_windows(full=True)
 
 
 if __name__ == "__main__":
