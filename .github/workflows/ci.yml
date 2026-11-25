@@ -42,6 +42,10 @@ jobs:
         run: |
           export PATH="$HOME/.moon/bin:$PATH"
           moon test --target js
+      - name: Verify the public library on Wasm GC
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon test review --target wasm-gc
       - name: Run Python script tests
         run: python3 -m unittest discover -s tests_py
       - name: Smoke test report
