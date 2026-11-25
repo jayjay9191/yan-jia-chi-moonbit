@@ -40,6 +40,7 @@ fn main {
         @env.exit(2)
       }
     "compare-observations" => cmd_compare_observations(args)
+    "estimate-token-cost" => cmd_estimate_token_cost(args)
     "compare-quotes" => {
       if args.length() != 3 {
         eprintln(
@@ -120,6 +121,9 @@ fn print_usage() -> Unit {
   )
   println(
     "compare-observations <旧观测JSON> <新观测JSON>：核对可比性与最小货币单位差额",
+  )
+  println(
+    "estimate-token-cost <费率档位JSON> <请求用量JSON>：按输入长度分档估算",
   )
   println("help：显示本帮助")
   println(
@@ -695,6 +699,30 @@ fn cmd_compare_observations(args : Array[String]) -> Unit {
     }
     err => {
       eprintln("INVALID QUOTE OBSERVATION: \{err}")
+      @env.exit(2)
+    }
+  }
+}
+
+///|
+fn cmd_estimate_token_cost(args : Array[String]) -> Unit {
+  if args.length() != 3 {
+    eprintln("usage: estimate-token-cost <rate-bands-json> <usage-json>")
+    @env.exit(2)
+  }
+  try {
+    let bands : Array[@lib.TokenRateBand] = @json.from_json(
+      @json.parse(args[1]),
+    )
+    let usage : Array[@lib.TokenUsage] = @json.from_json(@json.parse(args[2]))
+    println(Json(@lib.estimate_token_cost(bands, usage)).stringify())
+  } catch {
+    @lib.InvalidObservation(message) => {
+      eprintln("INVALID TOKEN QUOTE: \{message}")
+      @env.exit(2)
+    }
+    err => {
+      eprintln("INVALID TOKEN QUOTE: \{err}")
       @env.exit(2)
     }
   }

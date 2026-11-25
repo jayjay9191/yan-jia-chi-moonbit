@@ -59,6 +59,8 @@ pub fn days_since_verified(String, Int32) -> Int32
 
 pub fn days_to_date(Int32) -> String
 
+pub fn estimate_token_cost(Array[TokenRateBand], Array[TokenUsage]) -> TokenCostEstimate raise QuoteObservationError
+
 pub fn evidence_lines(ToolPricing) -> Array[String]
 
 pub fn format_monthly(NormalizedPrice) -> String
@@ -440,6 +442,39 @@ pub(all) struct TailSeatPlan {
   weight : Int32
   worst_regret : Int64
   contributions : Array[TailSeatContribution]
+}
+
+#derive(@json.ToJson)
+pub(all) struct TokenCostEstimate {
+  product : String
+  plan : String
+  currency : String
+  capture : String
+  observed_on : String
+  source : String
+  cost_millionths_minor : String
+  lines : Array[TokenCostLine]
+}
+
+#derive(@json.ToJson)
+pub(all) struct TokenCostLine {
+  usage : TokenUsage
+  tier : String
+  cost_millionths_minor : String
+}
+
+#derive(@json.FromJson)
+pub(all) struct TokenRateBand {
+  min_input_tokens : Int64
+  input : QuoteObservation
+  output : QuoteObservation
+}
+
+#derive(@json.FromJson, @json.ToJson)
+pub(all) struct TokenUsage {
+  input_tokens : Int64
+  output_tokens : Int64
+  requests : Int64
 }
 
 pub(all) struct ToolPricing {
