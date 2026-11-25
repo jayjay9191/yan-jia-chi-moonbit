@@ -802,3 +802,45 @@ test "nominal monthly and yearly rates cannot hide unsupported payment terms" {
     Err(reason) => fail(reason)
   }
 }
+
+///|
+test "annual commitment and cash billing are independent evidence" {
+  let billed_monthly = "USD 69.99/month Annual contract, billed monthly"
+  let prepaid = "USD 779.99/year Annual, prepaid"
+  for
+    quote in [
+      "USD 69.99/month (annual plan)", "USD 69.99/month (yearly)", "USD 69.99/月（年度合约）",
+      "USD 69.99 annual contract",
+    ] {
+    assert_eq(norm_kind(quote), "cannot_normalize")
+    assert_true(norm_reason(quote).contains("付款周期"))
+  }
+  assert_eq(norm_kind(billed_monthly), "normalized")
+  assert_eq(norm_cents(billed_monthly), 6999)
+  let library = @yan-jia-chi-moonbit.compare_budget(billed_monthly, prepaid, 1)
+  guard library is Ok(plan) else {
+    fail("expected fixed-account cash schedule")
+  }
+  assert_eq((plan.first_charge_a, plan.year_a), (6999L, 83988L))
+  assert_eq((plan.first_charge_b, plan.year_b), (77999L, 77999L))
+  assert_eq(
+    @yan-jia-chi-moonbit.align_kind(
+      @yan-jia-chi-moonbit.align_prices(billed_monthly, "USD 69.99/month"),
+    ),
+    "different",
+  )
+  assert_true(
+    @yan-jia-chi-moonbit.compare_repricing(billed_monthly, "USD 69.99/month", 1)
+    is Err(_),
+  )
+  assert_eq(norm_cents("USD 20/month annual billing only"), 2000)
+  assert_eq(norm_cents("USD 60 yearly"), 500)
+  assert_eq(norm_cents("USD 20/月按年"), 2000)
+  assert_eq(norm_cents("USD 20/月（全年预付）"), 2000)
+  assert_eq(norm_cents("USD 20/月（按年）"), 2000)
+  assert_eq(
+    norm_cents("USD 69.99/month annual contract, billed  Monthly"),
+    6999,
+  )
+  assert_eq(norm_cents("USD 20/月（年度承诺，每月扣款）"), 2000)
+}

@@ -41,6 +41,11 @@ fn quoted_seat_rates(
     !currency_eq(monthly.currency, annual.currency) {
     raise InvalidAnalysis("月付和年付必须同币种、均按席位计价")
   }
+  if monthly_annual_commitment(monthly) {
+    raise InvalidAnalysis(
+      "逐月补位需要可按月增减的席位，年度承诺月扣只能做固定席位预算",
+    )
+  }
   let (per_month, _) = subscription_cost(monthly, 1)
   let (_, per_year) = subscription_cost(annual, 1)
   (currency_code(monthly.currency), per_month, per_year)

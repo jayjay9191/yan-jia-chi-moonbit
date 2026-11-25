@@ -8,7 +8,7 @@
 ///   normalize "<单档价格>"       把单档价格折算成月均价（核心语义处理；
 ///                                多档/按量/定制/免费混写会明确拒绝并说明原因）
 ///   align "<价格A>" "<价格B>"    口径对齐：两个价格写法是否具有相同价格口径
-///                                （货币、月均价、计费口径三项都相同才算同；
+///                                （货币、月均价、计费口径和年约月扣义务相同才算同；
 ///                                任一侧无法归一化时拒绝判定，不猜）
 ///   help                          显示本帮助
 /// 用法：moon run cmd/main [子命令 ...]
@@ -117,7 +117,7 @@ fn print_usage() -> Unit {
     "normalize \"<单档价格>\"：折算月均价，如 normalize \"$8/月按年\"；多档/按量/定制会明确拒绝",
   )
   println(
-    "align \"<价格A>\" \"<价格B>\"：口径对齐，如 align \"$8/月按年\" \"$96/年\"；三项（货币、月均价、计费口径）都相同才算价格口径一致",
+    "align \"<价格A>\" \"<价格B>\"：口径对齐，如 align \"$8/月按年\" \"$96/年\"；核对货币、月均价、计费口径和年约月扣义务",
   )
   println(
     "budget <席位数> <报价A> <报价B>：比较首次扣款、12 个月成本与差额",
@@ -613,7 +613,7 @@ fn cmd_budget(args : Array[String]) -> Unit {
   match @lib.compare_budget(args[2], args[3], seats) {
     Ok(b) => {
       println(
-        "币种 \{b.currency}，计费份数 \{b.seats}（同价连续使用 12 个月，未计额外税费）",
+        "币种 \{b.currency}，计费份数 \{b.seats}（固定用量同价使用 12 个月，未计税费或取消费用）",
       )
       println(
         "报价 A 首次扣款 \{budget_money(b.first_charge_a)}，12 个月 \{budget_money(b.year_a)}",

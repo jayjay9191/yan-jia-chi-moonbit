@@ -235,8 +235,8 @@ pub fn cheaper_monthly(
 /// 口径对齐结论：Same = 价格口径一致；Different = 价格口径不同（reason 说明
 /// 哪项不同）；CannotAlign = 无法判定（reason 说明哪一侧被拒绝，绝不猜）。
 /// 判定标准：两侧都能归一化成功，且货币相同、月均价（整数分）相同、
-/// 计费口径（按席/按用户/按人 vs 不按人头）相同。按年付与否不参与判定——
-/// 它只影响月均价本身；同一档位按月付与按年付的月费率不同时判不同
+/// 计费口径和年约月扣义务相同。年预付与否只通过月均价体现。
+/// 同一档位按月付与按年付的月费率不同时判不同
 /// （如 Midjourney Basic $10/月按月 vs $8/月按年），要比同一档位的
 /// 不同付费周期用 annual_saving_pct。更细的计费单位（按次、按 token）
 /// 都在按量拒绝里，根本进不了对齐。
@@ -281,6 +281,10 @@ pub fn align_prices(a : String, b : String) -> AlignResult {
       } else if !currency_eq(pa.currency, pb.currency) {
         AlignResult::Different(
           "货币不同：\{currency_code(pa.currency)} 与 \{currency_code(pb.currency)}，不做汇率换算",
+        )
+      } else if monthly_annual_commitment(pa) != monthly_annual_commitment(pb) {
+        AlignResult::Different(
+          "合约口径不同：一侧是年度承诺按月扣款",
         )
       } else if pa.monthly_cents != pb.monthly_cents {
         AlignResult::Different(
@@ -435,13 +439,25 @@ fn normalize_core(s : String, cur : Currency) -> NormalizeResult {
   if cents == 0 {
     return Free
   }
-  let monthly = is_monthly_period(s)
-  let yearly = is_yearly_period(s)
-  if monthly && yearly && (has_yearly_rate(s) || has_monthly_payment(s)) {
+  let terms = billing_text(s)
+  let monthly = is_monthly_period(terms)
+  let annual_term = has_annual_term(terms)
+  let monthly_payment = has_monthly_payment(terms)
+  let annual_payment = has_annual_payment(terms)
+  let annual_hint = annual_term || annual_payment || is_yearly_period(terms)
+  let yearly_rate = has_yearly_rate(terms)
+  if monthly && (yearly_rate || (monthly_payment && annual_payment)) {
     return CannotNormalize(
       "计费周期冲突：请区分金额对应周期和实际付款周期",
     )
   }
+  if (monthly && annual_hint && !monthly_payment && !annual_payment) ||
+    (!monthly && annual_term && !yearly_rate && !annual_payment) {
+    return CannotNormalize(
+      "付款周期不明确：有年度合约或费率提示，请注明按月扣款或全年预付",
+    )
+  }
+  let yearly = annual_hint && !monthly_payment
   let mut monthly_cents = 0
   if monthly {
     monthly_cents = cents
@@ -520,11 +536,33 @@ fn has_unsupported_billing(s : String) -> Bool {
 }
 
 ///|
+fn billing_text(raw : String) -> String {
+  let text = StringBuilder::StringBuilder(capacity=raw.length())
+  let mut pending_space = false
+  for char in raw.to_lower() {
+    if char.is_whitespace() {
+      pending_space = !text.is_empty()
+    } else {
+      if pending_space {
+        text.write_char(' ')
+        pending_space = false
+      }
+      text.write_char(char)
+    }
+  }
+  text.to_string()
+}
+
+///|
 fn has_monthly_payment(s : String) -> Bool {
   s.contains("按月") ||
   s.contains("月付") ||
+  s.contains("每月扣款") ||
+  s.contains("每月支付") ||
   s.contains("billed monthly") ||
-  s.contains("paid monthly")
+  s.contains("paid monthly") ||
+  s.contains("charged monthly") ||
+  s.contains("monthly billing")
 }
 
 ///|
@@ -555,6 +593,41 @@ fn is_yearly_period(s : String) -> Bool {
   s.contains("年缴") ||
   s.contains("yearly") ||
   s.contains("annual")
+}
+
+///|
+fn has_annual_term(text : String) -> Bool {
+  [
+    "annual contract", "annual commitment", "annual plan", "annual subscription",
+    "yearly contract", "yearly commitment", "yearly plan", "yearly subscription",
+    "年度合约", "年度合同", "年度承诺", "年度订阅", "年度套餐",
+    "按年签约", "按年承诺",
+  ]
+  .iter()
+  .any(hint => text.contains(hint))
+}
+
+///|
+fn has_annual_payment(text : String) -> Bool {
+  text.trim_end(chars=" )）.。").has_suffix("按年") ||
+  [
+    "按年计费", "按年扣款", "按年付款", "按年支付", "年付", "年缴",
+    "全年预付", "billed annually", "billed yearly", "paid annually", "paid yearly",
+    "charged annually", "charged yearly", "annual billing", "yearly billing", "annual prepaid",
+    "annual, prepaid", "annual paid upfront", "annual, paid upfront", "annual payment",
+    "yearly payment",
+  ]
+  .iter()
+  .any(hint => text.contains(hint))
+}
+
+///|
+// The cash flow is monthly, but the seats are committed for a year.
+fn monthly_annual_commitment(price : NormalizedPrice) -> Bool {
+  let text = billing_text(price.original)
+  !price.billed_annually &&
+  has_monthly_payment(text) &&
+  (is_yearly_period(text) || has_annual_term(text))
 }
 
 ///|
@@ -778,6 +851,12 @@ fn compare_subscription(
           "付款周期不同，调价须使用同为月付或同为年付的报价",
         )
       }
+      if same_cycle &&
+        monthly_annual_commitment(pa) != monthly_annual_commitment(pb) {
+        return Err(
+          "合约口径不同，调价须使用同样的年度承诺条件",
+        )
+      }
       if !pa.per_seat && seats != 1 {
         return Err(
           "两项均为整包价格，席位数请填 1；无法从报价推断整包人数上限",
@@ -804,7 +883,7 @@ fn compare_subscription(
 fn subscription_cost(price : NormalizedPrice, seats : Int32) -> (Int64, Int64) {
   let amount = parse_amount_cents(price.original.to_array()).to_int64() *
     seats.to_int64()
-  let year = if is_monthly_period(price.original) {
+  let year = if is_monthly_period(billing_text(price.original)) {
     amount * 12L
   } else {
     amount

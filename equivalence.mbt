@@ -146,6 +146,7 @@ fn compact_billing_order(fragments : Array[String]) -> Bool? {
       starting_prefix(plan) ||
       first_term_prefix(plan) ||
       has_unsupported_billing(plan) ||
+      has_annual_term(billing_text(plan)) ||
       plan.has_suffix("-") ||
       plan.has_suffix("−") {
       continue
@@ -235,6 +236,10 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       issues.push(
         "不支持该付款周期：仅支持月付和年付订阅：\{fragment}",
       )
+      continue
+    }
+    if has_annual_term(billing_text(plan)) {
+      issues.push("付款周期须与金额一并注明：\{fragment}")
       continue
     }
     if starting_prefix(plan) {
@@ -415,7 +420,8 @@ fn diff_option_maps(
     let (kind, before_year, after_year) = match (a, b) {
       (Some(left), Some(right)) =>
         if !currency_eq(left.currency, right.currency) ||
-          left.per_seat != right.per_seat {
+          left.per_seat != right.per_seat ||
+          monthly_annual_commitment(left) != monthly_annual_commitment(right) {
           ("basis-changed", None, None)
         } else {
           comparable += 1
@@ -479,6 +485,9 @@ fn describe_quote_change(change : QuoteChange) -> String {
   (match change.kind {
     "missing" => "：本次原文未见"
     "added" => "：前次原文未见"
+    _ if change.before_currency == change.after_currency &&
+      change.before_per_seat == change.after_per_seat =>
+      "：年约月扣义务变化，须核对"
     _ => "：币种或席位口径变化，须核对"
   })
 }

@@ -60,8 +60,36 @@ def verify_real_quote_chain():
     print("PASS real quote chains recomputed from Tana and Midjourney source snapshots")
 
 
+def verify_annual_contract_cashflow():
+    # Adobe Creative Cloud Pro individual prices from the published change notice.
+    monthly = Decimal("69.99")
+    prepaid = Decimal("779.99")
+    installments = "USD 69.99/month Annual contract, billed monthly"
+    up_front = "USD 779.99/year Annual, prepaid"
+    budget = run("budget", "1", installments, up_front)
+    assert f"报价 A 首次扣款 {monthly:.2f}，12 个月 {monthly * 12:.2f}" in budget
+    assert f"报价 B 首次扣款 {prepaid:.2f}，12 个月 {prepaid:.2f}" in budget
+    for raw in ("USD 69.99/month annual plan", "USD 69.99/月（年度合约）"):
+        ambiguous = run("budget", "1", raw, up_front)
+        assert "付款周期不明确" in ambiguous and "首次扣款" not in ambiguous
+    flexible = "USD 104.99/month billed monthly"
+    assert "合约口径不同" in run("align", installments, "USD 69.99/month")
+    assert "合约口径不同" in run("reprice", "1", flexible, installments, success=False)
+    changed = json.loads(run("compare-quotes", "Pro " + flexible, "Pro " + installments))
+    change, = changed["changes"]
+    assert changed["before_issues"] == changed["after_issues"] == []
+    assert change["kind"] == "basis-changed" and change.get("year_delta") is None
+    # Adobe's separate teams offer lists these standard renewal rates per license.
+    seat_quote = "Pro USD 99.99/user/month Annual contract, billed monthly; Pro USD 1199.88/user/year"
+    demand = ",".join(["2"] * 6 + ["8"] * 6)
+    assert run("seat-plan", "Pro", demand, seat_quote, success=False) == ""
+    assert run("seat-risk", "Pro", demand, demand, seat_quote, success=False) == ""
+    print("PASS Adobe annual commitment first debit, 12-month cash cost and seat-planning boundaries")
+
+
 def main():
     verify_real_quote_chain()
+    verify_annual_contract_cashflow()
     assert "用法" in run("help")
     tana = run("trajectory", "Tana")
     assert "-21%" in tana and "降价" in tana
