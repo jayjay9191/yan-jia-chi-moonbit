@@ -50,15 +50,32 @@ pub suberror QuoteObservationError {
 }
 
 ///|
+// Check the HTTPS evidence reference's structure without contacting the host.
+fn has_https_source_host(source : String) -> Bool {
+  guard source.strip_prefix("https://") is Some(rest) else { return false }
+  if rest
+    .iter()
+    .any(c => c <= ' ' || c == '\u{7f}' || c == '\\' || c.is_whitespace()) {
+    return false
+  }
+  let authority = rest.iter().take_while(c => c != '/' && c != '?' && c != '#')
+  guard authority.next() is Some(first) && first != ':' && first != '@' else {
+    return false
+  }
+  !authority.any(c => c == '@')
+}
+
+///|
 fn validate_observation(
   row : QuoteObservation,
 ) -> Unit raise QuoteObservationError {
   if row.observed_on != "" && !is_valid_date(row.observed_on) {
     raise InvalidObservation("observed_on must be a valid date")
   }
-  if row.source != "" &&
-    (!row.source.has_prefix("https://") || row.source.length() <= 8) {
-    raise InvalidObservation("source must be a public HTTPS address")
+  if row.source != "" && !has_https_source_host(row.source) {
+    raise InvalidObservation(
+      "source must use HTTPS with a host and no credentials",
+    )
   }
   if row.currency != "" &&
     (

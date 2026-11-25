@@ -110,7 +110,7 @@ python scripts/verify_review.py
 
 ## 结构化报价对照
 
-每次观测记录产品、套餐、币种、计价单位、付款周期、用量分档、适用范围、观测日期和来源。MoonBit 核对两条独立观测。结果为 `comparable`（可比）、`scope-mismatch`（口径不同）或 `evidence-gap`（证据不足），后两种返回原因而不产生差额。
+每次观测记录产品、套餐、币种、计价单位、付款周期、用量分档、适用范围、观测日期和来源。MoonBit 核对两条独立观测。已填写的来源须使用 HTTPS、含主机名并且不带登录凭据，核验时不会访问来源网站。结果为 `comparable`（可比）、`scope-mismatch`（口径不同）或 `evidence-gap`（证据不足），后两种返回原因而不产生差额。
 
 ```sh
 python scripts/verify_quote_scope.py

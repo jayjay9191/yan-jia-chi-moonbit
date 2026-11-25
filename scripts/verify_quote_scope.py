@@ -219,7 +219,12 @@ def main():
     assert "currency" in compare(dict(base, currency="US"), right, ok=False)
     assert "amount" in compare(dict(base, amount_minor=-1), right, ok=False)
     assert "date" in compare(dict(base, observed_on="2026-02-30"), right, ok=False)
-    assert "source" in compare(dict(base, source="http://example.com"), right, ok=False)
+    for source in ("http://example.com", "https:///pricing", "https://?table=1",
+                   "https://:443/pricing", "https://example.com/bad path",
+                   "https://name@example.com/pricing"):
+        assert "source" in compare(dict(base, source=source), right, ok=False), source
+    valid_source = "https://example.com:443/pricing?contact=team@example.com#rates"
+    assert compare(dict(base, source=valid_source), dict(base, capture="second"))["status"] == "comparable"
     assert compare(dict(base, capture=right["capture"]), right)["status"] == "evidence-gap"
     first = rows[0]
     after = first["after"]
@@ -227,7 +232,7 @@ def main():
     assert int(compare(first["before"], reduced)["delta_minor"]) == -1
     monthly = dict(after, billing="Annual")
     assert compare(first["before"], monthly)["reasons"] == ["billing"]
-    print(f"PASS {len(rows)} public quote pairs and seven validation boundaries")
+    print(f"PASS {len(rows)} public quote pairs and quote evidence boundaries")
     verify_token_cost(rows)
     verify_token_windows(full=True)
 
