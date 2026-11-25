@@ -122,6 +122,45 @@ def verify_token_windows():
           "configured boundaries, reordered windows, overlap and coverage gap verified")
 
 
+    cache_command = "estimate-token-cache"
+    cache_rates = [{"window": row, "cache_hit_minor": str(rate)}
+                   for row, rate in zip(rates, (60, 80, 40), strict=True)]
+    workloads = [dict(usage=group(i, o, 1000), cached_input_tokens=str(hits))
+                 for (i, o), hits in zip(cases[:3], (20000, 0, 33000), strict=True)]
+    cache = estimate(cache_rates, workloads, command=cache_command)
+    assert cache["source"] == source and cache["capture"] == quote["capture"]
+    expected_breakdowns = []
+    for (i, o), hits, (in_rate, hit_rate, out_rate) in zip(
+            cases[:3], (20000, 0, 33000), ((200, 40, 800), (300, 60, 1400), (400, 80, 1600)),
+            strict=True):
+        undisc = (i - hits) * in_rate * 1000
+        hit = hits * hit_rate * 1000
+        output = o * out_rate * 1000
+        expected_breakdowns.append(dict(uncached_input=undisc, cache_hit=hit, output=output,
+                                        total=undisc + hit + output))
+    actual = [{key: int(value) for key, value in line["cost"].items()} for line in cache["lines"]]
+    assert actual == expected_breakdowns
+    assert [line["tier"] for line in cache["lines"]] == [short, long_output, long_input]
+    assert {key: int(value) for key, value in cache["cost"].items()} == {
+        key: sum(cost[key] for cost in expected_breakdowns) for key in expected_breakdowns[0]}
+    assert int(cache["cost"]["total"]) == 17_040_000_000
+    zero_hits = [dict(row, cached_input_tokens="0") for row in workloads]
+    assert int(estimate(cache_rates, zero_hits, command=cache_command)["cost"]["total"]) == 30_800_000_000
+    assert "cache-hit rate" in estimate([dict(cache_rates[0], cache_hit_minor="-1")],
+                                        [], ok=False, command=cache_command)
+    assert "cached input" in estimate(cache_rates, [dict(workloads[0], cached_input_tokens="31001")],
+                                      ok=False, command=cache_command)
+    max_i64 = 2**63 - 1
+    unlimited = {key: value for key, value in rates[1].items() if key != "max_input_tokens"}
+    enormous = estimate([dict(window=unlimited, cache_hit_minor="80")],
+                        [dict(usage=group(max_i64, max_i64, max_i64), cached_input_tokens=str(max_i64))],
+                        command=cache_command)
+    assert int(enormous["cost"]["cache_hit"]) == max_i64**2 * 80
+    assert int(enormous["cost"]["output"]) == max_i64**2 * 1600
+    assert int(enormous["cost"]["total"]) == max_i64**2 * 1680
+    print("PASS GLM-4.7 cache split: CNY 170.40; all-hit, zero-hit, mixed and overflow-of-input checked")
+
+
 def main():
     rows = json.loads(DATA.read_bytes())
     for case in rows:

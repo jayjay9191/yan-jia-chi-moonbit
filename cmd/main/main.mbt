@@ -40,7 +40,7 @@ fn main {
         @env.exit(2)
       }
     "compare-observations" => cmd_compare_observations(args)
-    "estimate-token-cost" | "estimate-token-windows" =>
+    "estimate-token-cost" | "estimate-token-windows" | "estimate-token-cache" =>
       cmd_estimate_token_cost(args)
     "compare-quotes" => {
       if args.length() != 3 {
@@ -128,6 +128,9 @@ fn print_usage() -> Unit {
   )
   println(
     "estimate-token-windows <费率区间JSON> <请求用量JSON>：按输入和输出长度共同选档",
+  )
+  println(
+    "estimate-token-cache <含缓存费率区间JSON> <含命中量JSON>：分别计算未命中输入、命中输入和输出",
   )
   println("help：显示本帮助")
   println(
@@ -716,13 +719,31 @@ fn cmd_estimate_token_cost(args : Array[String]) -> Unit {
   }
   try {
     let rates = @json.parse(args[1])
-    let usage : Array[@lib.TokenUsage] = @json.from_json(@json.parse(args[2]))
-    let result = if args[0] == "estimate-token-cost" {
-      @lib.estimate_token_cost(@json.from_json(rates), usage)
-    } else {
-      @lib.estimate_token_window_cost(@json.from_json(rates), usage)
+    let usage = @json.parse(args[2])
+    let result = match args[0] {
+      "estimate-token-cost" =>
+        Json(
+          @lib.estimate_token_cost(
+            @json.from_json(rates),
+            @json.from_json(usage),
+          ),
+        )
+      "estimate-token-windows" =>
+        Json(
+          @lib.estimate_token_window_cost(
+            @json.from_json(rates),
+            @json.from_json(usage),
+          ),
+        )
+      _ =>
+        Json(
+          @lib.estimate_cached_token_window_cost(
+            @json.from_json(rates),
+            @json.from_json(usage),
+          ),
+        )
     }
-    println(Json(result).stringify())
+    println(result.stringify())
   } catch {
     @lib.InvalidObservation(message) => {
       eprintln("INVALID TOKEN QUOTE: \{message}")

@@ -59,6 +59,8 @@ pub fn days_since_verified(String, Int32) -> Int32
 
 pub fn days_to_date(Int32) -> String
 
+pub fn estimate_cached_token_window_cost(Array[CachedTokenRateWindow], Array[CachedTokenUsage]) -> CachedTokenCostEstimate raise QuoteObservationError
+
 pub fn estimate_token_cost(Array[TokenRateBand], Array[TokenUsage]) -> TokenCostEstimate raise QuoteObservationError
 
 pub fn estimate_token_window_cost(Array[TokenRateWindow], Array[TokenUsage]) -> TokenCostEstimate raise QuoteObservationError
@@ -176,6 +178,37 @@ pub(all) struct BudgetComparison {
   first_charge_b : Int64
   year_a : Int64
   year_b : Int64
+}
+
+#derive(@json.ToJson)
+pub(all) struct CachedTokenCostEstimate {
+  product : String
+  plan : String
+  currency : String
+  capture : String
+  observed_on : String
+  source : String
+  cost : TokenCostBreakdown
+  lines : Array[CachedTokenCostLine]
+}
+
+#derive(@json.ToJson)
+pub(all) struct CachedTokenCostLine {
+  usage : CachedTokenUsage
+  tier : String
+  cost : TokenCostBreakdown
+}
+
+#derive(@json.FromJson)
+pub(all) struct CachedTokenRateWindow {
+  window : TokenRateWindow
+  cache_hit_minor : Int64
+}
+
+#derive(@json.FromJson, @json.ToJson)
+pub(all) struct CachedTokenUsage {
+  usage : TokenUsage
+  cached_input_tokens : Int64
 }
 
 pub(all) struct ClassSession {
@@ -444,6 +477,14 @@ pub(all) struct TailSeatPlan {
   weight : Int32
   worst_regret : Int64
   contributions : Array[TailSeatContribution]
+}
+
+#derive(@json.ToJson)
+pub(all) struct TokenCostBreakdown {
+  uncached_input : String
+  cache_hit : String
+  output : String
+  total : String
 }
 
 #derive(@json.ToJson)

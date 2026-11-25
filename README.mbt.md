@@ -24,6 +24,20 @@ CLI 为 `estimate-token-windows <费率区间JSON> <请求用量JSON>`，整数�
 测试将价目中的 K 按十进制配置。表中三组输入避开可能有歧义的边界，
 另外对配置后的端点、重叠和费率缺口做断言。估算限未缓存用量。
 
+### 缓存命中费用拆分
+
+`estimate_cached_token_window_cost` 和 `estimate-token-cache` 复用同一组选档区间。
+选档使用完整输入和输出量。命中的 Token 从普通输入量减去，再按同张价目表的
+命中费率计价。输入每档提供 `window` 和 `cache_hit_minor`，后者表示每百万
+缓存命中 Token 的最小货币单位报价。请求组提供 `usage` 和
+`cached_input_tokens`，整数仍使用 JSON 十进制字符串。
+
+沿用上表三组模拟请求，把每次命中量设为 20,000、0、33,000。官方缓存命中费率
+分别是 0.4、0.6、0.8 元/百万 Token。独立复算结果为普通输入 **115.00 元**、
+缓存命中 **34.40 元**、输出 **21.00 元**，合计 **170.40 元**。在同一组请求上
+把命中量设为零，结果恢复为 **308.00 元**。缓存存储、写入和账单取整未纳入。
+运行 `python scripts/verify_quote_scope.py` 可复跑并验证超额命中会报错。
+
 ## 按请求估算分档 Token 成本
 
 `estimate_token_cost` 使用同次观测的输入和输出费率。每档提供输入长度的整数下限，
@@ -51,7 +65,7 @@ python scripts/verify_quote_scope.py
 在现有 MoonBit 工程中安装 [Mooncakes 发布包](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)。下面的命令从 GitHub 源码仓库根目录运行，可复跑完整证据链。
 
 ```sh
-moon add jayjay9191/yan-jia-chi-moonbit
+moon add jayjay9191/yan-jia-chi-moonbit@0.3.0
 ```
 
 ```sh

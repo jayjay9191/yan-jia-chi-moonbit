@@ -163,6 +163,14 @@ pub fn estimate_token_window_cost(
   windows : Array[TokenRateWindow],
   usage : Array[TokenUsage],
 ) -> TokenCostEstimate raise QuoteObservationError {
+  let (first, rates) = validate_window_schedule(windows)
+  price_token_usage(first, usage, row => rates[find_token_window(windows, row)])
+}
+
+///|
+fn validate_window_schedule(
+  windows : Array[TokenRateWindow],
+) -> (QuoteObservation, Array[TokenRate]) raise QuoteObservationError {
   guard windows.get(0) is Some(first_window) else {
     raise InvalidObservation("token schedule requires at least one rate window")
   }
@@ -191,20 +199,26 @@ pub fn estimate_token_window_cost(
     }
     rates.push(validate_token_rate(first, tier.input, tier.output, labels))
   }
-  price_token_usage(first, usage, row => {
-    guard windows.search_by(tier => {
-        tier.min_input_tokens <= row.input_tokens &&
-        below_token_limit(row.input_tokens, tier.max_input_tokens) &&
-        tier.min_output_tokens <= row.output_tokens &&
-        below_token_limit(row.output_tokens, tier.max_output_tokens)
-      })
-      is Some(index) else {
-      raise InvalidObservation(
-        "no token rate for input \{row.input_tokens}, output \{row.output_tokens}",
-      )
-    }
-    rates[index]
-  })
+  (first, rates)
+}
+
+///|
+fn find_token_window(
+  windows : Array[TokenRateWindow],
+  row : TokenUsage,
+) -> Int32 raise QuoteObservationError {
+  guard windows.search_by(tier => {
+      tier.min_input_tokens <= row.input_tokens &&
+      below_token_limit(row.input_tokens, tier.max_input_tokens) &&
+      tier.min_output_tokens <= row.output_tokens &&
+      below_token_limit(row.output_tokens, tier.max_output_tokens)
+    })
+    is Some(index) else {
+    raise InvalidObservation(
+      "no token rate for input \{row.input_tokens}, output \{row.output_tokens}",
+    )
+  }
+  index
 }
 
 ///|
@@ -216,11 +230,7 @@ fn price_token_usage(
   let lines : Array[TokenCostLine] = []
   let mut total = @bigint.BigInt::from_int(0)
   for row in usage {
-    if row.input_tokens < 0L || row.output_tokens < 0L || row.requests <= 0L {
-      raise InvalidObservation(
-        "token counts must be nonnegative and requests positive",
-      )
-    }
+    validate_token_usage(row)
     let rate = select_rate(row)
     let cost = (
         @bigint.BigInt::from_int64(row.input_tokens) * rate.input_minor +
@@ -242,6 +252,135 @@ fn price_token_usage(
     observed_on: quote.observed_on,
     source: quote.source,
     cost_millionths_minor: total.to_string(),
+    lines,
+  }
+}
+
+///|
+fn validate_token_usage(row : TokenUsage) -> Unit raise QuoteObservationError {
+  if row.input_tokens < 0L || row.output_tokens < 0L || row.requests <= 0L {
+    raise InvalidObservation(
+      "token counts must be nonnegative and requests positive",
+    )
+  }
+}
+
+///|
+/// The cache-hit rate belongs to the same captured rate card as the window.
+#derive(FromJson)
+pub(all) struct CachedTokenRateWindow {
+  window : TokenRateWindow
+  cache_hit_minor : Int64
+}
+
+///|
+/// Cached input is a subset of total request input.
+#derive(FromJson, ToJson)
+pub(all) struct CachedTokenUsage {
+  usage : TokenUsage
+  cached_input_tokens : Int64
+}
+
+///|
+/// All fields encode millionths of the currency's minor unit as decimal strings.
+#derive(ToJson)
+pub(all) struct TokenCostBreakdown {
+  uncached_input : String
+  cache_hit : String
+  output : String
+  total : String
+}
+
+///|
+#derive(ToJson)
+pub(all) struct CachedTokenCostLine {
+  usage : CachedTokenUsage
+  tier : String
+  cost : TokenCostBreakdown
+}
+
+///|
+#derive(ToJson)
+pub(all) struct CachedTokenCostEstimate {
+  product : String
+  plan : String
+  currency : String
+  capture : String
+  observed_on : String
+  source : String
+  cost : TokenCostBreakdown
+  lines : Array[CachedTokenCostLine]
+}
+
+///|
+fn token_cost_breakdown(
+  uncached_input : @bigint.BigInt,
+  cache_hit : @bigint.BigInt,
+  output : @bigint.BigInt,
+) -> TokenCostBreakdown {
+  {
+    uncached_input: uncached_input.to_string(),
+    cache_hit: cache_hit.to_string(),
+    output: output.to_string(),
+    total: (uncached_input + cache_hit + output).to_string(),
+  }
+}
+
+///|
+/// Price the cached part of input at the cache-hit rate. Tier selection
+/// uses total input and output. Cache storage, write and invoice fees are excluded.
+pub fn estimate_cached_token_window_cost(
+  windows : Array[CachedTokenRateWindow],
+  usage : Array[CachedTokenUsage],
+) -> CachedTokenCostEstimate raise QuoteObservationError {
+  let schedule = windows.map(row => row.window)
+  let (quote, rates) = validate_window_schedule(schedule)
+  let cache_rates = windows.map(row => {
+    @bigint.BigInt::from_int64(row.cache_hit_minor)
+  })
+  if windows.iter().any(row => row.cache_hit_minor < 0L) {
+    raise InvalidObservation("cache-hit rate must be nonnegative")
+  }
+  let mut total_input = @bigint.BigInt::from_int(0)
+  let mut total_cache = @bigint.BigInt::from_int(0)
+  let mut total_output = @bigint.BigInt::from_int(0)
+  let lines : Array[CachedTokenCostLine] = []
+  for row in usage {
+    let request = row.usage
+    let cached = row.cached_input_tokens
+    validate_token_usage(request)
+    if cached < 0L || cached > request.input_tokens {
+      raise InvalidObservation(
+        "cached input must be between zero and total input",
+      )
+    }
+    let index = find_token_window(schedule, request)
+    let rate = rates[index]
+    let count = @bigint.BigInt::from_int64(request.requests)
+    let input = @bigint.BigInt::from_int64(request.input_tokens - cached) *
+      rate.input_minor *
+      count
+    let cache = @bigint.BigInt::from_int64(cached) * cache_rates[index] * count
+    let output = @bigint.BigInt::from_int64(request.output_tokens) *
+      rate.output_minor *
+      count
+    total_input = total_input + input
+    total_cache = total_cache + cache
+    total_output = total_output + output
+    lines.push({
+      usage: row,
+      tier: rate.label,
+      cost: token_cost_breakdown(input, cache, output),
+    })
+  }
+  {
+    product: quote.product,
+    plan: quote.plan,
+    currency: quote.currency,
+    capture: quote.capture,
+    observed_on: quote.observed_on,
+    source: quote.source,
+    cost: token_cost_breakdown(total_input, total_cache, total_output),
     lines,
   }
 }

@@ -127,3 +127,59 @@ test "token rate rectangles separate both lengths and expose overlaps and gaps" 
     },
   )
 }
+
+///|
+test "cache hits subtract from ordinary input without changing the rate window" {
+  let input : QuoteObservation = {
+    capture: "synthetic-cache",
+    observed_on: "2026-11-25",
+    source: "https://example.com/pricing",
+    product: "test-api",
+    plan: "test-model",
+    currency: "CNY",
+    unit: Some(MillionInputTokens),
+    billing: Some(Usage),
+    tier: "large",
+    scope: "public-standard",
+    amount_minor: Some(400L),
+  }
+  let rates : Array[CachedTokenRateWindow] = [
+    {
+      window: {
+        min_input_tokens: 1000L,
+        max_input_tokens: None,
+        min_output_tokens: 0L,
+        max_output_tokens: None,
+        input,
+        output: {
+          ..input,
+          unit: Some(MillionOutputTokens),
+          amount_minor: Some(1600L),
+        },
+      },
+      cache_hit_minor: 80L,
+    },
+  ]
+  let usage : CachedTokenUsage = {
+    usage: { input_tokens: 1000L, output_tokens: 10L, requests: 2L, },
+    cached_input_tokens: 900L,
+  }
+  let result = estimate_cached_token_window_cost(rates, [usage])
+  assert_eq(result.cost.total, "256000")
+  assert_eq(result.cost.uncached_input, "80000")
+  assert_eq(result.cost.cache_hit, "144000")
+  assert_eq(result.cost.output, "32000")
+  assert_eq(result.lines[0].tier, "large")
+  assert_true(
+    try {
+      ignore(
+        estimate_cached_token_window_cost(rates, [
+          { ..usage, cached_input_tokens: 1001L, },
+        ]),
+      )
+      false
+    } catch {
+      InvalidObservation(message) => message.contains("cached input")
+    },
+  )
+}
