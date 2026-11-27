@@ -23,7 +23,7 @@ moon run cmd/main -- budget 1 'USD 10/month' 'USD 96/year'
 [Mooncakes 模块页](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)
 
 ```sh
-moon add jayjay9191/yan-jia-chi-moonbit@0.3.0
+moon add jayjay9191/yan-jia-chi-moonbit@0.3.1
 ```
 
 ## 十一月验收复跑
@@ -42,7 +42,8 @@ python scripts/verify_quote_scope.py --quick
 还会核对选档边界、费率重叠、未定价请求和超额缓存命中，并复跑 OpenAI 公开价目中的小数费率。
 用量为模拟输入，估算范围为价目中的普通输入、命中输入和输出。
 
-v0.3.0 本期新增输入输出双条件选档、缓存命中拆账及精确金额输出。
+v0.3.0 新增了输入输出双条件选档、缓存命中拆账及精确金额输出。
+v0.3.1 修正年度承诺与实际扣款周期的处理、按量存储费的识别，以及结构化报价可选字段的读取。
 去掉 `--quick` 可复跑历史结构化报价、GLM-5.1 案例，并使用 Node.js 比对 JavaScript 与原生 CLI 输出。
 [发布记录](https://github.com/jayjay9191/yan-jia-chi-moonbit/releases/tag/v0.3.0) · [持续集成](https://github.com/jayjay9191/yan-jia-chi-moonbit/actions/workflows/ci.yml) · [智谱官方价目](https://docs.bigmodel.cn/cn/guide/start/pricing)
 

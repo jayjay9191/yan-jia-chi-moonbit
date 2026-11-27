@@ -11,7 +11,7 @@
 
 name = "jayjay9191/yan-jia-chi-moonbit"
 
-version = "0.3.0"
+version = "0.3.1"
 
 repository = "https://github.com/jayjay9191/yan-jia-chi-moonbit"
 
