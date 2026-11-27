@@ -146,6 +146,7 @@ fn compact_billing_order(fragments : Array[String]) -> Bool? {
       starting_prefix(plan) ||
       first_term_prefix(plan) ||
       has_unsupported_billing(plan) ||
+      has_storage_meter(plan) ||
       has_annual_term(billing_text(plan)) ||
       plan.has_suffix("-") ||
       plan.has_suffix("−") {
@@ -236,6 +237,10 @@ pub fn plan_classes(raw : String) -> PlanClassReport {
       issues.push(
         "不支持该付款周期：仅支持月付和年付订阅：\{fragment}",
       )
+      continue
+    }
+    if has_storage_meter(plan) {
+      issues.push("按量计费：无固定月费：\{fragment}")
       continue
     }
     if has_annual_term(billing_text(plan)) {

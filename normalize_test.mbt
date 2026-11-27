@@ -844,3 +844,21 @@ test "annual commitment and cash billing are independent evidence" {
   )
   assert_eq(norm_cents("USD 20/月（年度承诺，每月扣款）"), 2000)
 }
+
+///|
+test "storage meters cannot become fixed subscriptions" {
+  for
+    quote in [
+      "USD 0.05 per GB per month", "USD 0.05/GB/月", "USD 0.05 / GiB / month", "USD 0.05 每GB每月",
+      "USD 0.05 per TB-month", "USD 0.50/10 GB/month", "USD 0.50 per 10 GB per month",
+      "USD 0.125 per 2.5 GB per month",
+    ] {
+    assert_eq(norm_kind(quote), "cannot_normalize")
+    assert_true(norm_reason(quote).contains("按量计费"))
+    assert_true(
+      @yan-jia-chi-moonbit.compare_budget(quote, "USD 20/month", 1) is Err(_),
+    )
+  }
+  assert_eq(norm_cents("USD 20/year"), 167)
+  assert_eq(norm_cents("USD 20/user/month"), 2000)
+}

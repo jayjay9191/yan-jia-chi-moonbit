@@ -57,6 +57,14 @@ v0.3.0 本期新增输入输出双条件选档、缓存命中拆账及精确金�
 
 价格是从各供应商公开页面提取的观测值。记录及案例附有各自的来源链接，供复查。
 
+### 存储用量与固定订阅
+
+Voyage Files 按每 GB 每月 USD 0.05 计费。模拟 10 GB 与 100 GB 分别为每月 USD 0.50
+与 USD 5.00。直接粘贴该费率时，订阅预算会提示按量计费，需知道存储量后才能计算。
+Zotero 的 2 GB 档是固定年费 USD 20，从命名套餐和年费可复跑订阅预算。
+运行 `python scripts/verify_review.py` 可从本地台账提取两条报价并核对结果。
+[Voyage 官方价目](https://docs.voyageai.com/docs/pricing#batch-and-files-api) · [Zotero 官方价目](https://www.zotero.org/storage)
+
 ## 输入和输出共同选档
 
 `estimate_token_window_cost` 同时按输入长度和输出长度选费率。每档的两个

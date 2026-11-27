@@ -327,7 +327,8 @@ fn precheck(s : String) -> NormalizeResult? {
     s.contains("tokens") ||
     s.contains("token") ||
     s.contains("/次") ||
-    s.contains("/1M") {
+    s.contains("/1M") ||
+    has_storage_meter(s) {
     Some(CannotNormalize("按量计费：无固定月费"))
   } else if !has_digit(s.to_array()) &&
     (s.contains("免费") || s.contains("Free") || s.contains("free")) {
@@ -337,6 +338,29 @@ fn precheck(s : String) -> NormalizeResult? {
   } else {
     None
   }
+}
+
+///|
+fn has_storage_meter(raw : String) -> Bool {
+  let text = " " + billing_text(raw)
+  let units = ["kb", "kib", "mb", "mib", "gb", "gib", "tb", "tib"]
+  for separator in ["/", " per ", "每"] {
+    for denominator in text.split(separator).drop(1) {
+      let unit = String::from_array(
+        denominator
+        .iter()
+        .drop_while(c => {
+          c.is_ascii_digit() || c.is_whitespace() || c == '.' || c == ','
+        })
+        .take_while(c => c.is_ascii_alphabetic())
+        .to_array(),
+      )
+      if units.contains(unit) {
+        return true
+      }
+    }
+  }
+  false
 }
 
 ///|

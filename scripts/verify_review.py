@@ -87,9 +87,44 @@ def verify_annual_contract_cashflow():
     print("PASS Adobe annual commitment first debit, 12-month cash cost and seat-planning boundaries")
 
 
+def verify_real_storage_pricing():
+    tools = {row["key"]: row for row in
+             json.loads((ROOT / "data/pricing.json").read_bytes())["tools"]}
+    voyage = tools["APV-0154"]
+    assert voyage["pricing_url"] == "https://docs.voyageai.com/docs/pricing"
+    rate = re.search(r"Files 存储 (\$([\d.]+)/GB/月)", voyage["paid_price"])
+    assert rate is not None
+    unit_price = Decimal(rate[2])
+    assert unit_price * 10 == Decimal("0.50")
+    assert unit_price * 100 == Decimal("5.00")
+    for text in (rate[1], f"USD {unit_price} per GB per month",
+                 f"USD {unit_price * 10} per 10 GB per month"):
+        assert "按量计费" in run("normalize", text)
+        refused = run("budget", "1", text, "USD 20/month")
+        assert "按量计费" in refused and "首次扣款" not in refused
+    for text in (f"Files {rate[1]}", f"Files per GB USD {unit_price}/month"):
+        change = json.loads(run("compare-quotes", "Files USD 20/month", text))
+        assert any("按量计费" in issue for issue in change["after_issues"])
+        assert change["before_issues"] == change["changes"] == []
+
+    zotero = tools["APV-0899"]
+    assert zotero["pricing_url"] == "https://www.zotero.org/storage"
+    fixed = re.search(r"2GB (\$([\d.]+)/年)", zotero["paid_price"])
+    assert fixed is not None
+    normalized = json.loads(run("classes-quote", f"2 GB {fixed[1]}", "--json"))
+    assert normalized["issues"] == []
+    tier, = normalized["classes"]
+    assert tier["plan"] == "2 GB" and tier["members"][0]["quote"] == fixed[1]
+    budget = run("budget", "1", fixed[1], "USD 60/year")
+    annual = Decimal(fixed[2])
+    assert f"报价 A 首次扣款 {annual:.2f}，12 个月 {annual:.2f}" in budget
+    print("PASS recorded Voyage metered storage and Zotero fixed storage stay distinct")
+
+
 def main():
     verify_real_quote_chain()
     verify_annual_contract_cashflow()
+    verify_real_storage_pricing()
     assert "用法" in run("help")
     tana = run("trajectory", "Tana")
     assert "-21%" in tana and "降价" in tana
