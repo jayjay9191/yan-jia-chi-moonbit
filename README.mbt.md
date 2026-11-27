@@ -1,23 +1,61 @@
 # 验价尺 · MoonBit 版
 
-量一量 AI 工具的真实定价。
+验价尺使用 MoonBit 实现 AI 工具报价口径核对、订阅现金预算、分档 Token 计费和历史报价追踪。
+Python 用于生成台账和独立复算。来源、采集时点和口径不完整时，核验结果会标出证据缺口。
+
+## 安装与最小示例
+
+按官方说明安装 MoonBit 工具链，源码复跑使用 `moonc` **1.0.0-rc1** 或更新版本。
+原生目标需系统 C 工具链，完整复跑另需 Python 3.10+ 和 Node.js 24。
+[MoonBit 官方安装说明](https://docs.moonbitlang.com/en/latest/tutorial/tour.html#installation)
+
+```sh
+moonc -v
+git clone https://github.com/jayjay9191/yan-jia-chi-moonbit
+cd yan-jia-chi-moonbit
+moon run cmd/main -- budget 1 'USD 10/month' 'USD 96/year'
+```
+
+示例比较一个账户的两条固定报价。月付首次扣 USD 10.00，12 个月合计 USD 120.00。
+年付首次扣 USD 96.00，12 个月合计 USD 96.00，节省 USD 24.00。还可用 `moon run cmd/main -- help` 查看命令。
+
+在现有 MoonBit 工程中导入已发布的库：
+[Mooncakes 模块页](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)
+
+```sh
+moon add jayjay9191/yan-jia-chi-moonbit@0.3.0
+```
 
 ## 十一月验收复跑
 
-从源码仓库根目录运行，使用 MoonBit CLI 和 Python 3.10+。
+从源码仓库根目录运行。CI 固定使用 MoonBit `1.0.0-rc1+3c0520448`，执行检查、构建、测试和独立复算。
 
 ```sh
+moon check --target native
+moon build --target native
+moon test --target native
 python scripts/verify_quote_scope.py --quick
 ```
 
-命令使用智谱 GLM-4.7 的公开价目运行 MoonBit 计费程序，并用 Python 整数独立复算。
+最后一条命令使用智谱 GLM-4.7 的公开价目运行 MoonBit 计费程序，并用 Python 整数独立复算。
 三组共 3,000 次模拟请求，缓存命中时合计 **170.40 元**，零命中时合计 **308.00 元**。
 还会核对选档边界、费率重叠、未定价请求和超额缓存命中，并复跑 OpenAI 公开价目中的小数费率。
 用量为模拟输入，估算范围为价目中的普通输入、命中输入和输出。
 
 v0.3.0 本期新增输入输出双条件选档、缓存命中拆账及精确金额输出。
 去掉 `--quick` 可复跑历史结构化报价、GLM-5.1 案例，并使用 Node.js 比对 JavaScript 与原生 CLI 输出。
-[发布记录](https://github.com/jayjay9191/yan-jia-chi-moonbit/releases/tag/v0.3.0) · [报价验证](https://github.com/jayjay9191/yan-jia-chi-moonbit/actions/workflows/ci.yml) · [官方价目](https://docs.bigmodel.cn/cn/guide/start/pricing) · [许可证](LICENSE)
+[发布记录](https://github.com/jayjay9191/yan-jia-chi-moonbit/releases/tag/v0.3.0) · [持续集成](https://github.com/jayjay9191/yan-jia-chi-moonbit/actions/workflows/ci.yml) · [智谱官方价目](https://docs.bigmodel.cn/cn/guide/start/pricing)
+
+## 许可证与来源
+
+项目源代码采用 OSI 认可的 Apache-2.0。计费核心由 MoonBit 实现，导入的模块为 MoonBit 标准库。
+[仓库许可证](LICENSE) · [OSI Apache-2.0 条目](https://opensource.org/license/apache-2.0)
+
+费用单位与总额的表示方式参考 Beancount 文档及语法，命令行的可选 JSON 输出形式参考 GitHub CLI。
+参考范围为设计和用法。验价尺中的费用计算、格式化和测试为仓库内的独立实现。
+[Beancount GPL-2.0-only](https://github.com/beancount/beancount/blob/master/COPYING) · [GitHub CLI MIT](https://github.com/cli/cli/blob/trunk/LICENSE)
+
+价格是从各供应商公开页面提取的观测值。记录及案例附有各自的来源链接，供复查。
 
 ## 输入和输出共同选档
 
@@ -99,11 +137,7 @@ python scripts/verify_quote_scope.py
 
 ## 历史报价与全量验证
 
-在现有 MoonBit 工程中安装 [Mooncakes 发布包](https://mooncakes.io/docs/jayjay9191/yan-jia-chi-moonbit)。下面的命令从 GitHub 源码仓库根目录运行，可复跑完整证据链。
-
-```sh
-moon add jayjay9191/yan-jia-chi-moonbit@0.3.0
-```
+下面的命令从源码仓库根目录运行，可复跑完整证据链。
 
 ```sh
 moon run cmd/main -- trajectory "智谱清言 / GLM"

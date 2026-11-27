@@ -1,6 +1,6 @@
 # 每次推送与 PR 自动跑 moon test + Python 测试 + verify。
 # 安装方式按 MoonBit 官方文档（moonbitlang/x 等官方项目同款流程）：
-# 官方安装脚本装 CLI，再 moon update 同步核心库，然后跑测试。
+# 官方安装脚本安装固定版本的 CLI 和配套核心库。
 # 模式照赛簿 .github/workflows/moon-test.yml；本仓库原 moon-test.yml
 # 已改名为 ci.yml（内容相同，另补 report 冒烟检查），避免两套 CI 重复跑。
 name: CI
@@ -18,11 +18,9 @@ jobs:
         with:
           node-version: '24'
       - name: Install MoonBit
-        run: curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-      - name: Update MoonBit registry
         run: |
-          export PATH="$HOME/.moon/bin:$PATH"
-          moon update
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- '1.0.0-rc1+3c0520448'
+          "$HOME/.moon/bin/moonc" -v
       - name: Check generated data is in sync
         run: |
           python3 scripts/generate_data.py
@@ -30,6 +28,11 @@ jobs:
           export PATH="$HOME/.moon/bin:$PATH"
           moon fmt
           git diff --exit-code -- pricing_data.mbt pricing_generated_test.mbt
+      - name: Check and build the native CLI
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon check --target native
+          moon build --target native
       - name: Validate data
         run: |
           export PATH="$HOME/.moon/bin:$PATH"
